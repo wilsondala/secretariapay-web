@@ -12,6 +12,7 @@ import ImportsPage from './pages/ImportsPage.jsx';
 import SettingsPage from './pages/SettingsPage.jsx';
 import DemoChecklistPage from './pages/DemoChecklistPage.jsx';
 import AboutPage from './pages/AboutPage.jsx';
+import PublicDemoCarouselPage from './pages/PublicDemoCarouselPage.jsx';
 import PlaceholderPage from './pages/PlaceholderPage.jsx';
 import NotFoundPage from './pages/NotFoundPage.jsx';
 
@@ -19,6 +20,8 @@ export default function App() {
   return (
     <Routes>
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/apresentacao" element={<PublicDemoCarouselPage />} />
+      <Route path="/demo-publica" element={<PublicDemoCarouselPage />} />
       <Route element={<ProtectedRoute />}>
         <Route element={<AppLayout />}>
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
