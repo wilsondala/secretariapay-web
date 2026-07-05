@@ -8,6 +8,8 @@ import ChargesPage from './pages/ChargesPage.jsx';
 import ProofsPage from './pages/ProofsPage.jsx';
 import ReceiptsPage from './pages/ReceiptsPage.jsx';
 import WhatsappPage from './pages/WhatsappPage.jsx';
+import ImportsPage from './pages/ImportsPage.jsx';
+import SettingsPage from './pages/SettingsPage.jsx';
 import PlaceholderPage from './pages/PlaceholderPage.jsx';
 import NotFoundPage from './pages/NotFoundPage.jsx';
 
@@ -24,8 +26,8 @@ export default function App() {
           <Route path="/proofs" element={<ProofsPage />} />
           <Route path="/receipts" element={<ReceiptsPage />} />
           <Route path="/whatsapp" element={<WhatsappPage />} />
-          <Route path="/imports" element={<PlaceholderPage title="Importações WebSchool" subtitle="Lotes, linhas e sincronização académica." />} />
-          <Route path="/settings" element={<PlaceholderPage title="Configurações" subtitle="Regras DCR, canais e parâmetros institucionais." />} />
+          <Route path="/imports" element={<ImportsPage />} />
+          <Route path="/settings" element={<SettingsPage />} />
         </Route>
       </Route>
       <Route path="*" element={<NotFoundPage />} />
