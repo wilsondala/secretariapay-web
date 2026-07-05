@@ -13,6 +13,7 @@ import SettingsPage from './pages/SettingsPage.jsx';
 import DemoChecklistPage from './pages/DemoChecklistPage.jsx';
 import AboutPage from './pages/AboutPage.jsx';
 import PublicDemoCarouselPage from './pages/PublicDemoCarouselPage.jsx';
+import ReportsPage from './pages/ReportsPage.jsx';
 import PlaceholderPage from './pages/PlaceholderPage.jsx';
 import NotFoundPage from './pages/NotFoundPage.jsx';
 
@@ -33,6 +34,7 @@ export default function App() {
           <Route path="/whatsapp" element={<WhatsappPage />} />
           <Route path="/imports" element={<ImportsPage />} />
           <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/reports" element={<ReportsPage />} />
           <Route path="/demo" element={<DemoChecklistPage />} />
           <Route path="/about" element={<AboutPage />} />
         </Route>
