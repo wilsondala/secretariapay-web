@@ -162,132 +162,109 @@ export default function ChargesPage() {
   if (error) return <ErrorState message={error} onRetry={load} />;
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-end">
-        <div>
+    <div className="space-y-4 overflow-hidden">
+      <div className="flex flex-col justify-between gap-3 xl:flex-row xl:items-end">
+        <div className="min-w-0">
           <h1 className="page-title">Cobranças e propinas</h1>
           <p className="page-subtitle">Consulta real de cobranças, guias PDF, multas DCR e envio por WhatsApp.</p>
         </div>
         <div className="flex flex-wrap gap-2">
           <button className="btn-secondary" onClick={load} disabled={working}>
-            <RefreshCw size={16} className="mr-2" />
+            <RefreshCw size={15} className="mr-2" />
             Atualizar
           </button>
           <button className="btn-secondary" onClick={handleGenerateMonth} disabled={working}>
-            <CalendarDays size={16} className="mr-2" />
+            <CalendarDays size={15} className="mr-2" />
             Gerar propinas teste
           </button>
           <button className="btn-primary" onClick={handleSendBatch} disabled={working}>
-            <Send size={16} className="mr-2" />
+            <Send size={15} className="mr-2" />
             Enviar guias do mês
           </button>
         </div>
       </div>
 
       {actionMessage && (
-        <div className={`rounded-2xl border p-4 text-sm font-semibold ${actionMessage.type === 'success' ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-red-200 bg-red-50 text-red-700'}`}>
+        <div className={`rounded-xl border p-3 text-xs font-semibold ${actionMessage.type === 'success' ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-red-200 bg-red-50 text-red-700'}`}>
           {actionMessage.text}
         </div>
       )}
 
-      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <section className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
         <StatCard title="Total de cobranças" value={stats.total} description="Registros financeiros" icon={Banknote} />
         <StatCard title="Pendentes" value={stats.pending} description="Aguardando pagamento" icon={WalletCards} tone="gold" />
         <StatCard title="Vencidas" value={stats.overdue} description={formatMoney(stats.overdueAmount)} icon={CalendarDays} tone="danger" />
         <StatCard title="Total em aberto" value={formatMoney(stats.openAmount)} description="Pendente + vencido" icon={FileText} tone="warning" />
       </section>
 
-      <section className="grid gap-6 xl:grid-cols-[1.2fr_.8fr]">
-        <div className="card overflow-hidden">
-          <div className="border-b border-slate-100 p-5">
-            <div className="flex flex-col gap-3 lg:flex-row">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-3.5 text-slate-400" size={18} />
+      <section className="grid min-w-0 gap-4 xl:grid-cols-[minmax(0,1.1fr)_minmax(340px,.72fr)]">
+        <div className="card min-w-0 overflow-hidden">
+          <div className="border-b border-slate-100 p-3">
+            <div className="grid gap-2 lg:grid-cols-[minmax(0,1fr)_160px_145px]">
+              <div className="relative min-w-0">
+                <Search className="absolute left-3 top-3 text-slate-400" size={16} />
                 <input
-                  className="input pl-10"
-                  placeholder="Buscar por código, estudante, matrícula, descrição ou mês..."
+                  className="input pl-9"
+                  placeholder="Buscar por código, estudante, matrícula ou mês..."
                   value={search}
                   onChange={(event) => setSearch(event.target.value)}
                 />
               </div>
-              <select className="input lg:w-48" value={status} onChange={(event) => setStatus(event.target.value)}>
+              <select className="input" value={status} onChange={(event) => setStatus(event.target.value)}>
                 <option value="ALL">Todos estados</option>
                 <option value="PENDING">Pendente</option>
                 <option value="OVERDUE">Vencida</option>
                 <option value="PAID">Pago</option>
                 <option value="CANCELLED">Cancelado</option>
               </select>
-              <select className="input lg:w-44" value={month} onChange={(event) => setMonth(event.target.value)}>
+              <select className="input" value={month} onChange={(event) => setMonth(event.target.value)}>
                 <option value="ALL">Todos meses</option>
                 {months.map((item) => <option key={item} value={item}>{item}</option>)}
               </select>
             </div>
           </div>
 
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-slate-100 text-left text-sm">
-              <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
-                <tr>
-                  <th className="px-5 py-3">Cobrança</th>
-                  <th className="px-5 py-3">Estudante</th>
-                  <th className="px-5 py-3">Valores</th>
-                  <th className="px-5 py-3">Vencimento</th>
-                  <th className="px-5 py-3">Estado</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 bg-white">
-                {filtered.map((charge) => {
-                  const active = selected?.id === charge.id;
-                  return (
-                    <tr
-                      key={charge.id || charge.chargeCode}
-                      className={`cursor-pointer transition hover:bg-imetro-goldSoft/40 ${active ? 'bg-imetro-goldSoft/70' : ''}`}
-                      onClick={() => setSelected(charge)}
-                    >
-                      <td className="px-5 py-4">
-                        <p className="font-black text-slate-900">{charge.chargeCode}</p>
-                        <p className="mt-1 max-w-xs truncate text-xs text-slate-500">{charge.description}</p>
-                      </td>
-                      <td className="px-5 py-4">
-                        <p className="font-semibold text-slate-700">{charge.studentName}</p>
-                        <p className="mt-1 text-xs text-imetro-navy">{charge.studentNumber}</p>
-                      </td>
-                      <td className="px-5 py-4">
-                        <p className="font-black text-slate-900">{formatMoney(charge.totalAmount, charge.currency)}</p>
-                        {charge.fineAmount > 0 && <p className="mt-1 text-xs font-semibold text-red-600">Multa: {formatMoney(charge.fineAmount, charge.currency)}</p>}
-                      </td>
-                      <td className="px-5 py-4">
-                        <p className="font-semibold text-slate-700">{formatDate(charge.dueDate)}</p>
-                        <p className="mt-1 text-xs text-slate-500">{charge.referenceMonth}</p>
-                      </td>
-                      <td className="px-5 py-4"><StatusBadge status={chargeIsOverdue(charge) ? 'OVERDUE' : charge.status} /></td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+          <div className="max-h-[62vh] overflow-y-auto p-3">
+            {filtered.length === 0 ? (
+              <EmptyState />
+            ) : (
+              <div className="space-y-2">
+                {filtered.map((charge) => (
+                  <ChargeListItem
+                    key={charge.id || charge.chargeCode}
+                    charge={charge}
+                    active={selected?.id === charge.id}
+                    onClick={() => setSelected(charge)}
+                  />
+                ))}
+              </div>
+            )}
           </div>
-          {filtered.length === 0 && <div className="p-5"><EmptyState /></div>}
         </div>
 
-        <aside className="card p-5">
+        <aside className="card min-w-0 p-3 xl:sticky xl:top-20 xl:self-start">
           {!selected ? (
-            <EmptyState title="Selecione uma cobrança" message="Clique numa linha para ver os detalhes e ações." />
+            <EmptyState title="Selecione uma cobrança" message="Clique numa cobrança para ver detalhes e ações." />
           ) : (
-            <div className="space-y-5">
-              <div>
-                <p className="text-xs font-black uppercase tracking-[.2em] text-imetro-gold">Detalhe da cobrança</p>
-                <h2 className="mt-2 text-xl font-black text-slate-900">{selected.chargeCode}</h2>
-                <p className="mt-1 text-sm text-slate-500">{selected.description}</p>
+            <div className="space-y-3">
+              <div className="min-w-0">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="text-[10px] font-black uppercase tracking-[.18em] text-imetro-gold">Detalhe da cobrança</p>
+                    <h2 className="mt-1 break-words text-sm font-black text-slate-900">{selected.chargeCode}</h2>
+                    <p className="mt-1 text-xs leading-5 text-slate-500">{selected.description}</p>
+                  </div>
+                  <StatusBadge status={chargeIsOverdue(selected) ? 'OVERDUE' : selected.status} />
+                </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                <Mini label="Valor base" value={formatMoney(selected.amount, selected.currency)} />
+              <div className="grid grid-cols-3 gap-2">
+                <Mini label="Base" value={formatMoney(selected.amount, selected.currency)} />
                 <Mini label="Multa" value={formatMoney(selected.fineAmount, selected.currency)} danger={selected.fineAmount > 0} />
-                <Mini label="Total" value={formatMoney(selected.totalAmount, selected.currency)} wide />
+                <Mini label="Total" value={formatMoney(selected.totalAmount, selected.currency)} strong />
               </div>
 
-              <div className="rounded-2xl bg-slate-50 p-4 text-sm">
+              <div className="rounded-xl bg-slate-50 p-3 text-xs">
                 <Line label="Estudante" value={selected.studentName} />
                 <Line label="Matrícula" value={selected.studentNumber} />
                 <Line label="Referência" value={selected.referenceMonth} />
@@ -295,20 +272,20 @@ export default function ChargesPage() {
                 <Line label="Estado" value={chargeIsOverdue(selected) ? 'Vencida/em atraso' : safeText(selected.status)} />
               </div>
 
-              <div className="flex flex-col gap-2">
+              <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-1 2xl:grid-cols-2">
                 <a className="btn-secondary" href={paymentGuidePdfUrl(selected.chargeCode)} target="_blank" rel="noreferrer">
-                  <Eye size={16} className="mr-2" />
+                  <Eye size={15} className="mr-2" />
                   Ver guia PDF
                 </a>
                 <button className="btn-primary" onClick={() => handleSendGuide(selected)} disabled={working}>
-                  <Send size={16} className="mr-2" />
-                  Enviar guia por WhatsApp
+                  <Send size={15} className="mr-2" />
+                  Enviar guia
                 </button>
               </div>
 
-              <div className="rounded-2xl bg-imetro-goldSoft p-4 text-sm text-imetro-navy">
+              <div className="rounded-xl bg-imetro-goldSoft p-3 text-xs text-imetro-navy">
                 <p className="font-black">Regra operacional</p>
-                <p className="mt-2 leading-6">A guia é enviada apenas para contacto oficial do estudante. O recibo só deve ser emitido após validação manual da DCR.</p>
+                <p className="mt-1 leading-5">A guia é enviada apenas para contacto oficial do estudante. O recibo só deve ser emitido após validação manual da DCR.</p>
               </div>
             </div>
           )}
@@ -318,20 +295,60 @@ export default function ChargesPage() {
   );
 }
 
-function Mini({ label, value, wide, danger }) {
+function ChargeListItem({ charge, active, onClick }) {
+  const overdue = chargeIsOverdue(charge);
+
   return (
-    <div className={`rounded-2xl bg-slate-50 p-4 ${wide ? 'col-span-2' : ''}`}>
-      <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">{label}</p>
-      <p className={`mt-1 font-black ${danger ? 'text-red-600' : 'text-slate-900'}`}>{value}</p>
+    <button
+      type="button"
+      onClick={onClick}
+      className={`w-full rounded-xl border p-3 text-left transition ${active ? 'border-imetro-gold bg-imetro-goldSoft/70 shadow-sm' : 'border-slate-100 bg-white hover:border-imetro-gold/50 hover:bg-slate-50'}`}
+    >
+      <div className="flex min-w-0 flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
+        <div className="min-w-0 flex-1">
+          <div className="flex min-w-0 flex-wrap items-center gap-2">
+            <p className="max-w-full break-words text-xs font-black text-slate-950 lg:text-[13px]">{charge.chargeCode}</p>
+            <StatusBadge status={overdue ? 'OVERDUE' : charge.status} />
+          </div>
+          <p className="mt-1 line-clamp-1 text-[11px] leading-4 text-slate-500">{charge.description}</p>
+          <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-slate-500">
+            <span className="font-semibold text-slate-700">{charge.studentName || 'Estudante não informado'}</span>
+            <span>{charge.studentNumber || '-'}</span>
+            <span>{charge.referenceMonth || '-'}</span>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-2 lg:w-[210px] lg:shrink-0">
+          <div className="rounded-lg bg-slate-50 px-2 py-1.5">
+            <p className="text-[10px] font-bold uppercase text-slate-400">Total</p>
+            <p className="text-xs font-black text-slate-950">{formatMoney(charge.totalAmount, charge.currency)}</p>
+            {charge.fineAmount > 0 && <p className="mt-0.5 text-[10px] font-bold text-red-600">Multa: {formatMoney(charge.fineAmount, charge.currency)}</p>}
+          </div>
+          <div className="rounded-lg bg-slate-50 px-2 py-1.5">
+            <p className="text-[10px] font-bold uppercase text-slate-400">Vencimento</p>
+            <p className="text-xs font-black text-slate-950">{formatDate(charge.dueDate)}</p>
+            <p className="mt-0.5 text-[10px] text-slate-500">{charge.referenceMonth || '-'}</p>
+          </div>
+        </div>
+      </div>
+    </button>
+  );
+}
+
+function Mini({ label, value, strong, danger }) {
+  return (
+    <div className="min-w-0 rounded-xl bg-slate-50 p-2.5">
+      <p className="text-[10px] font-bold uppercase tracking-wide text-slate-400">{label}</p>
+      <p className={`mt-1 break-words text-xs ${strong ? 'font-black' : 'font-bold'} ${danger ? 'text-red-600' : 'text-slate-900'}`}>{value}</p>
     </div>
   );
 }
 
 function Line({ label, value }) {
   return (
-    <div className="flex justify-between gap-3 border-b border-slate-200/70 py-2 first:pt-0 last:border-b-0 last:pb-0">
-      <span className="font-semibold text-slate-500">{label}</span>
-      <span className="max-w-[62%] text-right font-bold text-slate-800">{value}</span>
+    <div className="flex items-start justify-between gap-3 border-b border-slate-200/70 py-2 first:pt-0 last:border-b-0 last:pb-0">
+      <span className="shrink-0 font-semibold text-slate-500">{label}</span>
+      <span className="min-w-0 break-words text-right font-bold text-slate-800">{value}</span>
     </div>
   );
 }

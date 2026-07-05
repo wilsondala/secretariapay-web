@@ -156,14 +156,14 @@ function labelFilterOption(group, option) {
 
 function SummaryCard({ icon: Icon, label, value, description, className = '' }) {
   return (
-    <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+    <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="text-sm font-semibold text-slate-500">{label}</p>
-          <p className="mt-2 text-3xl font-black text-slate-900">{value}</p>
+          <p className="mt-2 text-base font-black text-slate-900">{value}</p>
           {description ? <p className="mt-1 text-xs text-slate-500">{description}</p> : null}
         </div>
-        <div className={`rounded-2xl p-3 ${className || 'bg-imetro-navy/10 text-imetro-navy'}`}>
+        <div className={`rounded-xl p-3 ${className || 'bg-imetro-navy/10 text-imetro-navy'}`}>
           <Icon size={22} />
         </div>
       </div>
@@ -256,11 +256,11 @@ export default function WhatsappPage() {
   if (loading) return <LoadingState title="Carregando histórico do WhatsApp" />;
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-4 rounded-3xl bg-imetro-navy p-6 text-white shadow-sm lg:flex-row lg:items-center lg:justify-between">
+    <div className="space-y-4">
+      <div className="flex flex-col gap-4 rounded-2xl bg-imetro-navy p-4 text-white shadow-sm lg:flex-row lg:items-center lg:justify-between">
         <div>
           <p className="text-sm font-bold uppercase tracking-[0.22em] text-imetro-gold">DCR · Atendimento digital</p>
-          <h1 className="mt-2 text-3xl font-black">WhatsApp e histórico de mensagens</h1>
+          <h1 className="mt-2 text-base font-black">WhatsApp e histórico de mensagens</h1>
           <p className="mt-2 max-w-3xl text-sm text-white/75">
             Controle das guias enviadas, mensagens falhadas, contactos oficiais e sessões de atendimento do IMETRO.
           </p>
@@ -268,7 +268,7 @@ export default function WhatsappPage() {
         <button
           type="button"
           onClick={loadData}
-          className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-4 py-3 text-sm font-black text-imetro-navy hover:bg-imetro-gold"
+          className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-4 py-3 text-sm font-black text-imetro-navy hover:bg-imetro-gold"
         >
           <RefreshCcw size={18} />
           Atualizar
@@ -276,7 +276,7 @@ export default function WhatsappPage() {
       </div>
 
       {!endpointInfo.available ? (
-        <div className="rounded-3xl border border-amber-200 bg-amber-50 p-5 text-sm text-amber-900">
+        <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
           <div className="flex gap-3">
             <AlertTriangle className="mt-0.5 shrink-0" size={20} />
             <div>
@@ -304,23 +304,23 @@ export default function WhatsappPage() {
         <button
           type="button"
           onClick={() => setActiveTab('messages')}
-          className={`rounded-2xl px-4 py-2 text-sm font-black ${activeTab === 'messages' ? 'bg-imetro-navy text-white' : 'bg-white text-slate-600 ring-1 ring-slate-200'}`}
+          className={`rounded-xl px-4 py-2 text-sm font-black ${activeTab === 'messages' ? 'bg-imetro-navy text-white' : 'bg-white text-slate-600 ring-1 ring-slate-200'}`}
         >
           Mensagens
         </button>
         <button
           type="button"
           onClick={() => setActiveTab('sessions')}
-          className={`rounded-2xl px-4 py-2 text-sm font-black ${activeTab === 'sessions' ? 'bg-imetro-navy text-white' : 'bg-white text-slate-600 ring-1 ring-slate-200'}`}
+          className={`rounded-xl px-4 py-2 text-sm font-black ${activeTab === 'sessions' ? 'bg-imetro-navy text-white' : 'bg-white text-slate-600 ring-1 ring-slate-200'}`}
         >
           Sessões WhatsApp
         </button>
       </div>
 
       {activeTab === 'messages' ? (
-        <div className="grid gap-6 xl:grid-cols-[1.25fr_0.75fr]">
-          <div className="rounded-3xl border border-slate-200 bg-white shadow-sm">
-            <div className="border-b border-slate-200 p-5">
+        <div className="grid gap-4 xl:grid-cols-[1.25fr_0.75fr]">
+          <div className="rounded-2xl border border-slate-200 bg-white shadow-sm">
+            <div className="border-b border-slate-200 p-4">
               <div className="grid gap-3 lg:grid-cols-[1fr_150px_150px_180px]">
                 <label className="relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
@@ -328,14 +328,14 @@ export default function WhatsappPage() {
                     value={filters.search}
                     onChange={(event) => setFilters((current) => ({ ...current, search: event.target.value }))}
                     placeholder="Buscar por estudante, telefone, cobrança, falha ou provider ID"
-                    className="w-full rounded-2xl border border-slate-200 py-3 pl-10 pr-4 text-sm outline-none focus:border-imetro-navy"
+                    className="w-full rounded-xl border border-slate-200 py-3 pl-10 pr-4 text-sm outline-none focus:border-imetro-navy"
                   />
                 </label>
 
                 <select
                   value={filters.status}
                   onChange={(event) => setFilters((current) => ({ ...current, status: event.target.value }))}
-                  className="rounded-2xl border border-slate-200 px-4 py-3 text-sm font-semibold outline-none focus:border-imetro-navy"
+                  className="rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold outline-none focus:border-imetro-navy"
                 >
                   {filterOptions.status.map((option) => (
                     <option key={option} value={option}>{labelFilterOption('status', option)}</option>
@@ -345,7 +345,7 @@ export default function WhatsappPage() {
                 <select
                   value={filters.channel}
                   onChange={(event) => setFilters((current) => ({ ...current, channel: event.target.value }))}
-                  className="rounded-2xl border border-slate-200 px-4 py-3 text-sm font-semibold outline-none focus:border-imetro-navy"
+                  className="rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold outline-none focus:border-imetro-navy"
                 >
                   {filterOptions.channel.map((option) => (
                     <option key={option} value={option}>{labelFilterOption('channel', option)}</option>
@@ -355,7 +355,7 @@ export default function WhatsappPage() {
                 <select
                   value={filters.type}
                   onChange={(event) => setFilters((current) => ({ ...current, type: event.target.value }))}
-                  className="rounded-2xl border border-slate-200 px-4 py-3 text-sm font-semibold outline-none focus:border-imetro-navy"
+                  className="rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold outline-none focus:border-imetro-navy"
                 >
                   {filterOptions.type.map((option) => (
                     <option key={option} value={option}>{labelFilterOption('type', option)}</option>
@@ -397,18 +397,18 @@ export default function WhatsappPage() {
             )}
           </div>
 
-          <aside className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+          <aside className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
             {selected ? (
-              <div className="space-y-5">
+              <div className="space-y-4">
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <p className="text-xs font-bold uppercase tracking-wide text-slate-400">Detalhe da mensagem</p>
-                    <h2 className="mt-1 text-xl font-black text-slate-900">{labelType(selected.type)}</h2>
+                    <h2 className="mt-1 text-base font-black text-slate-900">{labelType(selected.type)}</h2>
                   </div>
                   <StatusBadge status={selected.status} />
                 </div>
 
-                <div className="rounded-2xl bg-slate-50 p-4">
+                <div className="rounded-xl bg-slate-50 p-4">
                   <p className="text-xs font-bold uppercase text-slate-400">Cobrança</p>
                   <p className="mt-1 break-all text-sm font-black text-slate-900">{selected.chargeCode || '-'}</p>
                 </div>
@@ -421,14 +421,14 @@ export default function WhatsappPage() {
                 </div>
 
                 {selected.failureReason ? (
-                  <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+                  <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
                     <p className="font-black">Motivo da falha</p>
                     <p className="mt-1">{selected.failureReason}</p>
                   </div>
                 ) : null}
 
                 {selected.body ? (
-                  <div className="rounded-2xl border border-slate-200 p-4 text-sm text-slate-600">
+                  <div className="rounded-xl border border-slate-200 p-4 text-sm text-slate-600">
                     <p className="font-black text-slate-900">Conteúdo</p>
                     <p className="mt-2 whitespace-pre-wrap">{selected.body}</p>
                   </div>
@@ -439,7 +439,7 @@ export default function WhatsappPage() {
                     href={selectedGuideUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-imetro-navy px-4 py-3 text-sm font-black text-white hover:bg-imetro-gold hover:text-imetro-navy"
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-imetro-navy px-4 py-3 text-sm font-black text-white hover:bg-imetro-gold hover:text-imetro-navy"
                   >
                     <FileText size={18} />
                     Abrir guia PDF
@@ -452,9 +452,9 @@ export default function WhatsappPage() {
           </aside>
         </div>
       ) : (
-        <div className="rounded-3xl border border-slate-200 bg-white shadow-sm">
-          <div className="border-b border-slate-200 p-5">
-            <h2 className="text-lg font-black text-slate-900">Sessões de atendimento</h2>
+        <div className="rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <div className="border-b border-slate-200 p-4">
+            <h2 className="text-base font-black text-slate-900">Sessões de atendimento</h2>
             <p className="mt-1 text-sm text-slate-500">Conversas abertas, encerradas e etapas atuais do robô.</p>
           </div>
 
@@ -497,7 +497,7 @@ export default function WhatsappPage() {
 
 function InfoRow({ icon: Icon, label, value }) {
   return (
-    <div className="flex items-start gap-3 rounded-2xl border border-slate-100 p-3">
+    <div className="flex items-start gap-3 rounded-xl border border-slate-100 p-3">
       <Icon className="mt-0.5 text-imetro-navy" size={18} />
       <div className="min-w-0">
         <p className="text-xs font-bold uppercase tracking-wide text-slate-400">{label}</p>

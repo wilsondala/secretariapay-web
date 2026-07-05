@@ -113,7 +113,7 @@ export default function StudentsPage() {
   if (error) return <ErrorState message={error} onRetry={load} />;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-end">
         <div>
           <h1 className="page-title">Estudantes</h1>
@@ -132,9 +132,9 @@ export default function StudentsPage() {
         <StatCard title="Bloqueados" value={stats.blocked} description="Restrição financeira" icon={ShieldAlert} tone="danger" />
       </section>
 
-      <section className="grid gap-6 xl:grid-cols-[1.15fr_.85fr]">
+      <section className="grid gap-4 xl:grid-cols-[1.15fr_.85fr]">
         <div className="card overflow-hidden">
-          <div className="border-b border-slate-100 p-5">
+          <div className="border-b border-slate-100 p-4">
             <div className="flex flex-col gap-3 md:flex-row">
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-3.5 text-slate-400" size={18} />
@@ -194,25 +194,25 @@ export default function StudentsPage() {
               </tbody>
             </table>
           </div>
-          {filtered.length === 0 && <div className="p-5"><EmptyState /></div>}
+          {filtered.length === 0 && <div className="p-4"><EmptyState /></div>}
         </div>
 
-        <aside className="card p-5">
+        <aside className="card p-4">
           {!selected ? (
             <EmptyState title="Selecione um estudante" message="Clique numa linha para ver os detalhes." />
           ) : (
-            <div className="space-y-5">
+            <div className="space-y-4">
               <div className="flex items-start gap-4">
-                <div className="flex h-14 w-14 items-center justify-center rounded-3xl bg-imetro-navy text-white">
+                <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-imetro-navy text-white">
                   <UserRound size={25} />
                 </div>
                 <div>
-                  <h2 className="text-lg font-black text-slate-900">{getStudentName(selected)}</h2>
+                  <h2 className="text-base font-black text-slate-900">{getStudentName(selected)}</h2>
                   <p className="mt-1 text-sm font-semibold text-imetro-navy">{getStudentNumber(selected)}</p>
                 </div>
               </div>
 
-              <div className="rounded-2xl bg-slate-50 p-4 text-sm">
+              <div className="rounded-xl bg-slate-50 p-4 text-sm">
                 <p className="font-black text-slate-800">Dados académicos</p>
                 <div className="mt-3 space-y-2 text-slate-600">
                   <Line label="Curso" value={getStudentCourse(selected)} />
@@ -221,7 +221,7 @@ export default function StudentsPage() {
                 </div>
               </div>
 
-              <div className="rounded-2xl bg-slate-50 p-4 text-sm">
+              <div className="rounded-xl bg-slate-50 p-4 text-sm">
                 <p className="font-black text-slate-800">Contactos oficiais</p>
                 <div className="mt-3 space-y-2 text-slate-600">
                   <Line label="WhatsApp" value={safeText(getStudentWhatsapp(selected), 'Não cadastrado')} icon={Phone} />
@@ -230,7 +230,7 @@ export default function StudentsPage() {
                 </div>
               </div>
 
-              <div className="rounded-2xl bg-imetro-goldSoft p-4 text-sm text-imetro-navy">
+              <div className="rounded-xl bg-imetro-goldSoft p-4 text-sm text-imetro-navy">
                 <p className="font-black">Resumo financeiro</p>
                 {chargesLoading ? (
                   <p className="mt-3">Carregando cobranças...</p>
@@ -261,9 +261,9 @@ function Line({ label, value, icon: Icon }) {
 
 function Mini({ label, value, wide }) {
   return (
-    <div className={`rounded-2xl bg-white/80 p-3 ${wide ? 'col-span-2' : ''}`}>
+    <div className={`rounded-xl bg-white/80 p-3 ${wide ? 'col-span-2' : ''}`}>
       <p className="text-xs font-semibold uppercase tracking-wide opacity-70">{label}</p>
-      <p className="mt-1 text-lg font-black">{value}</p>
+      <p className="mt-1 text-base font-black">{value}</p>
     </div>
   );
 }

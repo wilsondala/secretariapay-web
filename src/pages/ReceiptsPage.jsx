@@ -74,7 +74,7 @@ export default function ReceiptsPage() {
   if (error) return <ErrorState message={error} onRetry={load} />;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-end">
         <div>
           <h1 className="page-title">Recibos institucionais</h1>
@@ -93,9 +93,9 @@ export default function ReceiptsPage() {
         <StatCard title="Cancelados" value={stats.cancelled} description="Anulados pela DCR" icon={FileText} tone="danger" />
       </section>
 
-      <section className="grid gap-6 xl:grid-cols-[1.15fr_.85fr]">
+      <section className="grid gap-4 xl:grid-cols-[1.15fr_.85fr]">
         <div className="card overflow-hidden">
-          <div className="border-b border-slate-100 p-5">
+          <div className="border-b border-slate-100 p-4">
             <div className="flex flex-col gap-3 lg:flex-row">
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-3.5 text-slate-400" size={18} />
@@ -149,18 +149,18 @@ export default function ReceiptsPage() {
           )}
         </div>
 
-        <aside className="card p-5">
+        <aside className="card p-4">
           {selected ? (
-            <div className="space-y-5">
+            <div className="space-y-4">
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <p className="text-xs font-bold uppercase tracking-wide text-slate-400">Recibo selecionado</p>
-                  <h2 className="mt-1 text-xl font-black text-slate-900">{selected.receiptCode}</h2>
+                  <h2 className="mt-1 text-base font-black text-slate-900">{selected.receiptCode}</h2>
                 </div>
                 <StatusBadge status={selected.status} label={normalizeReceiptStatus(selected.status)} />
               </div>
 
-              <div className="rounded-2xl bg-slate-50 p-4 text-sm">
+              <div className="rounded-xl bg-slate-50 p-4 text-sm">
                 <p className="font-bold text-slate-900">{selected.studentName}</p>
                 <p className="text-slate-500">Matrícula: {selected.studentNumber}</p>
                 <p className="mt-2 text-slate-600">Cobrança: <b>{selected.chargeCode}</b></p>
@@ -184,7 +184,7 @@ export default function ReceiptsPage() {
                 )}
               </div>
 
-              <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800">
+              <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800">
                 Recibo institucional emitido após validação da DCR. Este registro serve para consulta administrativa e suporte ao atendimento do estudante.
               </div>
             </div>

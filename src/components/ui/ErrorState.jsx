@@ -2,10 +2,10 @@ import { AlertTriangle, RefreshCw } from 'lucide-react';
 
 export default function ErrorState({ title = 'Não foi possível carregar os dados', message, onRetry }) {
   return (
-    <div className="card border-red-100 bg-red-50/60 p-6">
+    <div className="card border-red-100 bg-red-50/60 p-4">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-red-100 text-red-600">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-100 text-red-600">
             <AlertTriangle size={22} />
           </div>
           <div>

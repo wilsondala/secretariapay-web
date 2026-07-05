@@ -114,7 +114,7 @@ export default function ProofsPage() {
   if (error) return <ErrorState message={error} onRetry={load} />;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-end">
         <div>
           <h1 className="page-title">Comprovativos e validação DCR</h1>
@@ -127,7 +127,7 @@ export default function ProofsPage() {
       </div>
 
       {actionMessage && (
-        <div className={`rounded-2xl border p-4 text-sm font-semibold ${actionMessage.type === 'success' ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-red-200 bg-red-50 text-red-700'}`}>
+        <div className={`rounded-xl border p-4 text-sm font-semibold ${actionMessage.type === 'success' ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-red-200 bg-red-50 text-red-700'}`}>
           {actionMessage.text}
         </div>
       )}
@@ -139,9 +139,9 @@ export default function ProofsPage() {
         <StatCard title="Rejeitados" value={stats.rejected} description="Precisam correção" icon={XCircle} tone="danger" />
       </section>
 
-      <section className="grid gap-6 xl:grid-cols-[1.15fr_.85fr]">
+      <section className="grid gap-4 xl:grid-cols-[1.15fr_.85fr]">
         <div className="card overflow-hidden">
-          <div className="border-b border-slate-100 p-5">
+          <div className="border-b border-slate-100 p-4">
             <div className="flex flex-col gap-3 lg:flex-row">
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-3.5 text-slate-400" size={18} />
@@ -196,18 +196,18 @@ export default function ProofsPage() {
           )}
         </div>
 
-        <aside className="card p-5">
+        <aside className="card p-4">
           {selected ? (
-            <div className="space-y-5">
+            <div className="space-y-4">
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <p className="text-xs font-bold uppercase tracking-wide text-slate-400">Comprovativo selecionado</p>
-                  <h2 className="mt-1 text-xl font-black text-slate-900">{selected.proofCode}</h2>
+                  <h2 className="mt-1 text-base font-black text-slate-900">{selected.proofCode}</h2>
                 </div>
                 <StatusBadge status={selected.status} label={normalizeProofStatus(selected.status)} />
               </div>
 
-              <div className="rounded-2xl bg-slate-50 p-4 text-sm">
+              <div className="rounded-xl bg-slate-50 p-4 text-sm">
                 <p className="font-bold text-slate-900">{selected.studentName}</p>
                 <p className="text-slate-500">Matrícula: {selected.studentNumber}</p>
                 <p className="mt-2 text-slate-600">Cobrança: <b>{selected.chargeCode}</b></p>
@@ -239,7 +239,7 @@ export default function ProofsPage() {
                 </button>
               </div>
 
-              <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
+              <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
                 A aprovação deve representar validação manual da DCR. O recibo institucional só deve ser emitido após confirmação do pagamento.
               </div>
             </div>

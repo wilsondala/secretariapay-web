@@ -42,16 +42,16 @@ export default function DashboardPage() {
   const online = health?.status === 'UP';
 
   return (
-    <div className="space-y-6">
-      <section className="flex flex-col justify-between gap-4 rounded-3xl bg-imetro-navy p-6 text-white shadow-soft lg:flex-row lg:items-center">
+    <div className="space-y-4">
+      <section className="flex flex-col justify-between gap-4 rounded-2xl bg-imetro-navy p-4 text-white shadow-soft lg:flex-row lg:items-center">
         <div>
           <p className="text-sm font-bold uppercase tracking-[.25em] text-imetro-gold">Painel IMETRO/DCR</p>
-          <h1 className="mt-3 text-3xl font-black">{env.appName}</h1>
+          <h1 className="mt-3 text-base font-black">{env.appName}</h1>
           <p className="mt-2 max-w-3xl text-sm leading-6 text-white/70">
             Gestão de propinas, guias de pagamento, comprovativos, recibos e atendimento WhatsApp do {env.institutionName}.
           </p>
         </div>
-        <div className="rounded-2xl border border-white/10 bg-white/10 p-4">
+        <div className="rounded-xl border border-white/10 bg-white/10 p-4">
           <div className="flex items-center gap-3">
             <div className={`h-3 w-3 rounded-full ${online ? 'bg-emerald-400' : 'bg-red-400'}`} />
             <div>
@@ -69,11 +69,11 @@ export default function DashboardPage() {
         <StatCard title="Total em aberto" value={formatMoney(summary.openAmount)} description="Pendente + vencido" icon={RefreshCw} tone="warning" />
       </section>
 
-      <section className="grid gap-6 xl:grid-cols-[1.2fr_.8fr]">
-        <div className="card p-6">
+      <section className="grid gap-4 xl:grid-cols-[1.2fr_.8fr]">
+        <div className="card p-4">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <h2 className="text-lg font-black text-imetro-ink">Fluxo operacional da DCR</h2>
+              <h2 className="text-base font-black text-imetro-ink">Fluxo operacional da DCR</h2>
               <p className="mt-1 text-sm text-slate-500">Dados reais carregados dos endpoints de estudantes e cobranças.</p>
             </div>
             <button className="btn-secondary" onClick={load}>
@@ -90,8 +90,8 @@ export default function DashboardPage() {
               ['Validação manual', 'Comprovativos antes do recibo', FileCheck2],
               ['Restrição académica', `${summary.blockedStudents} estudantes bloqueados`, ShieldCheck],
             ].map(([title, description, Icon]) => (
-              <div key={title} className="flex gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-4">
-                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white text-imetro-navy shadow-sm">
+              <div key={title} className="flex gap-4 rounded-xl border border-slate-100 bg-slate-50 p-4">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-imetro-navy shadow-sm">
                   <Icon size={20} />
                 </div>
                 <div>
@@ -103,8 +103,8 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        <div className="card p-6">
-          <h2 className="text-lg font-black text-imetro-ink">Alertas para a DCR</h2>
+        <div className="card p-4">
+          <h2 className="text-base font-black text-imetro-ink">Alertas para a DCR</h2>
           <div className="mt-6 space-y-4">
             <Box title="Alunos sem contacto oficial" value={summary.noContactStudents} />
             <Box title="Mensalidades vencidas" value={summary.overdueCharges} />
@@ -118,9 +118,9 @@ export default function DashboardPage() {
 
 function Box({ title, value }) {
   return (
-    <div className="rounded-2xl bg-slate-50 p-4">
+    <div className="rounded-xl bg-slate-50 p-4">
       <p className="text-sm font-semibold text-slate-700">{title}</p>
-      <p className="mt-2 text-2xl font-black text-slate-900">{value}</p>
+      <p className="mt-2 text-base font-black text-slate-900">{value}</p>
     </div>
   );
 }

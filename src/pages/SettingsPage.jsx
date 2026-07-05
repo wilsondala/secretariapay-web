@@ -108,12 +108,12 @@ export default function SettingsPage() {
   const policy = data?.dcrPolicy || {};
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div className="flex flex-col justify-between gap-4 xl:flex-row xl:items-end">
         <div>
           <p className="text-xs font-black uppercase tracking-[.35em] text-imetro-gold">Configurações · IMETRO</p>
-          <h1 className="page-title mt-2">Parâmetros institucionais</h1>
-          <p className="page-subtitle">Regras da DCR, formas de pagamento, canais oficiais e segurança operacional.</p>
+          <h1 className="page-title mt-2">Configurações IMETRO/DCR</h1>
+          <p className="page-subtitle">Regras DCR, pagamentos, canais oficiais e segurança operacional.</p>
         </div>
         <div className="flex flex-wrap gap-2">
           <button className="btn-secondary" onClick={load}>
@@ -134,7 +134,7 @@ export default function SettingsPage() {
         <StatCard title="Canais" value={stats.channels} description="WhatsApp, e-mail, SMS e PDF" icon={MessageCircle} tone="gold" />
       </section>
 
-      <section className="grid gap-6 xl:grid-cols-[.9fr_1.1fr]">
+      <section className="grid gap-4 xl:grid-cols-[.9fr_1.1fr]">
         <InstitutionCard institution={institution} />
         <DcrPolicyCard policy={policy} />
       </section>
@@ -152,7 +152,7 @@ export default function SettingsPage() {
           ))}
         </div>
 
-        <div className="p-5">
+        <div className="p-4">
           {activeTab === 'dcr' && (
             <DcrTab
               policy={policy}
@@ -188,18 +188,18 @@ export default function SettingsPage() {
 
 function InstitutionCard({ institution }) {
   return (
-    <div className="card p-6">
+    <div className="card p-4">
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="text-xs font-black uppercase tracking-[.25em] text-slate-400">Instituição</p>
-          <h2 className="mt-2 text-2xl font-black text-imetro-ink">{safeText(institution.name, 'Instituto Superior Politécnico Metropolitano de Angola')}</h2>
+          <h2 className="mt-2 text-base font-black text-imetro-ink">{safeText(institution.name, 'Instituto Superior Politécnico Metropolitano de Angola')}</h2>
           <p className="mt-1 text-sm font-semibold text-imetro-gold">{safeText(institution.acronym || institution.shortName, 'IMETRO')}</p>
         </div>
-        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-imetro-navy text-white">
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-imetro-navy text-white">
           <Building2 size={25} />
         </div>
       </div>
-      <div className="mt-6 grid gap-3 text-sm sm:grid-cols-2">
+      <div className="mt-4 grid gap-2 text-xs sm:grid-cols-2">
         <Info label="Unidade" value={institution.unit || 'DCR — Divisão de Cobranças e Recebimentos'} />
         <Info label="Moeda" value={institution.currency || 'AOA'} />
         <Info label="E-mail DCR" value={institution.officialEmail || 'dcr_pay@imetroangola.com'} />
@@ -213,18 +213,18 @@ function InstitutionCard({ institution }) {
 
 function DcrPolicyCard({ policy }) {
   return (
-    <div className="card p-6">
+    <div className="card p-4">
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="text-xs font-black uppercase tracking-[.25em] text-slate-400">Política financeira</p>
-          <h2 className="mt-2 text-xl font-black text-imetro-ink">{policy.policyName || policy.policy_name || 'Política DCR IMETRO 2026'}</h2>
+          <h2 className="mt-2 text-base font-black text-imetro-ink">{policy.policyName || policy.policy_name || 'Política DCR IMETRO 2026'}</h2>
           <p className="mt-2 text-sm text-slate-500">Código: <strong className="text-imetro-ink">{policy.policyCode || policy.policy_code || 'IMETRO_DCR_2026'}</strong></p>
         </div>
-        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-600 text-white">
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-600 text-white">
           <CheckCircle2 size={25} />
         </div>
       </div>
-      <div className="mt-5 grid gap-3 sm:grid-cols-3">
+      <div className="mt-4 grid gap-2 sm:grid-cols-3">
         <Rule label="Sem multa" value={`Até dia ${policy.noPenaltyUntilDay || policy.no_penalty_until_day || 10}`} />
         <Rule label="1ª multa" value={`${policy.firstPenaltyPercent || policy.first_penalty_percent || 20}% após dia ${policy.firstPenaltyStartDay || policy.first_penalty_start_day || 11}`} tone="warning" />
         <Rule label="2ª multa" value={`${policy.secondPenaltyPercent || policy.second_penalty_percent || 30}% após dia ${policy.secondPenaltyStartDay || policy.second_penalty_start_day || 15}`} tone="danger" />
@@ -238,9 +238,9 @@ function DcrPolicyCard({ policy }) {
 
 function DcrTab({ policy, evalForm, setEvalForm, onEvaluate, evaluation, evaluating }) {
   return (
-    <div className="grid gap-6 xl:grid-cols-[1fr_.9fr]">
-      <div className="rounded-2xl bg-slate-50 p-5">
-        <h3 className="text-lg font-black text-imetro-ink">Regras operacionais da DCR</h3>
+    <div className="grid gap-4 xl:grid-cols-[1fr_.9fr]">
+      <div className="rounded-xl bg-slate-50 p-4">
+        <h3 className="text-base font-black text-imetro-ink">Regras operacionais da DCR</h3>
         <div className="mt-4 space-y-3 text-sm text-slate-600">
           <p>• A propina é considerada em janela normal até ao dia {policy.noPenaltyUntilDay || 10}.</p>
           <p>• Após o dia {policy.firstPenaltyStartDay || 11}, aplica-se multa de {policy.firstPenaltyPercent || 20}%.</p>
@@ -249,14 +249,14 @@ function DcrTab({ policy, evalForm, setEvalForm, onEvaluate, evaluation, evaluat
           <p>• Após {policy.delinquencyAfterDays || 90} dias, o estudante pode ser classificado como inadimplente.</p>
           <p>• O recibo institucional só é emitido após validação manual da DCR.</p>
         </div>
-        <div className="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm font-medium text-amber-800">
+        <div className="mt-5 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm font-medium text-amber-800">
           Regra de ouro: guias, recibos e informações financeiras devem ser enviados apenas para os contactos oficiais cadastrados no IMETRO.
         </div>
       </div>
 
-      <form onSubmit={onEvaluate} className="rounded-2xl border border-slate-200 bg-white p-5">
-        <h3 className="text-lg font-black text-imetro-ink">Simular regra DCR</h3>
-        <div className="mt-4 grid gap-4">
+      <form onSubmit={onEvaluate} className="rounded-xl border border-slate-200 bg-white p-4">
+        <h3 className="text-base font-black text-imetro-ink">Simular regra DCR</h3>
+        <div className="mt-3 grid gap-3">
           <label>
             <span className="label">Valor base</span>
             <input className="input" type="number" value={evalForm.baseAmount} onChange={(e) => setEvalForm((prev) => ({ ...prev, baseAmount: e.target.value }))} />
@@ -276,9 +276,9 @@ function DcrTab({ policy, evalForm, setEvalForm, onEvaluate, evaluation, evaluat
         </div>
 
         {evaluation && (
-          <div className="mt-5 rounded-2xl bg-imetro-navy p-5 text-white">
+          <div className="mt-5 rounded-xl bg-imetro-navy p-4 text-white">
             <p className="text-sm text-white/60">Resultado</p>
-            <p className="mt-2 text-2xl font-black">{formatMoney(evaluation.totalAmount || evaluation.total_amount, evaluation.currency || 'AOA')}</p>
+            <p className="mt-2 text-base font-black">{formatMoney(evaluation.totalAmount || evaluation.total_amount, evaluation.currency || 'AOA')}</p>
             <div className="mt-3 grid grid-cols-2 gap-3 text-sm">
               <span>Base: <strong>{formatMoney(evaluation.baseAmount || evaluation.base_amount, evaluation.currency || 'AOA')}</strong></span>
               <span>Multa: <strong>{formatMoney(evaluation.penaltyAmount || evaluation.penalty_amount, evaluation.currency || 'AOA')}</strong></span>
@@ -298,7 +298,7 @@ function ServicesTab({ services, search, setSearch }) {
     <div className="space-y-4">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <div>
-          <h3 className="text-lg font-black text-imetro-ink">Catálogo de serviços cobrados</h3>
+          <h3 className="text-base font-black text-imetro-ink">Catálogo de serviços cobrados</h3>
           <p className="text-sm text-slate-500">Serviços que podem gerar cobrança e exigem validação DCR.</p>
         </div>
         <div className="relative w-full lg:w-96">
@@ -307,7 +307,7 @@ function ServicesTab({ services, search, setSearch }) {
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-2xl border border-slate-200">
+      <div className="overflow-hidden rounded-xl border border-slate-200">
         <table className="w-full min-w-[760px] text-left text-sm">
           <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
             <tr>
@@ -341,16 +341,16 @@ function ServicesTab({ services, search, setSearch }) {
 
 function ChannelsTab({ channels, paymentMethods }) {
   return (
-    <div className="grid gap-6 xl:grid-cols-[.9fr_1.1fr]">
+    <div className="grid gap-4 xl:grid-cols-[.9fr_1.1fr]">
       <div>
-        <h3 className="text-lg font-black text-imetro-ink">Canais de comunicação</h3>
+        <h3 className="text-base font-black text-imetro-ink">Canais de comunicação</h3>
         <div className="mt-4 grid gap-3">
           {channels.map((channel) => {
             const Icon = channelIcons[channel.code] || MessageCircle;
             return (
-              <div key={channel.code || channel.name} className="rounded-2xl border border-slate-200 p-4">
+              <div key={channel.code || channel.name} className="rounded-xl border border-slate-200 p-4">
                 <div className="flex items-start gap-3">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-imetro-navy text-white"><Icon size={20} /></div>
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-imetro-navy text-white"><Icon size={20} /></div>
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
                       <h4 className="font-black text-imetro-ink">{channel.name}</h4>
@@ -367,10 +367,10 @@ function ChannelsTab({ channels, paymentMethods }) {
       </div>
 
       <div>
-        <h3 className="text-lg font-black text-imetro-ink">Formas de pagamento</h3>
+        <h3 className="text-base font-black text-imetro-ink">Formas de pagamento</h3>
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
           {paymentMethods.map((method) => (
-            <div key={method.code || method.name} className="rounded-2xl bg-slate-50 p-4">
+            <div key={method.code || method.name} className="rounded-xl bg-slate-50 p-4">
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <p className="font-black text-imetro-ink">{method.name}</p>
@@ -397,15 +397,15 @@ function SecurityTab() {
   ];
 
   return (
-    <div className="grid gap-6 xl:grid-cols-[.9fr_1.1fr]">
-      <div className="rounded-2xl bg-imetro-navy p-6 text-white">
+    <div className="grid gap-4 xl:grid-cols-[.9fr_1.1fr]">
+      <div className="rounded-xl bg-imetro-navy p-4 text-white">
         <ShieldCheck size={32} className="text-imetro-gold" />
-        <h3 className="mt-4 text-xl font-black">Regra de ouro SecretáriaPay</h3>
+        <h3 className="mt-4 text-base font-black">Regra de ouro SecretáriaPay</h3>
         <p className="mt-3 text-sm leading-6 text-white/75">O sistema deve proteger os dados financeiros dos estudantes e manter a DCR como autoridade final para validação de pagamento, emissão de recibo e regularização académica.</p>
       </div>
       <div className="space-y-3">
         {rules.map((rule) => (
-          <div key={rule} className="flex gap-3 rounded-2xl border border-slate-200 bg-white p-4">
+          <div key={rule} className="flex gap-3 rounded-xl border border-slate-200 bg-white p-4">
             <CheckCircle2 className="mt-0.5 shrink-0 text-emerald-600" size={20} />
             <p className="text-sm font-medium leading-6 text-slate-600">{rule}</p>
           </div>
@@ -417,7 +417,7 @@ function SecurityTab() {
 
 function Info({ label, value }) {
   return (
-    <div className="rounded-2xl bg-slate-50 p-4">
+    <div className="rounded-xl bg-slate-50 p-4">
       <p className="text-xs font-black uppercase tracking-wide text-slate-400">{label}</p>
       <p className="mt-1 break-words text-sm font-bold text-imetro-ink">{safeText(value)}</p>
     </div>
@@ -431,7 +431,7 @@ function Rule({ label, value, tone = 'navy' }) {
     danger: 'bg-red-50 text-red-700',
   };
   return (
-    <div className={`rounded-2xl p-4 ${classes[tone]}`}>
+    <div className={`rounded-xl p-4 ${classes[tone]}`}>
       <p className="text-xs font-black uppercase tracking-wide opacity-60">{label}</p>
       <p className="mt-1 text-sm font-black">{value}</p>
     </div>
