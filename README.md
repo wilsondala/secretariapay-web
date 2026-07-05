@@ -1,49 +1,65 @@
-# SecretáriaPay Académico — Frontend Fase 3
+# SecretáriaPay Web — Painel IMETRO/DCR
 
-Painel institucional IMETRO/DCR em React + JavaScript + Tailwind.
+Frontend em React + JavaScript + Tailwind CSS para o SecretáriaPay Académico.
 
-## Fase 3
+## Fases incluídas
 
-Inclui as telas reais para:
+- Fase 1: base institucional IMETRO/DCR, login, layout, sidebar, topbar, dashboard e proteção de rotas.
+- Fase 2: telas reais de Estudantes e Cobranças ligadas à API.
+- Fase 3: Comprovativos e Recibos com validação manual DCR.
+- Fase 4: WhatsApp e histórico de mensagens.
 
-- `/proofs` — Comprovativos e validação manual da DCR
-- `/receipts` — Recibos institucionais emitidos após validação
-
-Também mantém as fases anteriores:
-
-- Login
-- Layout protegido
-- Dashboard
-- Estudantes
-- Cobranças/propinas
-
-## Endpoints usados
-
-A tela de comprovativos tenta os endpoints compatíveis:
-
-- `GET /api/v1/payment-proofs`
-- `GET /api/v1/payment-proofs/status/{status}`
-- `PATCH /api/v1/payment-proofs/{id}/approve`
-- `PATCH /api/v1/payment-proofs/{id}/reject`
-
-A tela de recibos tenta:
-
-- `GET /api/v1/receipts`
-- `GET /api/v1/receipts/student/{studentId}`
-- `GET /api/v1/receipts/{id}`
-
-Caso o backend use prefixo alternativo, os services têm fallback para rotas equivalentes.
-
-## Rodar local
+## Rodar localmente
 
 ```powershell
-cd C:\Users\dalaw\secretariapay-web
 npm install
+copy .env.example .env
 npm run dev
 ```
 
-## Build
+Acesse:
 
-```powershell
-npm run build
+```text
+http://localhost:5173
 ```
+
+## API
+
+O `.env.example` aponta para:
+
+```env
+VITE_API_BASE_URL=https://secretariapay-api.paixaoangola.com
+```
+
+## Fase 4 — WhatsApp
+
+Nova rota:
+
+```text
+/whatsapp
+```
+
+A tela mostra:
+
+- mensagens enviadas por WhatsApp, e-mail ou SMS;
+- guias de pagamento enviadas;
+- falhas de envio;
+- estudantes sem contacto oficial;
+- provider message id;
+- abertura rápida do PDF da guia;
+- sessões de atendimento do robô.
+
+Os services tentam automaticamente endpoints compatíveis:
+
+```text
+GET /api/v1/admin/whatsapp/messages
+GET /api/v1/secretariapay/whatsapp/messages
+GET /api/v1/secretariapay/messages
+GET /api/v1/whatsapp/messages
+
+GET /api/v1/admin/whatsapp/sessions
+GET /api/v1/secretariapay/whatsapp/sessions
+GET /api/v1/whatsapp/sessions
+```
+
+Se o endpoint ainda não estiver disponível no backend, a tela abre com dados demonstrativos e mostra aviso institucional para criar o endpoint real.
