@@ -1,36 +1,49 @@
-# SecretáriaPay Web — Fase Frontend 2
+# SecretáriaPay Académico — Frontend Fase 3
 
-Painel institucional do SecretáriaPay Académico / IMETRO.
+Painel institucional IMETRO/DCR em React + JavaScript + Tailwind.
 
-## Stack
-React + Vite + JavaScript + Tailwind CSS + Axios + React Router.
+## Fase 3
 
-## Instalar
-```bash
-cp .env.example .env
+Inclui as telas reais para:
+
+- `/proofs` — Comprovativos e validação manual da DCR
+- `/receipts` — Recibos institucionais emitidos após validação
+
+Também mantém as fases anteriores:
+
+- Login
+- Layout protegido
+- Dashboard
+- Estudantes
+- Cobranças/propinas
+
+## Endpoints usados
+
+A tela de comprovativos tenta os endpoints compatíveis:
+
+- `GET /api/v1/payment-proofs`
+- `GET /api/v1/payment-proofs/status/{status}`
+- `PATCH /api/v1/payment-proofs/{id}/approve`
+- `PATCH /api/v1/payment-proofs/{id}/reject`
+
+A tela de recibos tenta:
+
+- `GET /api/v1/receipts`
+- `GET /api/v1/receipts/student/{studentId}`
+- `GET /api/v1/receipts/{id}`
+
+Caso o backend use prefixo alternativo, os services têm fallback para rotas equivalentes.
+
+## Rodar local
+
+```powershell
+cd C:\Users\dalaw\secretariapay-web
 npm install
 npm run dev
 ```
 
-## API
-O frontend usa:
+## Build
 
-- `POST /api/v1/auth/login`
-- `GET /api/v1/students`
-- `GET /api/v1/students/{id}`
-- `GET /api/v1/students/number/{studentNumber}`
-- `GET /api/v1/charges`
-- `GET /api/v1/charges/student/{studentId}`
-- `GET /api/v1/public/payment-guides/{chargeCode}/pdf`
-- `POST /api/v1/secretariapay/financial-flow/charges/{chargeId}/send-guide`
-- `POST /api/v1/imetro/tuition-charges/generate`
-- `POST /api/v1/imetro/tuition-charges/send-guides`
-
-## Entregue nesta fase
-
-- Dashboard com dados reais de estudantes e cobranças.
-- Tela real de estudantes com busca, filtros, detalhe e resumo financeiro.
-- Tela real de cobranças com busca, filtros, detalhe, guia PDF e envio de guia.
-- Serviços Axios separados para estudantes, cobranças e dashboard.
-- Estados de loading, erro e vazio.
-- Componentes de status e formatação institucional IMETRO/DCR.
+```powershell
+npm run build
+```

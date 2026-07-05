@@ -5,6 +5,8 @@ import LoginPage from './pages/LoginPage.jsx';
 import DashboardPage from './pages/DashboardPage.jsx';
 import StudentsPage from './pages/StudentsPage.jsx';
 import ChargesPage from './pages/ChargesPage.jsx';
+import ProofsPage from './pages/ProofsPage.jsx';
+import ReceiptsPage from './pages/ReceiptsPage.jsx';
 import PlaceholderPage from './pages/PlaceholderPage.jsx';
 import NotFoundPage from './pages/NotFoundPage.jsx';
 
@@ -18,8 +20,8 @@ export default function App() {
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/students" element={<StudentsPage />} />
           <Route path="/charges" element={<ChargesPage />} />
-          <Route path="/proofs" element={<PlaceholderPage title="Comprovativos" subtitle="Validação manual da DCR antes do recibo." />} />
-          <Route path="/receipts" element={<PlaceholderPage title="Recibos" subtitle="Recibos institucionais emitidos após validação." />} />
+          <Route path="/proofs" element={<ProofsPage />} />
+          <Route path="/receipts" element={<ReceiptsPage />} />
           <Route path="/whatsapp" element={<PlaceholderPage title="WhatsApp" subtitle="Mensagens, sessões, guias enviadas e falhas." />} />
           <Route path="/imports" element={<PlaceholderPage title="Importações WebSchool" subtitle="Lotes, linhas e sincronização académica." />} />
           <Route path="/settings" element={<PlaceholderPage title="Configurações" subtitle="Regras DCR, canais e parâmetros institucionais." />} />

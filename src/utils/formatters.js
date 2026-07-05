@@ -115,3 +115,86 @@ export function normalizeCharge(charge) {
     studentNumber: getStudentNumber(student),
   };
 }
+
+export function normalizeProofStatus(status) {
+  const value = safeText(status, 'PENDING_REVIEW').toUpperCase();
+  const map = {
+    PENDING: 'Pendente',
+    PENDING_REVIEW: 'Pendente DCR',
+    UNDER_REVIEW: 'Em análise',
+    APPROVED: 'Aprovado',
+    REJECTED: 'Rejeitado',
+    VALIDATED: 'Validado',
+    PAID: 'Pago',
+  };
+  return map[value] || value;
+}
+
+export function normalizeReceiptStatus(status) {
+  const value = safeText(status, 'ISSUED').toUpperCase();
+  const map = {
+    ISSUED: 'Emitido',
+    ACTIVE: 'Ativo',
+    CANCELLED: 'Cancelado',
+    CANCELED: 'Cancelado',
+    SENT: 'Enviado',
+  };
+  return map[value] || value;
+}
+
+export function normalizeDateTime(value) {
+  if (!value) return '-';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return String(value);
+  return new Intl.DateTimeFormat('pt-AO', {
+    dateStyle: 'short',
+    timeStyle: 'short',
+  }).format(date);
+}
+
+export function normalizePaymentProof(proof) {
+  const charge = proof?.charge || {};
+  const student = proof?.student || charge?.student || {};
+  return {
+    ...proof,
+    id: proof?.id,
+    proofCode: proof?.proofCode || proof?.proof_code || proof?.code || proof?.id || '-',
+    chargeId: proof?.chargeId || proof?.charge_id || charge?.id,
+    chargeCode: proof?.chargeCode || proof?.charge_code || charge?.chargeCode || charge?.charge_code || '-',
+    receiptId: proof?.receiptId || proof?.receipt_id,
+    receiptCode: proof?.receiptCode || proof?.receipt_code,
+    status: proof?.status || 'PENDING_REVIEW',
+    amount: Number(proof?.amount || proof?.paidAmount || proof?.paid_amount || charge?.totalAmount || charge?.total_amount || 0),
+    currency: proof?.currency || charge?.currency || 'AOA',
+    paymentMethod: proof?.paymentMethod || proof?.payment_method || proof?.method || '-',
+    bankName: proof?.bankName || proof?.bank_name || proof?.bank || '-',
+    transactionReference: proof?.transactionReference || proof?.transaction_reference || proof?.reference || proof?.externalReference || '-',
+    fileUrl: proof?.fileUrl || proof?.file_url || proof?.attachmentUrl || proof?.attachment_url || proof?.documentUrl,
+    fileName: proof?.fileName || proof?.file_name || proof?.attachmentName || 'Comprovativo',
+    createdAt: proof?.createdAt || proof?.created_at || proof?.submittedAt || proof?.submitted_at,
+    validatedAt: proof?.validatedAt || proof?.validated_at,
+    validationNotes: proof?.validationNotes || proof?.validation_notes || proof?.notes || '',
+    student,
+    studentName: getStudentName(student),
+    studentNumber: getStudentNumber(student),
+  };
+}
+
+export function normalizeReceipt(receipt) {
+  const charge = receipt?.charge || {};
+  const student = receipt?.student || charge?.student || {};
+  return {
+    ...receipt,
+    id: receipt?.id,
+    receiptCode: receipt?.receiptCode || receipt?.receipt_code || receipt?.code || '-',
+    chargeCode: receipt?.chargeCode || receipt?.charge_code || charge?.chargeCode || charge?.charge_code || '-',
+    status: receipt?.status || 'ISSUED',
+    amount: Number(receipt?.amount || receipt?.totalAmount || receipt?.total_amount || charge?.totalAmount || charge?.total_amount || 0),
+    currency: receipt?.currency || charge?.currency || 'AOA',
+    paymentMethod: receipt?.paymentMethod || receipt?.payment_method || receipt?.method || '-',
+    issuedAt: receipt?.issuedAt || receipt?.issued_at || receipt?.createdAt || receipt?.created_at,
+    student,
+    studentName: getStudentName(student),
+    studentNumber: getStudentNumber(student),
+  };
+}
