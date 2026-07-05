@@ -10,6 +10,8 @@ import ReceiptsPage from './pages/ReceiptsPage.jsx';
 import WhatsappPage from './pages/WhatsappPage.jsx';
 import ImportsPage from './pages/ImportsPage.jsx';
 import SettingsPage from './pages/SettingsPage.jsx';
+import DemoChecklistPage from './pages/DemoChecklistPage.jsx';
+import AboutPage from './pages/AboutPage.jsx';
 import PlaceholderPage from './pages/PlaceholderPage.jsx';
 import NotFoundPage from './pages/NotFoundPage.jsx';
 
@@ -28,6 +30,8 @@ export default function App() {
           <Route path="/whatsapp" element={<WhatsappPage />} />
           <Route path="/imports" element={<ImportsPage />} />
           <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/demo" element={<DemoChecklistPage />} />
+          <Route path="/about" element={<AboutPage />} />
         </Route>
       </Route>
       <Route path="*" element={<NotFoundPage />} />
