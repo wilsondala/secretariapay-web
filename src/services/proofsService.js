@@ -1,4 +1,5 @@
 import api from './api.js';
+import { getStoredSession } from './authService.js';
 
 const PROOF_ENDPOINT_CANDIDATES = [
   '/api/v1/payment-proofs',
@@ -30,6 +31,25 @@ function asList(data) {
   return [];
 }
 
+function getCurrentUserId() {
+  const session = getStoredSession();
+  const user = session?.user || {};
+
+  return user.id || user.userId || user.uuid || user.sub || null;
+}
+
+function buildReviewPayload(payload = {}, fallbackNote = '') {
+  const reviewNote = payload.reviewNote || payload.notes || payload.reason || fallbackNote;
+  const reviewedByUserId = payload.reviewedByUserId || payload.reviewerId || payload.userId || getCurrentUserId();
+  const body = { reviewNote };
+
+  if (reviewedByUserId) {
+    body.reviewedByUserId = reviewedByUserId;
+  }
+
+  return body;
+}
+
 export async function listPaymentProofs() {
   const data = await firstSuccessful((endpoint) => api.get(endpoint));
   return asList(data);
@@ -41,11 +61,17 @@ export async function listPaymentProofsByStatus(status) {
 }
 
 export async function approvePaymentProof(id, payload = {}) {
-  return firstSuccessful((endpoint) => api.patch(`${endpoint}/${id}/approve`, payload));
+  return firstSuccessful((endpoint) => api.patch(
+    `${endpoint}/${id}/approve`,
+    buildReviewPayload(payload, 'Aprovado pela DCR no painel.'),
+  ));
 }
 
 export async function rejectPaymentProof(id, payload = {}) {
-  return firstSuccessful((endpoint) => api.patch(`${endpoint}/${id}/reject`, payload));
+  return firstSuccessful((endpoint) => api.patch(
+    `${endpoint}/${id}/reject`,
+    buildReviewPayload(payload, 'Comprovativo rejeitado pela DCR.'),
+  ));
 }
 
 export async function markPaymentProofUnderReview(id, payload = {}) {
