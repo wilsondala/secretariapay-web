@@ -1,16 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import {
-  AlertTriangle,
-  Banknote,
-  CalendarDays,
-  Eye,
-  FileText,
-  RefreshCw,
-  Search,
-  Send,
-  ShieldCheck,
-  WalletCards,
-} from 'lucide-react';
+import { Banknote, CalendarDays, Eye, FileText, RefreshCw, Search, Send, WalletCards } from 'lucide-react';
 import StatCard from '../components/StatCard.jsx';
 import EmptyState from '../components/ui/EmptyState.jsx';
 import ErrorState from '../components/ui/ErrorState.jsx';
@@ -94,15 +83,12 @@ export default function ChargesPage() {
     const open = charges.filter(chargeIsOpen);
     const overdue = charges.filter(chargeIsOverdue);
     const pending = charges.filter((charge) => String(charge.status).toUpperCase() === 'PENDING');
-    const paid = charges.filter((charge) => String(charge.status).toUpperCase() === 'PAID');
     return {
       total: charges.length,
       pending: pending.length,
-      paid: paid.length,
       overdue: overdue.length,
       openAmount: open.reduce((sum, charge) => sum + Number(charge.totalAmount || 0), 0),
       overdueAmount: overdue.reduce((sum, charge) => sum + Number(charge.totalAmount || 0), 0),
-      paidAmount: paid.reduce((sum, charge) => sum + Number(charge.totalAmount || 0), 0),
     };
   }, [charges]);
 
@@ -176,84 +162,73 @@ export default function ChargesPage() {
   if (error) return <ErrorState message={error} onRetry={load} />;
 
   return (
-    <div className="space-y-5 overflow-hidden">
-      <section className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#061936] via-[#08285A] to-[#061936] p-5 text-white shadow-[0_24px_70px_rgba(7,20,45,.16)] sm:p-7">
-        <div className="pointer-events-none absolute -right-20 -top-24 h-72 w-72 rounded-full bg-emerald-400/18 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-28 left-20 h-56 w-56 rounded-full bg-imetro-gold/20 blur-3xl" />
-        <div className="relative flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
-          <div className="min-w-0">
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-[11px] font-black uppercase tracking-[.18em] text-white/80">
-              <WalletCards size={14} />
-              Gestão de propinas e guias
-            </div>
-            <h1 className="mt-4 text-2xl font-black tracking-tight sm:text-4xl">Cobranças e propinas</h1>
-            <p className="mt-3 max-w-3xl text-sm font-medium leading-6 text-white/78 sm:text-base">
-              Consulta real de cobranças, guias PDF, multas DCR, vencimentos e envio institucional por WhatsApp.
-            </p>
-          </div>
-
-          <div className="flex flex-wrap gap-2">
-            <button className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-sm font-black text-white transition hover:bg-white/15" onClick={load} disabled={working}>
-              <RefreshCw size={16} />
-              Atualizar
-            </button>
-            <button className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-sm font-black text-white transition hover:bg-white/15" onClick={handleGenerateMonth} disabled={working}>
-              <CalendarDays size={16} />
-              Gerar propinas teste
-            </button>
-            <button className="inline-flex items-center justify-center gap-2 rounded-2xl bg-emerald-500 px-4 py-3 text-sm font-black text-white shadow-[0_16px_38px_rgba(16,185,129,.25)] transition hover:bg-emerald-600" onClick={handleSendBatch} disabled={working}>
-              <Send size={16} />
-              Enviar guias
-            </button>
-          </div>
+    <div className="space-y-4 overflow-hidden">
+      <div className="flex flex-col justify-between gap-3 xl:flex-row xl:items-end">
+        <div className="min-w-0">
+          <h1 className="page-title">Cobranças e propinas</h1>
+          <p className="page-subtitle">Consulta real de cobranças, guias PDF, multas DCR e envio por WhatsApp.</p>
         </div>
-      </section>
+        <div className="flex flex-wrap gap-2">
+          <button className="btn-secondary" onClick={load} disabled={working}>
+            <RefreshCw size={15} className="mr-2" />
+            Atualizar
+          </button>
+          <button className="btn-secondary" onClick={handleGenerateMonth} disabled={working}>
+            <CalendarDays size={15} className="mr-2" />
+            Gerar propinas teste
+          </button>
+          <button className="btn-primary" onClick={handleSendBatch} disabled={working}>
+            <Send size={15} className="mr-2" />
+            Enviar guias do mês
+          </button>
+        </div>
+      </div>
 
       {actionMessage && (
-        <div className={`rounded-2xl border p-4 text-sm font-black ${actionMessage.type === 'success' ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-red-200 bg-red-50 text-red-700'}`}>
+        <div className={`rounded-xl border p-3 text-xs font-semibold ${actionMessage.type === 'success' ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-red-200 bg-red-50 text-red-700'}`}>
           {actionMessage.text}
         </div>
       )}
 
-      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard title="Total de cobranças" value={stats.total} description="Registos financeiros" icon={Banknote} />
+      <section className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+        <StatCard title="Total de cobranças" value={stats.total} description="Registros financeiros" icon={Banknote} />
         <StatCard title="Pendentes" value={stats.pending} description="Aguardando pagamento" icon={WalletCards} tone="gold" />
         <StatCard title="Vencidas" value={stats.overdue} description={formatMoney(stats.overdueAmount)} icon={CalendarDays} tone="danger" />
         <StatCard title="Total em aberto" value={formatMoney(stats.openAmount)} description="Pendente + vencido" icon={FileText} tone="warning" />
       </section>
 
-      <section className="grid min-w-0 gap-5 xl:grid-cols-[minmax(0,1.15fr)_minmax(360px,.85fr)]">
-        <div className="card-premium min-w-0 overflow-hidden">
-          <div className="border-b border-slate-100/80 bg-white/80 p-4 backdrop-blur">
-            <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_170px_150px]">
+      <section className="grid min-w-0 gap-4 xl:grid-cols-[minmax(0,1.1fr)_minmax(340px,.72fr)]">
+        <div className="card min-w-0 overflow-hidden">
+          <div className="border-b border-slate-100 p-3">
+            <div className="grid gap-2 lg:grid-cols-[minmax(0,1fr)_160px_145px]">
               <div className="relative min-w-0">
-                <Search className="absolute left-4 top-3.5 text-slate-400" size={18} />
+                <Search className="absolute left-3 top-3 text-slate-400" size={16} />
                 <input
-                  className="input-premium pl-11"
+                  className="input pl-9"
                   placeholder="Buscar por código, estudante, matrícula ou mês..."
                   value={search}
                   onChange={(event) => setSearch(event.target.value)}
                 />
               </div>
-              <select className="input-premium" value={status} onChange={(event) => setStatus(event.target.value)}>
+              <select className="input" value={status} onChange={(event) => setStatus(event.target.value)}>
                 <option value="ALL">Todos estados</option>
                 <option value="PENDING">Pendente</option>
                 <option value="OVERDUE">Vencida</option>
                 <option value="PAID">Pago</option>
                 <option value="CANCELLED">Cancelado</option>
               </select>
-              <select className="input-premium" value={month} onChange={(event) => setMonth(event.target.value)}>
+              <select className="input" value={month} onChange={(event) => setMonth(event.target.value)}>
                 <option value="ALL">Todos meses</option>
                 {months.map((item) => <option key={item} value={item}>{item}</option>)}
               </select>
             </div>
           </div>
 
-          <div className="max-h-[68vh] overflow-y-auto p-3 sm:p-4">
+          <div className="max-h-[62vh] overflow-y-auto p-3">
             {filtered.length === 0 ? (
               <EmptyState />
             ) : (
-              <div className="space-y-3">
+              <div className="space-y-2">
                 {filtered.map((charge) => (
                   <ChargeListItem
                     key={charge.id || charge.chargeCode}
@@ -267,17 +242,17 @@ export default function ChargesPage() {
           </div>
         </div>
 
-        <aside className="card-premium min-w-0 p-4 xl:sticky xl:top-24 xl:self-start">
+        <aside className="card min-w-0 p-3 xl:sticky xl:top-20 xl:self-start">
           {!selected ? (
             <EmptyState title="Selecione uma cobrança" message="Clique numa cobrança para ver detalhes e ações." />
           ) : (
-            <div className="space-y-4">
-              <div className="rounded-3xl border border-slate-100 bg-gradient-to-br from-slate-50 via-white to-blue-50/60 p-4">
+            <div className="space-y-3">
+              <div className="min-w-0">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
                     <p className="text-[10px] font-black uppercase tracking-[.18em] text-imetro-gold">Detalhe da cobrança</p>
-                    <h2 className="mt-2 break-words text-base font-black leading-6 text-slate-950">{selected.chargeCode}</h2>
-                    <p className="mt-2 text-xs font-semibold leading-5 text-slate-500">{selected.description}</p>
+                    <h2 className="mt-1 break-words text-sm font-black text-slate-900">{selected.chargeCode}</h2>
+                    <p className="mt-1 text-xs leading-5 text-slate-500">{selected.description}</p>
                   </div>
                   <StatusBadge status={chargeIsOverdue(selected) ? 'OVERDUE' : selected.status} />
                 </div>
@@ -289,13 +264,7 @@ export default function ChargesPage() {
                 <Mini label="Total" value={formatMoney(selected.totalAmount, selected.currency)} strong />
               </div>
 
-              <div className="rounded-3xl border border-slate-100 bg-white p-4 text-sm shadow-[0_14px_38px_rgba(15,23,42,.04)]">
-                <div className="mb-3 flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-imetro-navy text-white shadow-lg">
-                    <ShieldCheck size={18} />
-                  </div>
-                  <p className="font-black text-slate-900">Informações operacionais</p>
-                </div>
+              <div className="rounded-xl bg-slate-50 p-3 text-xs">
                 <Line label="Estudante" value={selected.studentName} />
                 <Line label="Matrícula" value={selected.studentNumber} />
                 <Line label="Referência" value={selected.referenceMonth} />
@@ -314,16 +283,9 @@ export default function ChargesPage() {
                 </button>
               </div>
 
-              <div className="rounded-3xl border border-amber-100 bg-gradient-to-br from-amber-50 via-white to-orange-50 p-4 text-sm text-imetro-navy">
-                <div className="flex gap-3">
-                  <AlertTriangle className="mt-0.5 shrink-0 text-amber-600" size={19} />
-                  <div>
-                    <p className="font-black">Regra operacional</p>
-                    <p className="mt-1 text-xs font-semibold leading-5 text-slate-600">
-                      A guia é enviada apenas para contacto oficial do estudante. O recibo só deve ser emitido após validação manual da DCR.
-                    </p>
-                  </div>
-                </div>
+              <div className="rounded-xl bg-imetro-goldSoft p-3 text-xs text-imetro-navy">
+                <p className="font-black">Regra operacional</p>
+                <p className="mt-1 leading-5">A guia é enviada apenas para contacto oficial do estudante. O recibo só deve ser emitido após validação manual da DCR.</p>
               </div>
             </div>
           )}
@@ -340,34 +302,32 @@ function ChargeListItem({ charge, active, onClick }) {
     <button
       type="button"
       onClick={onClick}
-      className={`group w-full rounded-3xl border bg-white p-4 text-left shadow-[0_14px_38px_rgba(15,23,42,.05)] transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_22px_60px_rgba(15,23,42,.09)] ${
-        active ? 'border-blue-500 ring-4 ring-blue-500/10' : 'border-slate-100 hover:border-blue-200'
-      }`}
+      className={`w-full rounded-xl border p-3 text-left transition ${active ? 'border-imetro-gold bg-imetro-goldSoft/70 shadow-sm' : 'border-slate-100 bg-white hover:border-imetro-gold/50 hover:bg-slate-50'}`}
     >
-      <div className="grid min-w-0 gap-4 lg:grid-cols-[minmax(0,1fr)_220px] lg:items-center">
-        <div className="min-w-0">
+      <div className="flex min-w-0 flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
+        <div className="min-w-0 flex-1">
           <div className="flex min-w-0 flex-wrap items-center gap-2">
-            <p className="max-w-full break-words text-sm font-black text-slate-950">{charge.chargeCode}</p>
+            <p className="max-w-full break-words text-xs font-black text-slate-950 lg:text-[13px]">{charge.chargeCode}</p>
             <StatusBadge status={overdue ? 'OVERDUE' : charge.status} />
           </div>
-          <p className="mt-2 line-clamp-2 text-xs font-semibold leading-5 text-slate-500">{charge.description}</p>
-          <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-500">
-            <span className="font-black text-slate-700">{charge.studentName || 'Estudante não informado'}</span>
+          <p className="mt-1 line-clamp-1 text-[11px] leading-4 text-slate-500">{charge.description}</p>
+          <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-slate-500">
+            <span className="font-semibold text-slate-700">{charge.studentName || 'Estudante não informado'}</span>
             <span>{charge.studentNumber || '-'}</span>
             <span>{charge.referenceMonth || '-'}</span>
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-2">
-          <div className="rounded-2xl bg-slate-50 px-3 py-2.5">
-            <p className="text-[10px] font-black uppercase tracking-wide text-slate-400">Total</p>
-            <p className="mt-1 break-words text-sm font-black text-slate-950">{formatMoney(charge.totalAmount, charge.currency)}</p>
-            {charge.fineAmount > 0 && <p className="mt-1 text-[10px] font-black text-red-600">Multa: {formatMoney(charge.fineAmount, charge.currency)}</p>}
+        <div className="grid grid-cols-2 gap-2 lg:w-[210px] lg:shrink-0">
+          <div className="rounded-lg bg-slate-50 px-2 py-1.5">
+            <p className="text-[10px] font-bold uppercase text-slate-400">Total</p>
+            <p className="text-xs font-black text-slate-950">{formatMoney(charge.totalAmount, charge.currency)}</p>
+            {charge.fineAmount > 0 && <p className="mt-0.5 text-[10px] font-bold text-red-600">Multa: {formatMoney(charge.fineAmount, charge.currency)}</p>}
           </div>
-          <div className="rounded-2xl bg-slate-50 px-3 py-2.5">
-            <p className="text-[10px] font-black uppercase tracking-wide text-slate-400">Vencimento</p>
-            <p className="mt-1 text-sm font-black text-slate-950">{formatDate(charge.dueDate)}</p>
-            <p className="mt-1 text-[10px] font-semibold text-slate-500">{charge.referenceMonth || '-'}</p>
+          <div className="rounded-lg bg-slate-50 px-2 py-1.5">
+            <p className="text-[10px] font-bold uppercase text-slate-400">Vencimento</p>
+            <p className="text-xs font-black text-slate-950">{formatDate(charge.dueDate)}</p>
+            <p className="mt-0.5 text-[10px] text-slate-500">{charge.referenceMonth || '-'}</p>
           </div>
         </div>
       </div>
@@ -377,16 +337,16 @@ function ChargeListItem({ charge, active, onClick }) {
 
 function Mini({ label, value, strong, danger }) {
   return (
-    <div className={`min-w-0 rounded-2xl border p-3 ${danger ? 'border-red-100 bg-red-50 text-red-700' : strong ? 'border-blue-100 bg-blue-50 text-imetro-navy' : 'border-slate-100 bg-slate-50 text-slate-900'}`}>
-      <p className="text-[10px] font-black uppercase tracking-wide opacity-60">{label}</p>
-      <p className={`mt-1 break-words text-sm ${strong ? 'font-black' : 'font-bold'}`}>{value}</p>
+    <div className="min-w-0 rounded-xl bg-slate-50 p-2.5">
+      <p className="text-[10px] font-bold uppercase tracking-wide text-slate-400">{label}</p>
+      <p className={`mt-1 break-words text-xs ${strong ? 'font-black' : 'font-bold'} ${danger ? 'text-red-600' : 'text-slate-900'}`}>{value}</p>
     </div>
   );
 }
 
 function Line({ label, value }) {
   return (
-    <div className="flex items-start justify-between gap-3 border-b border-slate-100 py-2 first:pt-0 last:border-b-0 last:pb-0">
+    <div className="flex items-start justify-between gap-3 border-b border-slate-200/70 py-2 first:pt-0 last:border-b-0 last:pb-0">
       <span className="shrink-0 font-semibold text-slate-500">{label}</span>
       <span className="min-w-0 break-words text-right font-bold text-slate-800">{value}</span>
     </div>

@@ -34,10 +34,10 @@ function NavItem({ label, path, Icon, onClose }) {
       onClick={onClose}
       className={({ isActive }) =>
         [
-          'group flex items-center gap-3 rounded-2xl px-3 py-3 text-[15px] font-black transition duration-200',
+          'group flex items-center gap-3 rounded-lg px-3 py-3 text-[15px] font-semibold transition',
           isActive
-            ? 'bg-imetro-gold text-imetro-navy shadow-[0_16px_34px_rgba(215,169,40,.34)]'
-            : 'text-white/82 hover:bg-white/10 hover:text-white',
+            ? 'bg-imetro-gold text-imetro-navy shadow-[0_12px_28px_rgba(215,169,40,.32)]'
+            : 'text-white/88 hover:bg-white/10 hover:text-white',
         ].join(' ')
       }
     >
@@ -49,20 +49,16 @@ function NavItem({ label, path, Icon, onClose }) {
 
 function Content({ onClose }) {
   return (
-    <div className="flex h-full flex-col overflow-hidden bg-gradient-to-b from-[#061936] via-[#062044] to-[#031126] text-white">
-      <div className="relative px-5 pb-7 pt-8">
-        <div className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-blue-400/20 blur-3xl" />
-        <div className="relative flex items-start gap-3">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/10 text-lg font-black shadow-[0_14px_34px_rgba(0,0,0,.18)]">
-            SP
-          </div>
+    <div className="flex h-full flex-col bg-gradient-to-b from-[#061936] via-[#062044] to-[#031126] text-white">
+      <div className="px-5 pb-7 pt-8">
+        <div className="flex items-start gap-3">
           <div className="min-w-0 flex-1">
             <p className="text-xl font-black leading-tight tracking-tight">{env.appName}</p>
-            <p className="mt-2 max-w-[210px] text-sm font-medium leading-6 text-white/72">
+            <p className="mt-2 max-w-[210px] text-sm font-medium leading-6 text-white/82">
               Sistema de Gestão Académica e Financeira
             </p>
           </div>
-          <button className="rounded-2xl p-2 text-white/70 hover:bg-white/10 lg:hidden" onClick={onClose}>
+          <button className="rounded-lg p-2 text-white/70 hover:bg-white/10 lg:hidden" onClick={onClose}>
             <X size={18} />
           </button>
         </div>
@@ -75,10 +71,10 @@ function Content({ onClose }) {
       </nav>
 
       <div className="px-4 pb-5">
-        <div className="rounded-3xl border border-white/10 bg-white/[.07] p-4 shadow-[0_18px_42px_rgba(0,0,0,.18)]">
+        <div className="rounded-xl border border-white/10 bg-white/[.06] p-4 shadow-[0_18px_42px_rgba(0,0,0,.18)]">
           <CalendarDays size={18} className="mb-3 text-imetro-gold" />
-          <p className="text-[12px] font-semibold leading-5 text-white/74">{env.institutionName}</p>
-          <p className="mt-3 text-xs font-black text-white">v{appInfo.version} · {appInfo.environmentLabel}</p>
+          <p className="text-[12px] leading-5 text-white/78">{env.institutionName}</p>
+          <p className="mt-3 text-xs font-bold text-white">v{appInfo.version} · {appInfo.environmentLabel}</p>
         </div>
       </div>
     </div>
@@ -93,7 +89,7 @@ export default function Sidebar({ open, onClose }) {
       </aside>
       {open && (
         <div className="fixed inset-0 z-50 lg:hidden">
-          <button className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onClick={onClose} />
+          <button className="absolute inset-0 bg-slate-900/50" onClick={onClose} />
           <aside className="relative h-full w-[280px] max-w-[86vw]">
             <Content onClose={onClose} />
           </aside>
