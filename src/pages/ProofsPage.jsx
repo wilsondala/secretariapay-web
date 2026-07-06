@@ -15,7 +15,7 @@ import EmptyState from '../components/ui/EmptyState.jsx';
 import ErrorState from '../components/ui/ErrorState.jsx';
 import LoadingState from '../components/ui/LoadingState.jsx';
 import StatusBadge from '../components/ui/StatusBadge.jsx';
-import { approvePaymentProof, listPaymentProofs, rejectPaymentProof } from '../services/proofsService.js';
+import { approvePaymentProof, listPaymentProofs, openPaymentProofAttachment, rejectPaymentProof } from '../services/proofsService.js';
 import {
   formatMoney,
   normalizeDateTime,
@@ -114,6 +114,22 @@ export default function ProofsPage() {
       await load();
     } catch (err) {
       setActionMessage({ type: 'error', text: err?.response?.data?.message || err.message || 'Falha ao rejeitar comprovativo.' });
+    } finally {
+      setWorking(false);
+    }
+  };
+
+  const handleOpenAttachment = async () => {
+    if (!selected?.id) return;
+    setWorking(true);
+    setActionMessage(null);
+    try {
+      await openPaymentProofAttachment(selected.id);
+    } catch (err) {
+      setActionMessage({
+        type: 'error',
+        text: err?.response?.data?.message || err.message || 'Não foi possível abrir o anexo do comprovativo.',
+      });
     } finally {
       setWorking(false);
     }
@@ -219,10 +235,10 @@ export default function ProofsPage() {
 
               <div className="flex flex-wrap gap-2">
                 {selected.fileUrl && (
-                  <a className="btn-secondary" href={selected.fileUrl} target="_blank" rel="noreferrer">
+                  <button type="button" className="btn-secondary" onClick={handleOpenAttachment} disabled={working}>
                     <Eye size={16} className="mr-2" />
                     Ver anexo
-                  </a>
+                  </button>
                 )}
                 <button className="btn-primary" onClick={handleApprove} disabled={working}>
                   <CheckCircle2 size={16} className="mr-2" />
