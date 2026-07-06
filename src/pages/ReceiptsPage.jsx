@@ -74,34 +74,44 @@ export default function ReceiptsPage() {
   if (error) return <ErrorState message={error} onRetry={load} />;
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-end">
-        <div>
-          <h1 className="page-title">Recibos institucionais</h1>
-          <p className="page-subtitle">Recibos emitidos após validação manual da DCR e confirmação do pagamento.</p>
+    <div className="space-y-5">
+      <section className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#061936] via-[#08285A] to-[#061936] p-5 text-white shadow-[0_24px_70px_rgba(7,20,45,.16)] sm:p-7">
+        <div className="pointer-events-none absolute -right-20 -top-24 h-72 w-72 rounded-full bg-blue-400/18 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-28 left-20 h-56 w-56 rounded-full bg-imetro-gold/20 blur-3xl" />
+        <div className="relative flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-[11px] font-black uppercase tracking-[.18em] text-white/80">
+              <ReceiptText size={14} />
+              Documentos financeiros
+            </div>
+            <h1 className="mt-4 text-2xl font-black tracking-tight sm:text-4xl">Recibos institucionais</h1>
+            <p className="mt-3 max-w-3xl text-sm font-medium leading-6 text-white/78 sm:text-base">
+              Recibos emitidos após validação manual da DCR e confirmação do pagamento.
+            </p>
+          </div>
+          <button className="inline-flex w-fit items-center justify-center gap-2 rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-sm font-black text-white transition hover:bg-white/15" onClick={load}>
+            <RefreshCw size={17} />
+            Atualizar
+          </button>
         </div>
-        <button className="btn-secondary" onClick={load}>
-          <RefreshCw size={16} className="mr-2" />
-          Atualizar
-        </button>
-      </div>
+      </section>
 
-      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <StatCard title="Total de recibos" value={stats.total} description="Registros emitidos" icon={ReceiptText} />
+      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <StatCard title="Total de recibos" value={stats.total} description="Registos emitidos" icon={ReceiptText} />
         <StatCard title="Emitidos" value={stats.issued} description="Válidos/ativos" icon={ShieldCheck} tone="success" />
         <StatCard title="Valor emitido" value={formatMoney(stats.issuedAmount)} description="Total validado" icon={FileText} tone="gold" />
         <StatCard title="Cancelados" value={stats.cancelled} description="Anulados pela DCR" icon={FileText} tone="danger" />
       </section>
 
-      <section className="grid gap-4 xl:grid-cols-[1.15fr_.85fr]">
-        <div className="card overflow-hidden">
-          <div className="border-b border-slate-100 p-4">
-            <div className="flex flex-col gap-3 lg:flex-row">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-3.5 text-slate-400" size={18} />
-                <input className="input pl-10" placeholder="Buscar por recibo, estudante, matrícula, cobrança ou método..." value={search} onChange={(event) => setSearch(event.target.value)} />
+      <section className="grid gap-5 xl:grid-cols-[minmax(0,1.15fr)_minmax(360px,.85fr)]">
+        <div className="card-premium min-w-0 overflow-hidden">
+          <div className="border-b border-slate-100/80 bg-white/80 p-4 backdrop-blur">
+            <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_220px]">
+              <div className="relative min-w-0">
+                <Search className="absolute left-4 top-3.5 text-slate-400" size={18} />
+                <input className="input-premium pl-11" placeholder="Buscar por recibo, estudante, matrícula, cobrança ou método..." value={search} onChange={(event) => setSearch(event.target.value)} />
               </div>
-              <select className="input lg:w-52" value={status} onChange={(event) => setStatus(event.target.value)}>
+              <select className="input-premium" value={status} onChange={(event) => setStatus(event.target.value)}>
                 <option value="ALL">Todos estados</option>
                 <option value="ISSUED">Emitido</option>
                 <option value="SENT">Enviado</option>
@@ -110,63 +120,39 @@ export default function ReceiptsPage() {
             </div>
           </div>
 
-          {filtered.length === 0 ? (
-            <EmptyState title="Nenhum recibo encontrado" description="Os recibos aprovados pela DCR aparecerão aqui para consulta e download." />
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-slate-100 text-left text-sm">
-                <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
-                  <tr>
-                    <th className="px-5 py-3">Recibo</th>
-                    <th className="px-5 py-3">Estudante</th>
-                    <th className="px-5 py-3">Valor</th>
-                    <th className="px-5 py-3">Emissão</th>
-                    <th className="px-5 py-3">Estado</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100 bg-white">
-                  {filtered.map((receipt) => {
-                    const active = selected?.id === receipt.id;
-                    return (
-                      <tr key={receipt.id || receipt.receiptCode} className={`cursor-pointer transition hover:bg-imetro-gold/5 ${active ? 'bg-imetro-gold/10' : ''}`} onClick={() => setSelected(receipt)}>
-                        <td className="px-5 py-4">
-                          <p className="font-bold text-slate-800">{receipt.receiptCode}</p>
-                          <p className="text-xs text-slate-500">Cobrança: {receipt.chargeCode}</p>
-                        </td>
-                        <td className="px-5 py-4">
-                          <p className="font-semibold text-slate-700">{receipt.studentName}</p>
-                          <p className="text-xs text-slate-500">{receipt.studentNumber}</p>
-                        </td>
-                        <td className="px-5 py-4 font-bold text-slate-800">{formatMoney(receipt.amount, receipt.currency)}</td>
-                        <td className="px-5 py-4 text-slate-600">{normalizeDateTime(receipt.issuedAt)}</td>
-                        <td className="px-5 py-4"><StatusBadge status={receipt.status} label={normalizeReceiptStatus(receipt.status)} /></td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          )}
+          <div className="p-3 sm:p-4">
+            {filtered.length === 0 ? (
+              <EmptyState title="Nenhum recibo encontrado" description="Os recibos aprovados pela DCR aparecerão aqui para consulta e download." />
+            ) : (
+              <div className="space-y-3">
+                {filtered.map((receipt) => (
+                  <ReceiptCard key={receipt.id || receipt.receiptCode} receipt={receipt} active={selected?.id === receipt.id} onClick={() => setSelected(receipt)} />
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
-        <aside className="card p-4">
+        <aside className="card-premium min-w-0 p-4 xl:sticky xl:top-24 xl:self-start">
           {selected ? (
             <div className="space-y-4">
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-wide text-slate-400">Recibo selecionado</p>
-                  <h2 className="mt-1 text-base font-black text-slate-900">{selected.receiptCode}</h2>
+              <div className="rounded-3xl border border-slate-100 bg-gradient-to-br from-slate-50 via-white to-blue-50/60 p-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="text-[10px] font-black uppercase tracking-[.18em] text-imetro-gold">Recibo selecionado</p>
+                    <h2 className="mt-2 break-words text-base font-black text-slate-950">{selected.receiptCode}</h2>
+                  </div>
+                  <StatusBadge status={selected.status} label={normalizeReceiptStatus(selected.status)} />
                 </div>
-                <StatusBadge status={selected.status} label={normalizeReceiptStatus(selected.status)} />
               </div>
 
-              <div className="rounded-xl bg-slate-50 p-4 text-sm">
-                <p className="font-bold text-slate-900">{selected.studentName}</p>
-                <p className="text-slate-500">Matrícula: {selected.studentNumber}</p>
-                <p className="mt-2 text-slate-600">Cobrança: <b>{selected.chargeCode}</b></p>
-                <p className="text-slate-600">Valor: <b>{formatMoney(selected.amount, selected.currency)}</b></p>
-                <p className="text-slate-600">Método: <b>{selected.paymentMethod}</b></p>
-                <p className="text-slate-600">Emitido em: <b>{normalizeDateTime(selected.issuedAt)}</b></p>
+              <div className="rounded-3xl border border-slate-100 bg-white p-4 text-sm shadow-[0_14px_38px_rgba(15,23,42,.04)]">
+                <Line label="Estudante" value={selected.studentName} />
+                <Line label="Matrícula" value={selected.studentNumber} />
+                <Line label="Cobrança" value={selected.chargeCode} />
+                <Line label="Valor" value={formatMoney(selected.amount, selected.currency)} />
+                <Line label="Método" value={selected.paymentMethod} />
+                <Line label="Emitido em" value={normalizeDateTime(selected.issuedAt)} />
               </div>
 
               <div className="flex flex-wrap gap-2">
@@ -184,8 +170,8 @@ export default function ReceiptsPage() {
                 )}
               </div>
 
-              <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-800">
-                Recibo institucional emitido após validação da DCR. Este registro serve para consulta administrativa e suporte ao atendimento do estudante.
+              <div className="rounded-3xl border border-emerald-100 bg-gradient-to-br from-emerald-50 via-white to-teal-50 p-4 text-sm text-emerald-800">
+                <p className="font-semibold leading-6">Recibo institucional emitido após validação da DCR. Este registo serve para consulta administrativa e suporte ao atendimento do estudante.</p>
               </div>
             </div>
           ) : (
@@ -193,6 +179,46 @@ export default function ReceiptsPage() {
           )}
         </aside>
       </section>
+    </div>
+  );
+}
+
+function ReceiptCard({ receipt, active, onClick }) {
+  return (
+    <button
+      type="button"
+      className={`w-full rounded-3xl border bg-white p-4 text-left shadow-[0_14px_38px_rgba(15,23,42,.05)] transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_22px_60px_rgba(15,23,42,.09)] ${active ? 'border-blue-500 ring-4 ring-blue-500/10' : 'border-slate-100 hover:border-blue-200'}`}
+      onClick={onClick}
+    >
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_180px_150px] lg:items-center">
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-2">
+            <p className="break-words text-sm font-black text-slate-950">{receipt.receiptCode}</p>
+            <StatusBadge status={receipt.status} label={normalizeReceiptStatus(receipt.status)} />
+          </div>
+          <p className="mt-1 text-xs font-semibold text-slate-500">Cobrança: {receipt.chargeCode}</p>
+          <p className="mt-2 text-sm font-black text-slate-800">{receipt.studentName}</p>
+          <p className="mt-1 text-xs font-semibold text-slate-500">{receipt.studentNumber}</p>
+        </div>
+        <div className="rounded-2xl bg-slate-50 p-3">
+          <p className="text-[10px] font-black uppercase tracking-wide text-slate-400">Valor</p>
+          <p className="mt-1 text-sm font-black text-slate-950">{formatMoney(receipt.amount, receipt.currency)}</p>
+          <p className="mt-1 text-[10px] font-semibold text-slate-500">{receipt.paymentMethod}</p>
+        </div>
+        <div className="rounded-2xl bg-slate-50 p-3">
+          <p className="text-[10px] font-black uppercase tracking-wide text-slate-400">Emissão</p>
+          <p className="mt-1 text-xs font-black text-slate-950">{normalizeDateTime(receipt.issuedAt)}</p>
+        </div>
+      </div>
+    </button>
+  );
+}
+
+function Line({ label, value }) {
+  return (
+    <div className="flex items-start justify-between gap-3 border-b border-slate-100 py-2 first:pt-0 last:border-b-0 last:pb-0">
+      <span className="shrink-0 font-semibold text-slate-500">{label}</span>
+      <span className="min-w-0 break-words text-right font-bold text-slate-800">{value}</span>
     </div>
   );
 }
