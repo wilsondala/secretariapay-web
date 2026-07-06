@@ -7,7 +7,7 @@ export default function AppLayout() {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-[#f3f6fb] text-[14px] text-imetro-ink">
+    <div className="min-h-screen bg-[#f5f8fc] text-[14px] text-imetro-ink">
       <Sidebar open={open} onClose={() => setOpen(false)} />
       <div className="lg:pl-[280px]">
         <Topbar onMenuClick={() => setOpen(true)} />
