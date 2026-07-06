@@ -8,11 +8,15 @@ const PROOF_ENDPOINT_CANDIDATES = [
 ];
 
 async function firstSuccessful(requestFactory) {
+  const response = await firstSuccessfulResponse(requestFactory);
+  return response.data;
+}
+
+async function firstSuccessfulResponse(requestFactory) {
   let lastError;
   for (const endpoint of PROOF_ENDPOINT_CANDIDATES) {
     try {
-      const response = await requestFactory(endpoint);
-      return response.data;
+      return await requestFactory(endpoint);
     } catch (error) {
       lastError = error;
       const status = error?.response?.status;
@@ -58,6 +62,15 @@ export async function listPaymentProofs() {
 export async function listPaymentProofsByStatus(status) {
   const data = await firstSuccessful((endpoint) => api.get(`${endpoint}/status/${status}`));
   return asList(data);
+}
+
+export async function openPaymentProofAttachment(id) {
+  const response = await firstSuccessfulResponse((endpoint) => api.get(`${endpoint}/${id}/attachment`, { responseType: 'blob' }));
+  const contentType = response.headers?.['content-type'] || 'application/octet-stream';
+  const blob = new Blob([response.data], { type: contentType });
+  const url = URL.createObjectURL(blob);
+  window.open(url, '_blank', 'noopener,noreferrer');
+  window.setTimeout(() => URL.revokeObjectURL(url), 60000);
 }
 
 export async function approvePaymentProof(id, payload = {}) {
