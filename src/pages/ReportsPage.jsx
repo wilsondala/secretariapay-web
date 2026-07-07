@@ -26,11 +26,6 @@ const demoSummary = {
   overdueAmount: 58500,
   noContactStudents: 1,
   blockedStudents: 0,
-  charges: [
-    { chargeCode: 'IMT-PROPINA-2026_07-20200629', studentName: 'Estudante Demo 1', description: 'Propina Julho 2026', referenceMonth: '2026-07', status: 'PENDING', totalAmount: 45000 },
-    { chargeCode: 'IMT-PROPINA-2026_06-20200925', studentName: 'Estudante Demo 2', description: 'Propina Junho 2026', referenceMonth: '2026-06', status: 'OVERDUE', totalAmount: 58500 },
-    { chargeCode: 'IMT-PROPINA-2026_05-20230294', studentName: 'Estudante Demo 3', description: 'Propina Maio 2026', referenceMonth: '2026-05', status: 'PAID', totalAmount: 45000 },
-  ],
 };
 
 const quickStats = [
@@ -44,7 +39,6 @@ const reportDefinitions = [
   {
     id: 'financeiro-dcr',
     title: 'Relatório financeiro da DCR',
-    shortTitle: 'Financeiro DCR',
     description: 'Resumo de propinas, mensalidades vencidas, total em aberto, valores recebidos e evolução mensal.',
     icon: BarChart3,
     tone: 'blue',
@@ -61,7 +55,6 @@ const reportDefinitions = [
   {
     id: 'cobrancas-whatsapp',
     title: 'Relatório de cobranças WhatsApp',
-    shortTitle: 'Cobranças WhatsApp',
     description: 'Cobranças enviadas, estudantes sem contacto oficial, mensagens falhadas e reenviadas.',
     icon: MessageCircle,
     tone: 'green',
@@ -77,7 +70,6 @@ const reportDefinitions = [
   {
     id: 'comprovativos-recibos',
     title: 'Relatório de comprovativos e recibos',
-    shortTitle: 'Comprovativos e recibos',
     description: 'Comprovativos pendentes, aprovados, rejeitados e recibos emitidos pela DCR.',
     icon: ReceiptText,
     tone: 'amber',
@@ -93,7 +85,6 @@ const reportDefinitions = [
   {
     id: 'inadimplentes',
     title: 'Relatório de estudantes inadimplentes',
-    shortTitle: 'Inadimplentes',
     description: 'Lista operacional de estudantes com propinas vencidas, bloqueios e necessidade de contacto.',
     icon: Users,
     tone: 'red',
@@ -154,8 +145,6 @@ export default function ReportsPage() {
   return (
     <div className="space-y-5">
       <section className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#061936] via-[#08285A] to-[#061936] p-5 text-white shadow-[0_24px_70px_rgba(7,20,45,.16)] sm:p-7">
-        <div className="pointer-events-none absolute -right-20 -top-24 h-72 w-72 rounded-full bg-blue-400/20 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-28 left-20 h-56 w-56 rounded-full bg-imetro-gold/20 blur-3xl" />
         <div className="relative flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-[11px] font-black uppercase tracking-[.18em] text-white/80">
@@ -218,7 +207,7 @@ export default function ReportsPage() {
           <div>
             <p className="font-black">Relatórios funcionais</p>
             <p className="mt-1 text-sm font-semibold leading-6 text-slate-600">
-              Os botões PDF abrem uma versão imprimível para salvar em PDF. Os botões Excel baixam um arquivo CSV compatível com Excel, sem depender de novos endpoints.
+              O botão PDF abre uma página com o conteúdo do relatório e aciona a impressão para salvar como PDF. O botão Excel baixa CSV compatível com Excel.
             </p>
           </div>
         </div>
@@ -239,7 +228,6 @@ function ReportCard({ report, summary, loading }) {
 
   return (
     <div className="group relative overflow-hidden rounded-3xl border border-white/70 bg-white p-5 shadow-[0_18px_50px_rgba(15,23,42,.07)] transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_24px_70px_rgba(15,23,42,.10)]">
-      <div className="pointer-events-none absolute -right-8 -top-8 h-24 w-24 rounded-full bg-blue-300/20 blur-2xl" />
       <div className={`relative flex h-14 w-14 items-center justify-center rounded-2xl shadow-sm ring-1 ${tones[tone] || tones.blue}`}>
         {loading ? <Loader2 className="animate-spin" size={26} /> : <Icon size={28} />}
       </div>
@@ -306,48 +294,64 @@ function openPrintableReport({ title, description, rows }) {
     </tr>
   `).join('');
 
-  const html = `
-    <!doctype html>
-    <html lang="pt">
-      <head>
-        <meta charset="utf-8" />
-        <title>${escapeHtml(title)}</title>
-        <style>
-          body{font-family:Arial,sans-serif;margin:32px;color:#10254a;background:#fff}
-          .header{border-bottom:4px solid #d7a928;padding-bottom:18px;margin-bottom:24px}
-          .brand{font-size:13px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#64748b}
-          h1{margin:8px 0 6px;font-size:26px;color:#061936}
-          p{margin:0;color:#475569;font-size:13px;line-height:1.6}
-          table{width:100%;border-collapse:collapse;margin-top:22px;font-size:12px}
-          th{background:#061936;color:#fff;text-align:left;padding:12px;border:1px solid #061936}
-          td{padding:11px;border:1px solid #dbe3ef;vertical-align:top}
-          tr:nth-child(even) td{background:#f8fafc}
-          .footer{margin-top:28px;font-size:11px;color:#64748b;border-top:1px solid #e2e8f0;padding-top:14px}
-          @media print{button{display:none}body{margin:18px}}
-        </style>
-      </head>
-      <body>
-        <div class="header">
-          <div class="brand">SecretáriaPay Académico · IMETRO · DCR</div>
-          <h1>${escapeHtml(title)}</h1>
-          <p>${escapeHtml(description || 'Relatório institucional')}</p>
-          <p>Gerado em: ${new Date().toLocaleString('pt-AO')}</p>
-        </div>
-        <table>
-          <thead><tr><th>Indicador</th><th>Valor</th><th>Observação</th></tr></thead>
-          <tbody>${htmlRows}</tbody>
-        </table>
-        <div class="footer">Documento gerado pelo painel SecretáriaPay Académico para apoio à decisão da DCR.</div>
-        <script>window.onload=function(){setTimeout(function(){window.print()},300)}</script>
-      </body>
-    </html>
-  `;
+  const html = `<!doctype html>
+<html lang="pt">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>${escapeHtml(title)}</title>
+  <style>
+    body{font-family:Arial,sans-serif;margin:0;color:#10254a;background:#eef3f8}
+    .page{max-width:960px;margin:28px auto;background:#fff;padding:32px;border-radius:22px;box-shadow:0 18px 60px rgba(15,23,42,.12)}
+    .header{border-bottom:4px solid #d7a928;padding-bottom:18px;margin-bottom:24px}
+    .brand{font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#64748b}
+    h1{margin:8px 0 6px;font-size:26px;color:#061936}
+    p{margin:0;color:#475569;font-size:13px;line-height:1.6}
+    .actions{display:flex;gap:10px;margin:18px 0 0}
+    button{border:0;background:#061936;color:#fff;border-radius:12px;padding:10px 14px;font-weight:800;cursor:pointer}
+    table{width:100%;border-collapse:collapse;margin-top:22px;font-size:12px}
+    th{background:#061936;color:#fff;text-align:left;padding:12px;border:1px solid #061936}
+    td{padding:11px;border:1px solid #dbe3ef;vertical-align:top}
+    tr:nth-child(even) td{background:#f8fafc}
+    .footer{margin-top:28px;font-size:11px;color:#64748b;border-top:1px solid #e2e8f0;padding-top:14px}
+    @media print{body{background:#fff}.page{box-shadow:none;margin:0;max-width:none;border-radius:0}.actions{display:none}}
+  </style>
+</head>
+<body>
+  <main class="page">
+    <div class="header">
+      <div class="brand">SecretáriaPay Académico · IMETRO · DCR</div>
+      <h1>${escapeHtml(title)}</h1>
+      <p>${escapeHtml(description || 'Relatório institucional')}</p>
+      <p>Gerado em: ${new Date().toLocaleString('pt-AO')}</p>
+      <div class="actions"><button onclick="window.print()">Salvar / Imprimir PDF</button></div>
+    </div>
+    <table>
+      <thead><tr><th>Indicador</th><th>Valor</th><th>Observação</th></tr></thead>
+      <tbody>${htmlRows}</tbody>
+    </table>
+    <div class="footer">Documento gerado pelo painel SecretáriaPay Académico para apoio à decisão da DCR.</div>
+  </main>
+  <script>setTimeout(function(){window.print()},500)</script>
+</body>
+</html>`;
 
-  const reportWindow = window.open('', '_blank', 'noopener,noreferrer,width=1100,height=780');
-  if (!reportWindow) return;
-  reportWindow.document.open();
-  reportWindow.document.write(html);
-  reportWindow.document.close();
+  const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const reportWindow = window.open(url, '_blank');
+  if (!reportWindow) {
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${safeFileName(title)}.html`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+  setTimeout(() => URL.revokeObjectURL(url), 60000);
+}
+
+function safeFileName(value) {
+  return String(value || 'relatorio').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9_-]+/g, '-').replace(/^-|-$/g, '').toLowerCase();
 }
 
 function escapeHtml(value) {
