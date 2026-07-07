@@ -13,16 +13,13 @@ import {
   UserRound,
   XCircle,
 } from 'lucide-react';
+import StatCard from '../components/StatCard.jsx';
 import StatusBadge from '../components/ui/StatusBadge.jsx';
 import LoadingState from '../components/ui/LoadingState.jsx';
 import ErrorState from '../components/ui/ErrorState.jsx';
 import EmptyState from '../components/ui/EmptyState.jsx';
 import { fetchWhatsappMessages, fetchWhatsappSessions } from '../services/whatsappService.js';
-import {
-  normalizeDateTime,
-  getStudentName,
-  safeText,
-} from '../utils/formatters.js';
+import { normalizeDateTime, getStudentName, safeText } from '../utils/formatters.js';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://secretariapay-api.paixaoangola.com';
 
@@ -42,13 +39,13 @@ const fallbackMessages = [
   {
     id: 'demo-wpp-2',
     channel: 'WHATSAPP',
-    type: 'PAYMENT_GUIDE',
+    type: 'RECEIPT',
     status: 'SENT',
     recipientPhone: '+5511915102566',
     chargeCode: 'IMT-PROPINA-2026_07-20200925',
     providerMessageId: 'wamid.demo-brasil',
     studentName: 'Maludi Adélia André Bernardo',
-    createdAt: new Date().toISOString(),
+    createdAt: new Date(Date.now() - 1000 * 60 * 15).toISOString(),
     demo: true,
   },
   {
@@ -135,7 +132,6 @@ function labelType(type) {
   return map[safeText(type).toUpperCase()] || type || '-';
 }
 
-
 function labelChannel(channel) {
   const map = {
     ALL: 'Todos os canais',
@@ -152,23 +148,6 @@ function labelFilterOption(group, option) {
   if (group === 'channel') return labelChannel(option);
   if (group === 'type') return labelType(option);
   return option;
-}
-
-function SummaryCard({ icon: Icon, label, value, description, className = '' }) {
-  return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <p className="text-sm font-semibold text-slate-500">{label}</p>
-          <p className="mt-2 text-base font-black text-slate-900">{value}</p>
-          {description ? <p className="mt-1 text-xs text-slate-500">{description}</p> : null}
-        </div>
-        <div className={`rounded-xl p-3 ${className || 'bg-imetro-navy/10 text-imetro-navy'}`}>
-          <Icon size={22} />
-        </div>
-      </div>
-    </div>
-  );
 }
 
 export default function WhatsappPage() {
@@ -245,7 +224,6 @@ export default function WhatsappPage() {
     const failed = messages.filter((message) => message.status === 'FAILED').length;
     const skipped = messages.filter((message) => ['SKIPPED', 'SKIPPED_NO_CONTACT'].includes(message.status)).length;
     const guides = messages.filter((message) => message.type === 'PAYMENT_GUIDE').length;
-
     return { total: messages.length, sent, failed, skipped, guides };
   }, [messages]);
 
@@ -256,35 +234,35 @@ export default function WhatsappPage() {
   if (loading) return <LoadingState title="Carregando histórico do WhatsApp" />;
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-col gap-4 rounded-2xl bg-imetro-navy p-4 text-white shadow-sm lg:flex-row lg:items-center lg:justify-between">
-        <div>
-          <p className="text-sm font-bold uppercase tracking-[0.22em] text-imetro-gold">DCR · Atendimento digital</p>
-          <h1 className="mt-2 text-base font-black">WhatsApp e histórico de mensagens</h1>
-          <p className="mt-2 max-w-3xl text-sm text-white/75">
-            Controle das guias enviadas, mensagens falhadas, contactos oficiais e sessões de atendimento do IMETRO.
-          </p>
+    <div className="space-y-5">
+      <section className="relative overflow-hidden rounded-[2rem] border border-white/30 bg-gradient-to-br from-[#061936] via-[#08285A] to-[#061936] p-6 text-white shadow-[0_28px_90px_rgba(7,20,45,.22)] sm:p-7">
+        <div className="pointer-events-none absolute -right-20 -top-24 h-72 w-72 rounded-full bg-emerald-400/18 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-28 left-20 h-56 w-56 rounded-full bg-imetro-gold/20 blur-3xl" />
+        <div className="relative flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-[11px] font-black uppercase tracking-[.18em] text-white/80">
+              <MessageCircle size={14} />
+              Atendimento financeiro WhatsApp
+            </div>
+            <h1 className="mt-4 text-2xl font-black tracking-tight sm:text-4xl">WhatsApp financeiro</h1>
+            <p className="mt-3 max-w-3xl text-sm font-medium leading-6 text-white/78 sm:text-base">
+              Monitorização de guias enviadas, recibos em PDF, sessões do robô, contactos oficiais e falhas de entrega.
+            </p>
+          </div>
+          <button type="button" onClick={loadData} className="inline-flex w-fit items-center justify-center gap-2 rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-sm font-black text-white shadow-[0_16px_44px_rgba(0,0,0,.12)] transition hover:bg-white/15">
+            <RefreshCcw size={17} />
+            Atualizar histórico
+          </button>
         </div>
-        <button
-          type="button"
-          onClick={loadData}
-          className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-4 py-3 text-sm font-black text-imetro-navy hover:bg-imetro-gold"
-        >
-          <RefreshCcw size={18} />
-          Atualizar
-        </button>
-      </div>
+      </section>
 
       {!endpointInfo.available ? (
-        <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+        <div className="rounded-3xl border border-amber-200 bg-gradient-to-br from-amber-50 via-white to-orange-50 px-5 py-4 text-sm font-semibold text-amber-900">
           <div className="flex gap-3">
-            <AlertTriangle className="mt-0.5 shrink-0" size={20} />
+            <AlertTriangle className="mt-0.5 shrink-0 text-amber-600" size={19} />
             <div>
-              <p className="font-black">Endpoint real de mensagens ainda não disponível no backend.</p>
-              <p className="mt-1">
-                A tela está pronta e exibindo dados demonstrativos. Para dados reais, criar no backend um endpoint como
-                <span className="font-mono"> GET /api/v1/admin/whatsapp/messages</span> retornando os registros de mensagens.
-              </p>
+              <p className="font-black">Histórico real parcialmente indisponível.</p>
+              <p className="mt-1 leading-6">A tela mantém a estrutura premium e apresenta dados demonstrativos enquanto o endpoint administrativo de mensagens é concluído.</p>
             </div>
           </div>
         </div>
@@ -292,156 +270,97 @@ export default function WhatsappPage() {
 
       {error ? <ErrorState title="Falha ao carregar dados" message={error} onRetry={loadData} /> : null}
 
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
-        <SummaryCard icon={MessageCircle} label="Mensagens" value={summary.total} description="Total carregado" />
-        <SummaryCard icon={CheckCircle2} label="Enviadas" value={summary.sent} description="Enviado, entregue ou lido" className="bg-emerald-50 text-emerald-700" />
-        <SummaryCard icon={XCircle} label="Falhadas" value={summary.failed} description="Ação DCR necessária" className="bg-red-50 text-red-700" />
-        <SummaryCard icon={AlertTriangle} label="Sem contacto" value={summary.skipped} description="Cadastro incompleto" className="bg-amber-50 text-amber-700" />
-        <SummaryCard icon={FileText} label="Guias" value={summary.guides} description="Guias de pagamento" className="bg-blue-50 text-blue-700" />
-      </div>
+      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+        <StatCard icon={MessageCircle} title="Mensagens" value={summary.total} description="Total carregado" />
+        <StatCard icon={CheckCircle2} title="Enviadas" value={summary.sent} description="Enviado, entregue ou lido" tone="success" />
+        <StatCard icon={XCircle} title="Falhadas" value={summary.failed} description="Ação DCR necessária" tone="danger" />
+        <StatCard icon={AlertTriangle} title="Sem contacto" value={summary.skipped} description="Cadastro incompleto" tone="warning" />
+        <StatCard icon={FileText} title="Guias" value={summary.guides} description="Guias de pagamento" tone="gold" />
+      </section>
 
       <div className="flex flex-wrap gap-2">
-        <button
-          type="button"
-          onClick={() => setActiveTab('messages')}
-          className={`rounded-xl px-4 py-2 text-sm font-black ${activeTab === 'messages' ? 'bg-imetro-navy text-white' : 'bg-white text-slate-600 ring-1 ring-slate-200'}`}
-        >
-          Mensagens
-        </button>
-        <button
-          type="button"
-          onClick={() => setActiveTab('sessions')}
-          className={`rounded-xl px-4 py-2 text-sm font-black ${activeTab === 'sessions' ? 'bg-imetro-navy text-white' : 'bg-white text-slate-600 ring-1 ring-slate-200'}`}
-        >
-          Sessões WhatsApp
-        </button>
+        <TabButton active={activeTab === 'messages'} onClick={() => setActiveTab('messages')}>Mensagens</TabButton>
+        <TabButton active={activeTab === 'sessions'} onClick={() => setActiveTab('sessions')}>Sessões WhatsApp</TabButton>
       </div>
 
       {activeTab === 'messages' ? (
-        <div className="grid gap-4 xl:grid-cols-[1.25fr_0.75fr]">
-          <div className="rounded-2xl border border-slate-200 bg-white shadow-sm">
-            <div className="border-b border-slate-200 p-4">
-              <div className="grid gap-3 lg:grid-cols-[1fr_150px_150px_180px]">
-                <label className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+        <div className="grid gap-5 xl:grid-cols-[minmax(0,1.18fr)_minmax(360px,.82fr)]">
+          <section className="card-premium min-w-0 overflow-hidden">
+            <div className="border-b border-slate-100/80 bg-white/80 p-4 backdrop-blur">
+              <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_150px_150px_180px]">
+                <label className="relative min-w-0">
+                  <Search className="absolute left-4 top-3.5 text-slate-400" size={18} />
                   <input
                     value={filters.search}
                     onChange={(event) => setFilters((current) => ({ ...current, search: event.target.value }))}
-                    placeholder="Buscar por estudante, telefone, cobrança, falha ou provider ID"
-                    className="w-full rounded-xl border border-slate-200 py-3 pl-10 pr-4 text-sm outline-none focus:border-imetro-navy"
+                    placeholder="Buscar por estudante, telefone, cobrança, falha ou provider ID..."
+                    className="input-premium pl-11"
                   />
                 </label>
 
-                <select
-                  value={filters.status}
-                  onChange={(event) => setFilters((current) => ({ ...current, status: event.target.value }))}
-                  className="rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold outline-none focus:border-imetro-navy"
-                >
-                  {filterOptions.status.map((option) => (
-                    <option key={option} value={option}>{labelFilterOption('status', option)}</option>
-                  ))}
+                <select value={filters.status} onChange={(event) => setFilters((current) => ({ ...current, status: event.target.value }))} className="input-premium">
+                  {filterOptions.status.map((option) => <option key={option} value={option}>{labelFilterOption('status', option)}</option>)}
                 </select>
 
-                <select
-                  value={filters.channel}
-                  onChange={(event) => setFilters((current) => ({ ...current, channel: event.target.value }))}
-                  className="rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold outline-none focus:border-imetro-navy"
-                >
-                  {filterOptions.channel.map((option) => (
-                    <option key={option} value={option}>{labelFilterOption('channel', option)}</option>
-                  ))}
+                <select value={filters.channel} onChange={(event) => setFilters((current) => ({ ...current, channel: event.target.value }))} className="input-premium">
+                  {filterOptions.channel.map((option) => <option key={option} value={option}>{labelFilterOption('channel', option)}</option>)}
                 </select>
 
-                <select
-                  value={filters.type}
-                  onChange={(event) => setFilters((current) => ({ ...current, type: event.target.value }))}
-                  className="rounded-xl border border-slate-200 px-4 py-3 text-sm font-semibold outline-none focus:border-imetro-navy"
-                >
-                  {filterOptions.type.map((option) => (
-                    <option key={option} value={option}>{labelFilterOption('type', option)}</option>
-                  ))}
+                <select value={filters.type} onChange={(event) => setFilters((current) => ({ ...current, type: event.target.value }))} className="input-premium">
+                  {filterOptions.type.map((option) => <option key={option} value={option}>{labelFilterOption('type', option)}</option>)}
                 </select>
               </div>
             </div>
 
             {filteredMessages.length ? (
-              <div className="divide-y divide-slate-100">
+              <div className="max-h-[68vh] space-y-3 overflow-y-auto p-3 sm:p-4">
                 {filteredMessages.map((message) => (
-                  <button
-                    key={message.id}
-                    type="button"
-                    onClick={() => setSelected(message)}
-                    className={`w-full px-5 py-4 text-left transition hover:bg-slate-50 ${selected?.id === message.id ? 'bg-imetro-navy/5' : ''}`}
-                  >
-                    <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-                      <div className="min-w-0">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <span className={`rounded-full border px-3 py-1 text-xs font-black ${statusTone(message.status)}`}>{labelStatus(message.status)}</span>
-                          <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600">{labelChannel(message.channel)}</span>
-                          <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-700">{labelType(message.type)}</span>
-                        </div>
-                        <p className="mt-3 truncate text-base font-black text-slate-900">{message.chargeCode || 'Sem cobrança vinculada'}</p>
-                        <p className="mt-1 text-sm text-slate-500">{message.studentName || 'Estudante não informado'}</p>
-                      </div>
-                      <div className="text-left lg:text-right">
-                        <p className="flex items-center gap-2 text-sm font-bold text-slate-700 lg:justify-end"><Phone size={15} />{message.recipientPhone || 'Sem telefone'}</p>
-                        <p className="mt-1 text-xs text-slate-500">{normalizeDateTime(message.createdAt)}</p>
-                      </div>
-                    </div>
-                    {message.failureReason ? <p className="mt-2 text-sm font-semibold text-red-600">{message.failureReason}</p> : null}
-                  </button>
+                  <MessageCard key={message.id} message={message} active={selected?.id === message.id} onClick={() => setSelected(message)} />
                 ))}
               </div>
             ) : (
               <EmptyState title="Nenhuma mensagem encontrada" message="Ajuste os filtros para ver outros registos." />
             )}
-          </div>
+          </section>
 
-          <aside className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+          <aside className="card-premium min-w-0 p-4 xl:sticky xl:top-24 xl:self-start">
             {selected ? (
               <div className="space-y-4">
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <p className="text-xs font-bold uppercase tracking-wide text-slate-400">Detalhe da mensagem</p>
-                    <h2 className="mt-1 text-base font-black text-slate-900">{labelType(selected.type)}</h2>
+                <div className="rounded-3xl border border-slate-100 bg-gradient-to-br from-slate-50 via-white to-blue-50/60 p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="text-[10px] font-black uppercase tracking-[.18em] text-imetro-gold">Detalhe da mensagem</p>
+                      <h2 className="mt-2 break-words text-base font-black text-slate-950">{labelType(selected.type)}</h2>
+                      <p className="mt-2 text-xs font-semibold leading-5 text-slate-500">{selected.studentName || 'Estudante não informado'}</p>
+                    </div>
+                    <StatusBadge status={selected.status} />
                   </div>
-                  <StatusBadge status={selected.status} />
                 </div>
 
-                <div className="rounded-xl bg-slate-50 p-4">
-                  <p className="text-xs font-bold uppercase text-slate-400">Cobrança</p>
-                  <p className="mt-1 break-all text-sm font-black text-slate-900">{selected.chargeCode || '-'}</p>
-                </div>
-
-                <div className="grid gap-3 text-sm">
-                  <InfoRow icon={UserRound} label="Estudante" value={selected.studentName || '-'} />
-                  <InfoRow icon={Smartphone} label="Contacto" value={selected.recipientPhone || '-'} />
-                  <InfoRow icon={Clock3} label="Criado em" value={normalizeDateTime(selected.createdAt)} />
-                  <InfoRow icon={Send} label="Provider ID" value={selected.providerMessageId || '-'} />
+                <div className="rounded-3xl border border-slate-100 bg-white p-4 text-sm shadow-[0_14px_38px_rgba(15,23,42,.04)]">
+                  <Line label="Cobrança" value={selected.chargeCode || '-'} />
+                  <Line label="Contacto" value={selected.recipientPhone || '-'} />
+                  <Line label="Criado em" value={normalizeDateTime(selected.createdAt)} />
+                  <Line label="Provider ID" value={selected.providerMessageId || '-'} />
                 </div>
 
                 {selected.failureReason ? (
-                  <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+                  <div className="rounded-3xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
                     <p className="font-black">Motivo da falha</p>
-                    <p className="mt-1">{selected.failureReason}</p>
+                    <p className="mt-1 leading-6">{selected.failureReason}</p>
                   </div>
                 ) : null}
 
                 {selected.body ? (
-                  <div className="rounded-xl border border-slate-200 p-4 text-sm text-slate-600">
+                  <div className="rounded-3xl border border-slate-100 bg-white p-4 text-sm text-slate-600">
                     <p className="font-black text-slate-900">Conteúdo</p>
-                    <p className="mt-2 whitespace-pre-wrap">{selected.body}</p>
+                    <p className="mt-2 whitespace-pre-wrap leading-6">{selected.body}</p>
                   </div>
                 ) : null}
 
                 {selectedGuideUrl ? (
-                  <a
-                    href={selectedGuideUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-imetro-navy px-4 py-3 text-sm font-black text-white hover:bg-imetro-gold hover:text-imetro-navy"
-                  >
-                    <FileText size={18} />
+                  <a href={selectedGuideUrl} target="_blank" rel="noreferrer" className="btn-primary w-full">
+                    <FileText size={16} className="mr-2" />
                     Abrir guia PDF
                   </a>
                 ) : null}
@@ -452,10 +371,10 @@ export default function WhatsappPage() {
           </aside>
         </div>
       ) : (
-        <div className="rounded-2xl border border-slate-200 bg-white shadow-sm">
-          <div className="border-b border-slate-200 p-4">
-            <h2 className="text-base font-black text-slate-900">Sessões de atendimento</h2>
-            <p className="mt-1 text-sm text-slate-500">Conversas abertas, encerradas e etapas atuais do robô.</p>
+        <section className="card-premium overflow-hidden">
+          <div className="border-b border-slate-100 bg-white/80 p-5">
+            <h2 className="text-lg font-black text-imetro-navy">Sessões de atendimento</h2>
+            <p className="mt-1 text-sm font-semibold text-slate-500">Conversas abertas, encerradas e etapas atuais do robô financeiro.</p>
           </div>
 
           {sessions.length ? (
@@ -470,7 +389,7 @@ export default function WhatsappPage() {
                     <th className="px-5 py-4 text-left">Atualização</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-slate-100 bg-white">
                   {sessions.map((session) => (
                     <tr key={session.id} className="hover:bg-slate-50">
                       <td className="px-5 py-4 font-bold text-slate-900">{session.phoneNumber}</td>
@@ -484,13 +403,50 @@ export default function WhatsappPage() {
               </table>
             </div>
           ) : (
-            <EmptyState
-              title="Nenhuma sessão carregada"
-              message="Quando o endpoint de sessões estiver disponível, esta tabela mostrará as conversas do robô."
-            />
+            <EmptyState title="Nenhuma sessão carregada" message="Quando o endpoint de sessões estiver disponível, esta tabela mostrará as conversas do robô." />
           )}
-        </div>
+        </section>
       )}
+    </div>
+  );
+}
+
+function TabButton({ active, onClick, children }) {
+  return (
+    <button type="button" onClick={onClick} className={`rounded-2xl px-4 py-2.5 text-sm font-black transition ${active ? 'bg-imetro-navy text-white shadow-[0_14px_34px_rgba(7,20,45,.16)]' : 'bg-white text-slate-600 ring-1 ring-slate-200 hover:bg-slate-50'}`}>
+      {children}
+    </button>
+  );
+}
+
+function MessageCard({ message, active, onClick }) {
+  return (
+    <button type="button" onClick={onClick} className={`w-full rounded-3xl border bg-white p-4 text-left shadow-[0_14px_38px_rgba(15,23,42,.05)] transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_22px_60px_rgba(15,23,42,.09)] ${active ? 'border-blue-500 ring-4 ring-blue-500/10' : 'border-slate-100 hover:border-blue-200'}`}>
+      <div className="grid min-w-0 gap-4 lg:grid-cols-[minmax(0,1fr)_220px] lg:items-center">
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className={`rounded-full border px-3 py-1 text-xs font-black ${statusTone(message.status)}`}>{labelStatus(message.status)}</span>
+            <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600">{labelChannel(message.channel)}</span>
+            <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-700">{labelType(message.type)}</span>
+          </div>
+          <p className="mt-3 break-words text-sm font-black text-slate-950">{message.chargeCode || 'Sem cobrança vinculada'}</p>
+          <p className="mt-1 text-sm font-semibold text-slate-500">{message.studentName || 'Estudante não informado'}</p>
+        </div>
+        <div className="rounded-2xl bg-slate-50 p-3 text-left lg:text-right">
+          <p className="flex items-center gap-2 text-sm font-black text-slate-700 lg:justify-end"><Phone size={15} />{message.recipientPhone || 'Sem telefone'}</p>
+          <p className="mt-1 text-xs font-semibold text-slate-500">{normalizeDateTime(message.createdAt)}</p>
+        </div>
+      </div>
+      {message.failureReason ? <p className="mt-3 rounded-2xl bg-red-50 px-3 py-2 text-xs font-bold text-red-600">{message.failureReason}</p> : null}
+    </button>
+  );
+}
+
+function Line({ label, value }) {
+  return (
+    <div className="flex items-start justify-between gap-3 border-b border-slate-100 py-2 first:pt-0 last:border-b-0 last:pb-0">
+      <span className="shrink-0 font-semibold text-slate-500">{label}</span>
+      <span className="min-w-0 break-words text-right font-bold text-slate-800">{value}</span>
     </div>
   );
 }
