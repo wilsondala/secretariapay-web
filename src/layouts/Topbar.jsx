@@ -1,11 +1,16 @@
-import { Bell, FileText, Menu, RefreshCw, Send, ShieldCheck } from 'lucide-react';
+import { Bell, FileText, LogOut, Menu, RefreshCw, Send, ShieldCheck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../shared/auth/useAuth.js';
 import { env } from '../config/env.js';
 
 export default function Topbar({ onMenuClick }) {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login', { replace: true });
+  };
 
   return (
     <header className="sticky top-0 z-30 border-b border-white/70 bg-white/80 shadow-[0_10px_30px_rgba(15,23,42,.045)] backdrop-blur-2xl">
@@ -43,13 +48,25 @@ export default function Topbar({ onMenuClick }) {
 
         <button className="relative rounded-2xl p-2.5 text-imetro-navy transition hover:bg-slate-100" aria-label="Notificações">
           <Bell size={21} />
-          <span className="absolute right-1 top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-black text-white ring-2 ring-white">3</span>
+          <span className="absolute right-1 top-1 flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-black text-white ring-2 ring-white">3</span>
         </button>
 
         <div className="hidden min-w-0 rounded-2xl border border-slate-200 bg-white px-3.5 py-2 text-right shadow-[0_10px_28px_rgba(15,23,42,.04)] sm:block">
           <p className="max-w-[180px] truncate text-sm font-black text-[#172c52]">{user?.email || 'admin@imetro.ao'}</p>
-          <p className="mt-0.5 inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wide text-slate-500"><ShieldCheck size={12} /> {user?.role || 'ADMIN'}</p>
+          <p className="mt-0.5 inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wide text-slate-500">
+            <ShieldCheck size={12} /> {user?.role || 'ADMIN'}
+          </p>
         </div>
+
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="inline-flex items-center gap-2 rounded-2xl border border-red-100 bg-red-50 px-3.5 py-2.5 text-xs font-black text-red-600 shadow-[0_10px_28px_rgba(239,68,68,.08)] transition hover:-translate-y-0.5 hover:bg-red-100"
+          title="Sair do painel"
+        >
+          <LogOut size={16} />
+          <span className="hidden sm:inline">Sair</span>
+        </button>
 
         <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-[#07142D] to-[#0B2A5B] text-sm font-black text-white shadow-[0_14px_34px_rgba(7,20,45,.22)]">AD</div>
       </div>
