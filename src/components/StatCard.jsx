@@ -59,7 +59,7 @@ export default function StatCard({ title, value, description, icon: Icon, tone =
             <p className={`mt-3 max-w-[170px] text-sm font-black leading-5 ${current.label}`}>{title}</p>
           </div>
           {Icon && (
-            <div className={`flex h-13 w-13 shrink-0 items-center justify-center rounded-2xl shadow-lg ring-1 ${current.icon}`}>
+            <div className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl shadow-lg ring-1 ${current.icon}`}>
               <Icon size={24} strokeWidth={2.2} />
             </div>
           )}
