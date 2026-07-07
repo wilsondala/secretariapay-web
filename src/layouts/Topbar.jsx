@@ -8,7 +8,7 @@ export default function Topbar({ onMenuClick }) {
   const navigate = useNavigate();
 
   return (
-    <header className="sticky top-0 z-30 border-b border-white/70 bg-white/82 shadow-[0_10px_30px_rgba(15,23,42,.045)] backdrop-blur-2xl">
+    <header className="sticky top-0 z-30 border-b border-white/70 bg-white/80 shadow-[0_10px_30px_rgba(15,23,42,.045)] backdrop-blur-2xl">
       <div className="mx-auto flex min-h-[78px] max-w-[1680px] items-center gap-3 px-4 sm:px-6 lg:px-8 xl:px-10">
         <button className="rounded-2xl p-2.5 text-imetro-navy transition hover:bg-slate-100 lg:hidden" onClick={onMenuClick} aria-label="Abrir menu">
           <Menu size={25} />
