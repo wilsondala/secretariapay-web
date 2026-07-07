@@ -63,8 +63,8 @@ const fallbackPaymentMethods = [
 
 const fallbackChannels = [
   { code: 'WHATSAPP', name: 'WhatsApp institucional', status: 'ACTIVE', mode: 'Produção', description: 'Envio real de guias e mensagens para contacto oficial cadastrado.' },
-  { code: 'EMAIL', name: 'E-mail institucional', status: 'MOCK', mode: 'Preparado', description: 'Fallback para envio de guia por e-mail cadastrado.' },
-  { code: 'SMS', name: 'SMS com link da guia', status: 'MOCK', mode: 'Preparado', description: 'Fallback para aluno sem WhatsApp, usando telefone oficial cadastrado.' },
+  { code: 'EMAIL', name: 'E-mail institucional', status: 'ACTIVE', mode: 'Preparado', description: 'Fallback configurado para envio de guia por e-mail oficial cadastrado.' },
+  { code: 'SMS', name: 'SMS com link da guia', status: 'ACTIVE', mode: 'Preparado', description: 'Fallback configurado para aluno sem WhatsApp, usando telefone oficial cadastrado.' },
   { code: 'PDF', name: 'Guia pública em PDF', status: 'ACTIVE', mode: 'Produção', description: 'Link público seguro por código da cobrança.' },
 ];
 
