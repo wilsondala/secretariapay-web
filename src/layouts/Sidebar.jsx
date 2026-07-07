@@ -83,7 +83,7 @@ function Content({ onClose }) {
         <div className="pointer-events-none absolute -right-20 -top-20 h-48 w-48 rounded-full bg-blue-400/20 blur-3xl" />
         <div className="pointer-events-none absolute left-0 top-24 h-24 w-24 rounded-full bg-imetro-gold/20 blur-2xl" />
         <div className="relative flex items-start gap-3">
-          <div className="flex h-13 w-13 shrink-0 items-center justify-center rounded-[1.25rem] border border-white/10 bg-white/10 text-lg font-black shadow-[0_18px_44px_rgba(0,0,0,.24)]">
+          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-[1.25rem] border border-white/10 bg-white/10 text-lg font-black shadow-[0_18px_44px_rgba(0,0,0,.24)]">
             SP
           </div>
           <div className="min-w-0 flex-1">
