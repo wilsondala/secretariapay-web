@@ -72,9 +72,13 @@ export function isStudentBlocked(student) {
 export function normalizeChargeStatus(status) {
   const value = safeText(status, 'PENDING').toUpperCase();
   const map = {
+    ACTIVE: 'Ativo',
     PENDING: 'Pendente',
+    PREPARED: 'Preparado',
     PAID: 'Pago',
     OVERDUE: 'Vencido',
+    SENT: 'Enviado',
+    FAILED: 'Falhou',
     CANCELLED: 'Cancelado',
     CANCELED: 'Cancelado',
     TICKET_ISSUED: 'Emitido',
