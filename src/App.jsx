@@ -2,6 +2,7 @@ import { Route, Routes } from 'react-router-dom';
 import ProtectedRoute from './shared/routes/ProtectedRoute.jsx';
 import AppLayout from './layouts/AppLayout.jsx';
 import PublicHomePage from './pages/PublicHomePage.jsx';
+import PublicGuidePage from './pages/PublicGuidePage.jsx';
 import LoginPage from './pages/LoginPage.jsx';
 import DashboardPage from './pages/DashboardPage.jsx';
 import StudentsPage from './pages/StudentsPage.jsx';
@@ -21,6 +22,7 @@ export default function App() {
   return (
     <Routes>
       <Route path="/" element={<PublicHomePage />} />
+      <Route path="/guias/:guideCode" element={<PublicGuidePage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/apresentacao" element={<PublicDemoCarouselPage />} />
       <Route path="/demo-publica" element={<PublicDemoCarouselPage />} />
