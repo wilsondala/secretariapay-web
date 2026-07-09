@@ -1,11 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
   AlertTriangle,
-  ArrowRight,
   Banknote,
   CalendarX,
   CheckCircle2,
-  Clock3,
   FileCheck2,
   FileText,
   GraduationCap,
@@ -60,7 +58,7 @@ export default function DashboardPage() {
   if (error) return <ErrorState message={error} onRetry={load} />;
 
   const online = health?.status === 'UP';
-  const pendingProofs = Math.max(Number(summary?.pendingCharges || 0) - 1, 0);
+  const pendingProofs = Number(summary?.pendingProofs || 0);
   const onTimeAmount = Math.max(Number(summary?.openAmount || 0) - Number(summary?.overdueAmount || 0), 0);
   const openAmount = Number(summary?.openAmount || 0);
   const overduePercent = openAmount > 0 ? Math.round((Number(summary?.overdueAmount || 0) / openAmount) * 100) : 0;
@@ -170,11 +168,6 @@ export default function DashboardPage() {
         <FeatureCard icon={FileCheck2} title="Comprovativos e DCR" description="Organização do fluxo manual para depósito, balcão, TPA e transferência de outro banco." />
         <FeatureCard icon={ReceiptText} title="Recibos institucionais" description="Base preparada para emitir, reenviar e validar documentos financeiros do aluno." />
       </section>
-
-      <footer className="flex flex-col gap-2 px-2 py-2 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between">
-        <p>© 2026 {env.institutionName}. Painel demonstrativo para aprovação institucional.</p>
-        <p className="font-semibold">SecretáriaPay Académico · versão demo premium</p>
-      </footer>
     </div>
   );
 }
@@ -197,7 +190,7 @@ function MetricCard({ title, value, description, icon: Icon, tone, helper }) {
     emerald: 'from-emerald-500 to-green-600 text-emerald-600 bg-emerald-50',
   };
   const [gradient, text, soft] = (tones[tone] || tones.blue).split(' ');
-  const gradientTo = tones[tone]?.split(' ').slice(0, 2).join(' ') || 'from-blue-500 to-blue-700';
+  const gradientTo = tones[tone]?.split(' ').slice(0, 2).join(' ') || gradient;
 
   return (
     <div className="group relative overflow-hidden rounded-[1.6rem] border border-white bg-white/90 p-5 shadow-[0_18px_60px_rgba(15,23,42,.075)] backdrop-blur-xl transition duration-200 hover:-translate-y-1 hover:shadow-[0_24px_70px_rgba(15,23,42,.11)]">
@@ -261,7 +254,7 @@ function FlowStep({ number, icon: Icon, title, description, tone }) {
   );
 }
 
-function AlertRow({ icon: Icon, title, description, value, wide })  {
+function AlertRow({ icon: Icon, title, description, value, wide }) {
   return (
     <div className="flex items-center gap-4 rounded-2xl border border-red-100 bg-gradient-to-r from-red-50 to-white px-4 py-3">
       <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white text-red-500 shadow-[0_10px_24px_rgba(239,68,68,.08)]">
@@ -392,20 +385,17 @@ function buildMonthlyEvolution(charges) {
   if (hasData) return months;
 
   return [
-    { label: 'Jan', value: 120000 },
-    { label: 'Fev', value: 150000 },
-    { label: 'Mar', value: 210000 },
-    { label: 'Abr', value: 250000 },
-    { label: 'Mai', value: 300000 },
-    { label: 'Jun', value: 400500 },
+    { label: 'Jan', value: 0 },
+    { label: 'Fev', value: 0 },
+    { label: 'Mar', value: 0 },
+    { label: 'Abr', value: 0 },
+    { label: 'Mai', value: 0 },
+    { label: 'Jun', value: 0 },
   ];
 }
 
 function buildRecentActivities(charges) {
   const fallback = [
-    { id: 'whatsapp', icon: MessageCircle, title: 'Guia enviada por WhatsApp', description: 'Fluxo demonstrativo com PDF e simulação', time: 'Hoje\nAgora', tone: { bg: 'bg-emerald-50', text: 'text-emerald-500' } },
-    { id: 'proof', icon: FileCheck2, title: 'Comprovativo submetido', description: 'Validação DCR preparada para demonstração', time: 'Hoje\n09:15', tone: { bg: 'bg-amber-50', text: 'text-amber-500' } },
-    { id: 'receipt', icon: ReceiptText, title: 'Recibo emitido', description: 'Documento financeiro enviado ao aluno', time: 'Ontem\n11:20', tone: { bg: 'bg-blue-50', text: 'text-blue-600' } },
     { id: 'health', icon: CheckCircle2, title: 'API operacional', description: 'Serviço financeiro disponível em produção', time: 'Online', tone: { bg: 'bg-emerald-50', text: 'text-emerald-600' } },
   ];
 
