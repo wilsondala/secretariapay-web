@@ -12,6 +12,7 @@ import {
   ShieldCheck,
   Sparkles,
   Users,
+  Workflow,
   X,
 } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
@@ -36,6 +37,7 @@ const groups = [
     label: 'Automação e análise',
     items: [
       ['WhatsApp', '/whatsapp', MessageCircle, 'Atendimento e avisos'],
+      ['Operações', '/operations', Workflow, 'Automação institucional'],
       ['Importações', '/imports', Import, 'Carga de dados'],
       ['Relatórios', '/reports', BarChart3, 'Gestão executiva'],
       ['Configurações', '/settings', Settings, 'Regras e ambiente'],
