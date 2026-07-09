@@ -1,11 +1,28 @@
-import { Bell, FileText, LogOut, Menu, RefreshCw, Send, ShieldCheck } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Bell, FileText, LogOut, Menu, PanelLeftClose, PanelLeftOpen, RefreshCw, Send, ShieldCheck } from 'lucide-react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import useAuth from '../shared/auth/useAuth.js';
 import { env } from '../config/env.js';
 
-export default function Topbar({ onMenuClick }) {
+const pageMap = {
+  '/dashboard': { section: 'Visão geral', title: 'Painel', description: 'Resumo executivo' },
+  '/students': { section: 'Operação financeira', title: 'Estudantes', description: 'Cadastro e contacto' },
+  '/charges': { section: 'Operação financeira', title: 'Cobranças', description: 'Propinas e guias' },
+  '/proofs': { section: 'Operação financeira', title: 'Comprovativos', description: 'Validação DCR' },
+  '/receipts': { section: 'Operação financeira', title: 'Recibos', description: 'Documentos emitidos' },
+  '/whatsapp': { section: 'Automação e análise', title: 'WhatsApp', description: 'Atendimento e avisos' },
+  '/operations': { section: 'Automação e análise', title: 'Operações', description: 'Automação institucional' },
+  '/imports': { section: 'Automação e análise', title: 'Importações', description: 'Carga de dados' },
+  '/reports': { section: 'Automação e análise', title: 'Relatórios', description: 'Gestão executiva' },
+  '/settings': { section: 'Automação e análise', title: 'Configurações', description: 'Regras e ambiente' },
+  '/demo': { section: 'Demonstração', title: 'Checklist', description: 'Validação do MVP' },
+  '/about': { section: 'Institucional', title: 'Sobre', description: 'Informações do sistema' },
+};
+
+export default function Topbar({ onMenuClick, collapsed, onToggleSidebar }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const page = pageMap[location.pathname] || { section: 'Painel administrativo', title: 'SecretáriaPay', description: 'Navegação institucional' };
 
   const handleLogout = () => {
     logout();
@@ -13,10 +30,14 @@ export default function Topbar({ onMenuClick }) {
   };
 
   return (
-    <header className="sticky top-0 z-30 border-b border-white/70 bg-white/80 shadow-[0_10px_30px_rgba(15,23,42,.045)] backdrop-blur-2xl">
-      <div className="mx-auto flex min-h-[78px] max-w-[1680px] items-center gap-3 px-4 sm:px-6 lg:px-8 xl:px-10">
+    <header className="sticky top-0 z-30 border-b border-white/70 bg-white/85 shadow-[0_10px_30px_rgba(15,23,42,.045)] backdrop-blur-2xl">
+      <div className="mx-auto flex min-h-[72px] max-w-[1680px] items-center gap-3 px-4 sm:px-6 lg:px-8 xl:px-10">
         <button className="rounded-2xl p-2.5 text-imetro-navy transition hover:bg-slate-100 lg:hidden" onClick={onMenuClick} aria-label="Abrir menu">
           <Menu size={25} />
+        </button>
+
+        <button className="hidden rounded-2xl p-2.5 text-imetro-navy transition hover:bg-slate-100 lg:inline-flex" onClick={onToggleSidebar} aria-label={collapsed ? 'Abrir menu lateral' : 'Recolher menu lateral'} title={collapsed ? 'Abrir menu lateral' : 'Recolher menu lateral'}>
+          {collapsed ? <PanelLeftOpen size={22} /> : <PanelLeftClose size={22} />}
         </button>
 
         <div className="min-w-0 flex-1">
@@ -69,6 +90,17 @@ export default function Topbar({ onMenuClick }) {
         </button>
 
         <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-[#07142D] to-[#0B2A5B] text-sm font-black text-white shadow-[0_14px_34px_rgba(7,20,45,.22)]">AD</div>
+      </div>
+
+      <div className="border-t border-slate-100/80 bg-white/72">
+        <div className="mx-auto flex min-h-[38px] max-w-[1680px] items-center gap-2 px-4 text-xs font-bold text-slate-500 sm:px-6 lg:px-8 xl:px-10">
+          <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-black uppercase tracking-wide text-slate-600">Navegação</span>
+          <span className="truncate">{page.section}</span>
+          <span className="text-slate-300">/</span>
+          <span className="truncate font-black text-imetro-navy">{page.title}</span>
+          <span className="hidden text-slate-300 sm:inline">—</span>
+          <span className="hidden truncate sm:inline">{page.description}</span>
+        </div>
       </div>
     </header>
   );
