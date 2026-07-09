@@ -102,6 +102,14 @@ export function chargeIsOverdue(charge) {
 
 export function normalizeCharge(charge) {
   const student = charge?.student || {};
+  const topLevelStudentName = charge?.studentName || charge?.student_name || charge?.fullName || charge?.full_name;
+  const topLevelStudentNumber = charge?.studentNumber || charge?.student_number || charge?.registrationNumber || charge?.registration_number;
+  const amount = Number(charge?.amount || charge?.baseAmount || charge?.base_amount || 0);
+  const fineAmount = Number(charge?.fineAmount || charge?.fine_amount || 0);
+  const interestAmount = Number(charge?.interestAmount || charge?.interest_amount || 0);
+  const discountAmount = Number(charge?.discountAmount || charge?.discount_amount || 0);
+  const totalAmount = Number(charge?.totalAmount || charge?.total_amount || amount + fineAmount + interestAmount - discountAmount || 0);
+
   return {
     ...charge,
     id: charge?.id,
@@ -109,14 +117,16 @@ export function normalizeCharge(charge) {
     description: charge?.description || '-',
     referenceMonth: charge?.referenceMonth || charge?.reference_month || '-',
     dueDate: charge?.dueDate || charge?.due_date || null,
-    amount: Number(charge?.amount || charge?.baseAmount || charge?.base_amount || 0),
-    fineAmount: Number(charge?.fineAmount || charge?.fine_amount || 0),
-    totalAmount: Number(charge?.totalAmount || charge?.total_amount || charge?.amount || 0),
+    amount,
+    fineAmount,
+    interestAmount,
+    discountAmount,
+    totalAmount,
     currency: charge?.currency || 'AOA',
     status: charge?.status || 'PENDING',
     student,
-    studentName: getStudentName(student),
-    studentNumber: getStudentNumber(student),
+    studentName: topLevelStudentName || getStudentName(student),
+    studentNumber: topLevelStudentNumber || getStudentNumber(student),
   };
 }
 
@@ -198,7 +208,7 @@ export function normalizeReceipt(receipt) {
     paymentMethod: receipt?.paymentMethod || receipt?.payment_method || receipt?.method || '-',
     issuedAt: receipt?.issuedAt || receipt?.issued_at || receipt?.createdAt || receipt?.created_at,
     student,
-    studentName: getStudentName(student),
-    studentNumber: getStudentNumber(student),
+    studentName: receipt?.studentName || receipt?.student_name || getStudentName(student),
+    studentNumber: receipt?.studentNumber || receipt?.student_number || getStudentNumber(student),
   };
 }
