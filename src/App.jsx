@@ -5,7 +5,7 @@ import PublicHomePage from './pages/PublicHomePage.jsx';
 import PublicGuidePage from './pages/PublicGuidePage.jsx';
 import LoginPage from './pages/LoginPage.jsx';
 import DashboardPage from './pages/DashboardPage.jsx';
-import StudentsPage from './pages/StudentsPage.jsx';
+import StudentsPage from './pages/StudentsPageFinanceSimple.jsx';
 import ChargesPage from './pages/ChargesPageV2.jsx';
 import ProofsPage from './pages/ProofsPage.jsx';
 import ReceiptsPage from './pages/ReceiptsPage.jsx';
