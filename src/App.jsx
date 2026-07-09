@@ -6,7 +6,7 @@ import PublicGuidePage from './pages/PublicGuidePage.jsx';
 import LoginPage from './pages/LoginPage.jsx';
 import DashboardPage from './pages/DashboardPage.jsx';
 import StudentsPage from './pages/StudentsPage.jsx';
-import ChargesPage from './pages/ChargesPage.jsx';
+import ChargesPage from './pages/ChargesPageV2.jsx';
 import ProofsPage from './pages/ProofsPage.jsx';
 import ReceiptsPage from './pages/ReceiptsPage.jsx';
 import WhatsappPage from './pages/WhatsappPage.jsx';
