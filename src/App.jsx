@@ -12,6 +12,7 @@ import ReceiptsPage from './pages/ReceiptsPage.jsx';
 import WhatsappPage from './pages/WhatsappPage.jsx';
 import ImportsPage from './pages/ImportsPage.jsx';
 import SettingsPage from './pages/SettingsPage.jsx';
+import OperationsPage from './pages/OperationsPage.jsx';
 import DemoChecklistPage from './pages/DemoChecklistPage.jsx';
 import AboutPage from './pages/AboutPage.jsx';
 import PublicDemoCarouselPage from './pages/PublicDemoCarouselPage.jsx';
@@ -34,6 +35,7 @@ export default function App() {
           <Route path="/proofs" element={<ProofsPage />} />
           <Route path="/receipts" element={<ReceiptsPage />} />
           <Route path="/whatsapp" element={<WhatsappPage />} />
+          <Route path="/operations" element={<OperationsPage />} />
           <Route path="/imports" element={<ImportsPage />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/reports" element={<ReportsPage />} />
