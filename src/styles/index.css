@@ -70,3 +70,35 @@ a { text-decoration: none; color: inherit; }
   .panel-subtitle { @apply mt-2 text-sm font-medium leading-6 text-slate-500 dark:text-slate-400; }
   .premium-card { @apply rounded-[18px] border border-slate-200 bg-white shadow-premium dark:border-slate-800 dark:bg-slate-900 dark:shadow-none; }
 }
+
+html.dark .bg-white,
+html.dark .card,
+html.dark .card-premium,
+html.dark .premium-card {
+  background-color: rgb(15 23 42) !important;
+}
+
+html.dark .bg-slate-50,
+html.dark .bg-slate-100 {
+  background-color: rgb(17 24 39) !important;
+}
+
+html.dark .border-white,
+html.dark .border-slate-100,
+html.dark .border-slate-200 {
+  border-color: rgb(30 41 59) !important;
+}
+
+html.dark .text-imetro-ink,
+html.dark .text-imetro-navy,
+html.dark .text-slate-950,
+html.dark .text-slate-900,
+html.dark .text-slate-800 {
+  color: #F8FAFC !important;
+}
+
+html.dark .text-slate-700,
+html.dark .text-slate-600,
+html.dark .text-slate-500 {
+  color: #94A3B8 !important;
+}
