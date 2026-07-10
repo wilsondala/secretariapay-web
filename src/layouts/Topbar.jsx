@@ -23,6 +23,7 @@ export default function Topbar({ onMenuClick, collapsed, onToggleSidebar }) {
   const navigate = useNavigate();
   const location = useLocation();
   const page = pageMap[location.pathname] || { section: 'Painel administrativo', title: 'SecretáriaPay', description: 'Navegação institucional' };
+  const fixedClass = collapsed ? 'lg:left-[96px]' : 'lg:left-[292px]';
 
   const handleLogout = () => {
     logout();
@@ -30,7 +31,7 @@ export default function Topbar({ onMenuClick, collapsed, onToggleSidebar }) {
   };
 
   return (
-    <header className="sticky top-0 z-30 border-b border-white/70 bg-white/85 shadow-[0_10px_30px_rgba(15,23,42,.045)] backdrop-blur-2xl">
+    <header className={`fixed left-0 right-0 top-0 z-50 border-b border-white/70 bg-white/90 shadow-[0_10px_30px_rgba(15,23,42,.045)] backdrop-blur-2xl transition-all duration-300 ${fixedClass}`}>
       <div className="mx-auto flex min-h-[72px] max-w-[1680px] items-center gap-3 px-4 sm:px-6 lg:px-8 xl:px-10">
         <button className="rounded-2xl p-2.5 text-imetro-navy transition hover:bg-slate-100 lg:hidden" onClick={onMenuClick} aria-label="Abrir menu">
           <Menu size={25} />
