@@ -4,4 +4,5 @@ import { BrowserRouter } from 'react-router-dom';
 import { AuthProvider } from './shared/auth/AuthContext.jsx';
 import App from './App.jsx';
 import './styles/index.css';
+import './styles/dark-contrast-fixes.css';
 ReactDOM.createRoot(document.getElementById('root')).render(<React.StrictMode><BrowserRouter><AuthProvider><App/></AuthProvider></BrowserRouter></React.StrictMode>);
