@@ -1,0 +1,29 @@
+/* Correção isolada do botão "Rodar notificações" no hero da tela Operações.
+   Este arquivo é carregado após os ajustes globais de densidade para impedir
+   que o contraste do botão seja perdido no modo escuro ou no zoom de 100%. */
+
+.panel-page .premium-hero .btn-white {
+  background-color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.9) !important;
+  color: #0f172a !important;
+  box-shadow: 0 8px 22px rgba(2, 6, 23, 0.18) !important;
+  opacity: 1 !important;
+}
+
+.panel-page .premium-hero .btn-white:hover {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+.panel-page .premium-hero .btn-white:disabled {
+  background-color: #e5e7eb !important;
+  border-color: #e5e7eb !important;
+  color: #64748b !important;
+  opacity: 0.72 !important;
+}
+
+html.dark .panel-page .premium-hero .btn-white {
+  background-color: #f8fafc !important;
+  border-color: rgba(255, 255, 255, 0.88) !important;
+  color: #0f172a !important;
+}
