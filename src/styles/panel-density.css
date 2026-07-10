@@ -1,0 +1,67 @@
+/* Densidade global do painel para visualização confortável em zoom 100%.
+   Atua apenas no layout e espaçamento; não altera componentes nem regras de negócio. */
+
+.panel-page {
+  padding-top: 84px !important;
+}
+
+.panel-page > div {
+  gap: 14px !important;
+}
+
+.panel-page .premium-hero {
+  padding: 20px 24px !important;
+}
+
+.panel-page .premium-hero h1 {
+  margin-top: 10px !important;
+  font-size: clamp(26px, 2.15vw, 34px) !important;
+  line-height: 1.08 !important;
+}
+
+.panel-page .premium-hero p {
+  margin-top: 8px !important;
+  line-height: 1.45 !important;
+}
+
+.panel-page .premium-pill {
+  padding-top: 5px !important;
+  padding-bottom: 5px !important;
+}
+
+.panel-page section.grid {
+  gap: 12px !important;
+}
+
+.panel-page .card,
+.panel-page .card-premium,
+.panel-page .premium-card {
+  padding: 16px !important;
+}
+
+.panel-page .page-title {
+  font-size: clamp(24px, 2vw, 30px) !important;
+  line-height: 1.1 !important;
+}
+
+.panel-page .page-subtitle {
+  margin-top: 6px !important;
+  line-height: 1.45 !important;
+}
+
+@media (min-width: 1280px) {
+  .panel-page {
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+  }
+}
+
+@media (max-width: 1023px) {
+  .panel-page {
+    padding-top: 88px !important;
+  }
+
+  .panel-page .premium-hero {
+    padding: 18px !important;
+  }
+}
