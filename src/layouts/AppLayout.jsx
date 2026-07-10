@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import Sidebar from './Sidebar.jsx';
 import Topbar from './Topbar.jsx';
 
@@ -9,6 +9,7 @@ function getInitialTheme() {
 }
 
 export default function AppLayout() {
+  const location = useLocation();
   const [open, setOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(() => localStorage.getItem('secretariapay.sidebarCollapsed') === 'true');
   const [theme, setTheme] = useState(getInitialTheme);
@@ -25,6 +26,7 @@ export default function AppLayout() {
 
   const toggleCollapsed = () => setCollapsed((value) => !value);
   const toggleTheme = () => setTheme((value) => (value === 'dark' ? 'light' : 'dark'));
+  const routeClass = location.pathname === '/operations' ? 'operations-page' : '';
 
   return (
     <div className="app-shell relative min-h-screen overflow-x-hidden text-[14px] text-slate-950 transition-colors duration-300 dark:text-white">
@@ -36,7 +38,7 @@ export default function AppLayout() {
       <Sidebar open={open} collapsed={collapsed} onClose={() => setOpen(false)} onToggleCollapsed={toggleCollapsed} />
       <div className={collapsed ? 'relative transition-all duration-300 lg:pl-[84px]' : 'relative transition-all duration-300 lg:pl-[252px]'}>
         <Topbar onMenuClick={() => setOpen(true)} collapsed={collapsed} onToggleSidebar={toggleCollapsed} theme={theme} onToggleTheme={toggleTheme} />
-        <main className="relative mx-auto w-full max-w-[1600px] px-4 pb-10 pt-[96px] sm:px-6 lg:px-7 xl:px-8">
+        <main className={`relative mx-auto w-full max-w-[1600px] px-4 pb-10 pt-[96px] sm:px-6 lg:px-7 xl:px-8 ${routeClass}`}>
           <Outlet />
         </main>
       </div>
