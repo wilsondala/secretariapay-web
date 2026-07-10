@@ -159,3 +159,21 @@ html.dark [class*="text-orange-800"],
 html.dark [class*="text-orange-900"] {
   color: #fef3c7 !important;
 }
+
+/* Mantém os botões claros dos banners totalmente legíveis no modo escuro.
+   Corrige especificamente o botão "Rodar notificações" da tela Operações. */
+html.dark .btn-white {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+  border-color: rgba(255, 255, 255, 0.78) !important;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.2) !important;
+}
+
+html.dark .btn-white:hover {
+  background-color: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
+html.dark .btn-white:disabled {
+  opacity: 0.55;
+}
