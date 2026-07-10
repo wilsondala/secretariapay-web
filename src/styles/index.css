@@ -72,18 +72,22 @@ a { text-decoration: none; color: inherit; }
 }
 
 html.dark .bg-white,
+html.dark [class*="bg-white/"],
 html.dark .card,
 html.dark .card-premium,
 html.dark .premium-card {
-  background-color: rgb(15 23 42) !important;
+  background-color: rgb(15 23 42 / 0.92) !important;
 }
 
 html.dark .bg-slate-50,
-html.dark .bg-slate-100 {
-  background-color: rgb(17 24 39) !important;
+html.dark .bg-slate-100,
+html.dark [class*="bg-slate-50/"],
+html.dark [class*="bg-slate-100/"] {
+  background-color: rgb(17 24 39 / 0.92) !important;
 }
 
 html.dark .border-white,
+html.dark [class*="border-white/"],
 html.dark .border-slate-100,
 html.dark .border-slate-200 {
   border-color: rgb(30 41 59) !important;
