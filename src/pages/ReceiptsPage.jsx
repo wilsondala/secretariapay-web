@@ -60,7 +60,7 @@ export default function ReceiptsPage() {
   }, [receipts, search, status]);
 
   const stats = useMemo(() => {
-    const issued = receipts.filter((item) => ['ISSUED', 'ACTIVE', 'SENT'].includes(String(item.status).toUpperCase()));
+    const issued = receipts.filter((item) => ['VALID', 'ISSUED', 'ACTIVE', 'SENT'].includes(String(item.status).toUpperCase()));
     const cancelled = receipts.filter((item) => ['CANCELLED', 'CANCELED'].includes(String(item.status).toUpperCase()));
     return {
       total: receipts.length,
@@ -113,6 +113,7 @@ export default function ReceiptsPage() {
               </div>
               <select className="input-premium" value={status} onChange={(event) => setStatus(event.target.value)}>
                 <option value="ALL">Todos estados</option>
+                <option value="VALID">Válido</option>
                 <option value="ISSUED">Emitido</option>
                 <option value="SENT">Enviado</option>
                 <option value="CANCELLED">Cancelado</option>
