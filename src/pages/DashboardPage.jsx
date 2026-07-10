@@ -67,21 +67,21 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <section className="relative overflow-hidden rounded-[2rem] border border-white/30 bg-gradient-to-br from-[#061936] via-[#08285a] to-[#061936] p-6 text-white shadow-[0_28px_90px_rgba(7,20,45,.22)] sm:p-7 lg:p-8">
-        <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-blue-300/20 blur-3xl" />
-        <div className="pointer-events-none absolute bottom-[-8rem] left-1/3 h-64 w-64 rounded-full bg-imetro-gold/20 blur-3xl" />
+      <section className="premium-hero">
+        <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-sky-300/20 blur-3xl" />
+        <div className="pointer-events-none absolute bottom-[-8rem] left-1/3 h-64 w-64 rounded-full bg-[#F2B300]/20 blur-3xl" />
         <div className="relative grid gap-7 xl:grid-cols-[1.35fr_.65fr] xl:items-end">
           <div>
             <div className="flex flex-wrap items-center gap-2">
-              <span className="rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-[11px] font-black uppercase tracking-[.18em] text-white/80">Painel institucional · DCR</span>
-              <span className="rounded-full border border-emerald-300/20 bg-emerald-400/10 px-3 py-1.5 text-[11px] font-black uppercase tracking-[.14em] text-emerald-200">
+              <span className="premium-pill">Painel institucional · DCR</span>
+              <span className="rounded-full border border-emerald-300/20 bg-emerald-400/10 px-3 py-1.5 text-[11px] font-extrabold uppercase tracking-[.14em] text-emerald-100">
                 {online ? 'API online' : 'API offline'}
               </span>
             </div>
-            <h1 className="mt-5 text-3xl font-black tracking-tight sm:text-4xl lg:text-5xl">
-              Secretária<span className="text-imetro-gold">Pay</span> Académico
+            <h1 className="mt-5 text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl">
+              Secretária<span className="text-[#F2B300]">Pay</span> Académico
             </h1>
-            <p className="mt-4 max-w-4xl text-sm leading-7 text-white/82 sm:text-base">
+            <p className="mt-4 max-w-4xl text-sm font-medium leading-7 text-white/82 sm:text-base">
               Centro executivo para controlo de propinas, guias de pagamento, comprovativos, recibos e automação financeira via WhatsApp do {env.institutionName}.
             </p>
 
@@ -92,19 +92,19 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          <div className="rounded-[1.75rem] border border-white/12 bg-white/10 p-5 backdrop-blur-xl">
+          <div className="rounded-[22px] border border-white/16 bg-white/10 p-5 backdrop-blur-xl dark:bg-white/[.06]">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <p className="text-[11px] font-black uppercase tracking-[.18em] text-white/55">Saúde operacional</p>
-                <p className="mt-3 text-4xl font-black">{automationScore}%</p>
+                <p className="text-[11px] font-extrabold uppercase tracking-[.18em] text-white/60">Saúde operacional</p>
+                <p className="mt-3 text-4xl font-extrabold text-white">{automationScore}%</p>
                 <p className="mt-2 text-sm font-semibold text-white/72">Índice demonstrativo de automação financeira</p>
               </div>
-              <span className="flex h-13 w-13 items-center justify-center rounded-2xl bg-emerald-400/14 text-emerald-200">
+              <span className="flex h-13 w-13 items-center justify-center rounded-2xl bg-emerald-400/14 text-emerald-100">
                 <TrendingUp size={26} />
               </span>
             </div>
             <div className="mt-5 h-2 rounded-full bg-white/12">
-              <div className="h-2 rounded-full bg-gradient-to-r from-emerald-300 to-imetro-gold" style={{ width: `${automationScore}%` }} />
+              <div className="h-2 rounded-full bg-gradient-to-r from-emerald-300 to-[#F2B300]" style={{ width: `${automationScore}%` }} />
             </div>
           </div>
         </div>
@@ -145,7 +145,7 @@ export default function DashboardPage() {
             <div className="w-full space-y-4 text-sm">
               <Legend color="bg-emerald-500" title="Valores em dia" value={`${formatMoney(onTimeAmount)} (${onTimePercent}%)`} />
               <Legend color="bg-red-500" title="Valores vencidos" value={`${formatMoney(summary.overdueAmount)} (${overduePercent}%)`} />
-              <Legend color="bg-imetro-navy" title="Total em aberto" value={formatMoney(summary.openAmount)} />
+              <Legend color="bg-[#005AA7]" title="Total em aberto" value={formatMoney(summary.openAmount)} />
             </div>
           </div>
         </PanelCard>
@@ -174,35 +174,54 @@ export default function DashboardPage() {
 
 function HeroBadge({ icon: Icon, title, text }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/[.08] p-4 backdrop-blur-xl">
-      <Icon size={20} className="text-imetro-gold" />
-      <p className="mt-3 text-sm font-black">{title}</p>
-      <p className="mt-1 text-xs font-semibold text-white/58">{text}</p>
+    <div className="rounded-[18px] border border-white/12 bg-white/[.08] p-4 backdrop-blur-xl transition hover:bg-white/[.12]">
+      <Icon size={20} className="text-[#F2B300]" />
+      <p className="mt-3 text-sm font-extrabold text-white">{title}</p>
+      <p className="mt-1 text-xs font-semibold text-white/62">{text}</p>
     </div>
   );
 }
 
 function MetricCard({ title, value, description, icon: Icon, tone, helper }) {
   const tones = {
-    blue: 'from-blue-500 to-blue-700 text-blue-600 bg-blue-50',
-    amber: 'from-amber-400 to-orange-500 text-amber-600 bg-amber-50',
-    red: 'from-red-500 to-red-600 text-red-600 bg-red-50',
-    emerald: 'from-emerald-500 to-green-600 text-emerald-600 bg-emerald-50',
+    blue: {
+      accent: 'bg-blue-500 text-white ring-blue-200/70 dark:bg-sky-500 dark:ring-sky-400/20',
+      pill: 'bg-blue-50 text-blue-700 dark:bg-sky-500/12 dark:text-sky-200',
+      border: 'hover:border-blue-300 dark:hover:border-sky-400/40',
+      glow: 'bg-blue-400/20 dark:bg-sky-400/10',
+    },
+    amber: {
+      accent: 'bg-amber-500 text-white ring-amber-200/70 dark:bg-amber-400 dark:text-[#082B4B] dark:ring-amber-300/20',
+      pill: 'bg-amber-50 text-amber-700 dark:bg-amber-400/12 dark:text-amber-200',
+      border: 'hover:border-amber-300 dark:hover:border-amber-300/40',
+      glow: 'bg-amber-300/24 dark:bg-amber-300/10',
+    },
+    red: {
+      accent: 'bg-red-500 text-white ring-red-200/70 dark:bg-red-500 dark:ring-red-300/20',
+      pill: 'bg-red-50 text-red-700 dark:bg-red-500/12 dark:text-red-200',
+      border: 'hover:border-red-300 dark:hover:border-red-300/40',
+      glow: 'bg-red-300/20 dark:bg-red-400/10',
+    },
+    emerald: {
+      accent: 'bg-emerald-500 text-white ring-emerald-200/70 dark:bg-emerald-400 dark:text-[#082B4B] dark:ring-emerald-300/20',
+      pill: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-400/12 dark:text-emerald-200',
+      border: 'hover:border-emerald-300 dark:hover:border-emerald-300/40',
+      glow: 'bg-emerald-300/20 dark:bg-emerald-300/10',
+    },
   };
-  const [gradient, text, soft] = (tones[tone] || tones.blue).split(' ');
-  const gradientTo = tones[tone]?.split(' ').slice(0, 2).join(' ') || gradient;
+  const current = tones[tone] || tones.blue;
 
   return (
-    <div className="group relative overflow-hidden rounded-[1.6rem] border border-white bg-white/90 p-5 shadow-[0_18px_60px_rgba(15,23,42,.075)] backdrop-blur-xl transition duration-200 hover:-translate-y-1 hover:shadow-[0_24px_70px_rgba(15,23,42,.11)]">
-      <div className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full bg-slate-100 blur-2xl" />
+    <div className={`group relative overflow-hidden rounded-[20px] border border-[#E6F0FB] bg-white p-5 shadow-[0_18px_55px_rgba(8,43,75,.07)] transition duration-200 hover:-translate-y-1 dark:border-white/10 dark:bg-[#082B4B]/78 dark:shadow-none ${current.border}`}>
+      <div className={`pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full blur-2xl ${current.glow}`} />
       <div className="relative flex items-start justify-between gap-5">
         <div className="min-w-0 flex-1">
-          <span className={`inline-flex rounded-full ${soft} px-2.5 py-1 text-[10px] font-black uppercase tracking-wide ${text}`}>{helper}</span>
-          <p className="mt-4 text-sm font-black uppercase tracking-wide text-[#10254a]">{title}</p>
-          <p className="mt-3 truncate text-[2rem] font-black leading-none text-imetro-navy">{value}</p>
-          <p className="mt-3 text-xs font-semibold leading-5 text-[#51657f]">{description}</p>
+          <span className={`inline-flex rounded-full px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wide ${current.pill}`}>{helper}</span>
+          <p className="mt-4 text-[13px] font-extrabold uppercase tracking-wide text-[#082B4B] dark:text-white/82">{title}</p>
+          <p className="mt-3 truncate text-[2rem] font-extrabold leading-none tracking-[-.04em] text-[#082B4B] dark:text-white">{value}</p>
+          <p className="mt-3 text-xs font-semibold leading-5 text-slate-500 dark:text-slate-300">{description}</p>
         </div>
-        <div className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br ${gradientTo} text-white shadow-lg`}>
+        <div className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl shadow-lg ring-1 dark:shadow-none ${current.accent}`}>
           <Icon size={27} strokeWidth={2.2} />
         </div>
       </div>
@@ -212,11 +231,11 @@ function MetricCard({ title, value, description, icon: Icon, tone, helper }) {
 
 function PanelCard({ title, subtitle, action, children }) {
   return (
-    <div className="rounded-[1.6rem] border border-white bg-white/92 p-5 shadow-[0_18px_60px_rgba(15,23,42,.07)] backdrop-blur-xl">
+    <div className="rounded-[20px] border border-[#E6F0FB] bg-white p-5 shadow-[0_18px_55px_rgba(8,43,75,.06)] backdrop-blur-xl dark:border-white/10 dark:bg-[#082B4B]/78 dark:shadow-none">
       <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-start">
         <div>
-          <h2 className="text-lg font-black text-imetro-navy">{title}</h2>
-          {subtitle && <p className="mt-2 text-sm font-semibold leading-6 text-[#51657f]">{subtitle}</p>}
+          <h2 className="text-[15px] font-extrabold text-[#082B4B] dark:text-white">{title}</h2>
+          {subtitle && <p className="mt-2 text-sm font-semibold leading-6 text-slate-500 dark:text-slate-300">{subtitle}</p>}
         </div>
         {action}
       </div>
@@ -227,7 +246,7 @@ function PanelCard({ title, subtitle, action, children }) {
 
 function RefreshButton({ onClick }) {
   return (
-    <button className="inline-flex w-fit items-center gap-2 rounded-2xl border border-slate-200 bg-white px-3.5 py-2 text-sm font-black text-slate-700 shadow-[0_10px_28px_rgba(15,23,42,.04)] transition hover:bg-slate-50" onClick={onClick}>
+    <button className="inline-flex h-10 w-fit items-center gap-2 rounded-[14px] border border-[#D8E6F3] bg-white px-3.5 text-sm font-bold text-[#082B4B] shadow-sm transition hover:bg-[#F8FAFC] dark:border-white/12 dark:bg-[#061F36]/70 dark:text-white dark:shadow-none dark:hover:bg-white/10" onClick={onClick}>
       <RefreshCw size={16} />
       Atualizar
     </button>
@@ -236,35 +255,35 @@ function RefreshButton({ onClick }) {
 
 function FlowStep({ number, icon: Icon, title, description, tone }) {
   const tones = {
-    blue: 'bg-blue-50 text-blue-600 ring-blue-100',
-    indigo: 'bg-indigo-50 text-indigo-600 ring-indigo-100',
-    emerald: 'bg-emerald-50 text-emerald-600 ring-emerald-100',
-    amber: 'bg-amber-50 text-amber-600 ring-amber-100',
-    violet: 'bg-violet-50 text-violet-600 ring-violet-100',
+    blue: 'bg-blue-50 text-blue-600 ring-blue-100 dark:bg-sky-500/12 dark:text-sky-200 dark:ring-sky-400/20',
+    indigo: 'bg-indigo-50 text-indigo-600 ring-indigo-100 dark:bg-indigo-500/12 dark:text-indigo-200 dark:ring-indigo-400/20',
+    emerald: 'bg-emerald-50 text-emerald-600 ring-emerald-100 dark:bg-emerald-400/12 dark:text-emerald-200 dark:ring-emerald-300/20',
+    amber: 'bg-amber-50 text-amber-600 ring-amber-100 dark:bg-amber-400/12 dark:text-amber-200 dark:ring-amber-300/20',
+    violet: 'bg-violet-50 text-violet-600 ring-violet-100 dark:bg-violet-400/12 dark:text-violet-200 dark:ring-violet-300/20',
   };
   return (
-    <div className="relative rounded-2xl border border-slate-100 bg-gradient-to-b from-white to-slate-50 p-4 shadow-[0_10px_28px_rgba(15,23,42,.04)]">
-      <span className="absolute right-3 top-3 flex h-7 w-7 items-center justify-center rounded-full bg-imetro-navy text-[11px] font-black text-white">{number}</span>
+    <div className="relative rounded-[18px] border border-[#E6F0FB] bg-gradient-to-b from-white to-[#F8FAFC] p-4 shadow-sm transition hover:-translate-y-0.5 dark:border-white/10 dark:from-[#061F36]/80 dark:to-[#082B4B]/70 dark:shadow-none">
+      <span className="absolute right-3 top-3 flex h-7 w-7 items-center justify-center rounded-full bg-[#082B4B] text-[11px] font-extrabold text-white dark:bg-white/12">{number}</span>
       <div className={`flex h-12 w-12 items-center justify-center rounded-2xl ring-1 ${tones[tone] || tones.blue}`}>
         <Icon size={23} strokeWidth={2.2} />
       </div>
-      <p className="mt-5 text-sm font-black leading-5 text-imetro-navy">{title}</p>
-      <p className="mt-2 text-xs font-semibold leading-5 text-[#51657f]">{description}</p>
+      <p className="mt-5 text-sm font-extrabold leading-5 text-[#082B4B] dark:text-white">{title}</p>
+      <p className="mt-2 text-xs font-semibold leading-5 text-slate-500 dark:text-slate-300">{description}</p>
     </div>
   );
 }
 
 function AlertRow({ icon: Icon, title, description, value, wide }) {
   return (
-    <div className="flex items-center gap-4 rounded-2xl border border-red-100 bg-gradient-to-r from-red-50 to-white px-4 py-3">
-      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white text-red-500 shadow-[0_10px_24px_rgba(239,68,68,.08)]">
+    <div className="flex items-center gap-4 rounded-[18px] border border-red-100 bg-gradient-to-r from-red-50 to-white px-4 py-3 dark:border-red-400/18 dark:from-red-500/12 dark:to-[#061F36]/70">
+      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white text-red-500 shadow-sm dark:bg-red-500/14 dark:text-red-200 dark:shadow-none">
         <Icon size={22} />
       </div>
       <div className="min-w-0 flex-1">
-        <p className="truncate text-sm font-black text-imetro-navy">{title}</p>
-        <p className="mt-1 text-xs font-semibold leading-4 text-[#51657f]">{description}</p>
+        <p className="truncate text-sm font-extrabold text-[#082B4B] dark:text-white">{title}</p>
+        <p className="mt-1 text-xs font-semibold leading-4 text-slate-500 dark:text-slate-300">{description}</p>
       </div>
-      <p className={`shrink-0 text-right font-black text-red-600 ${wide ? 'text-lg' : 'text-2xl'}`}>{value}</p>
+      <p className={`shrink-0 text-right font-extrabold text-red-600 dark:text-red-200 ${wide ? 'text-lg' : 'text-2xl'}`}>{value}</p>
     </div>
   );
 }
@@ -272,10 +291,10 @@ function AlertRow({ icon: Icon, title, description, value, wide }) {
 function DonutChart({ onTimePercent, total }) {
   const safeOnTime = Math.max(0, Math.min(100, onTimePercent));
   return (
-    <div className="relative h-48 w-48 shrink-0 rounded-full shadow-[0_18px_45px_rgba(15,23,42,.08)]" style={{ background: `conic-gradient(#22c55e 0 ${safeOnTime}%, #ef4444 ${safeOnTime}% 100%)` }}>
-      <div className="absolute inset-7 flex flex-col items-center justify-center rounded-full bg-white text-center shadow-inner">
-        <p className="text-base font-black text-imetro-navy">{formatMoney(total)}</p>
-        <p className="mt-1 text-xs font-bold text-[#51657f]">Total em aberto</p>
+    <div className="relative h-48 w-48 shrink-0 rounded-full shadow-[0_18px_45px_rgba(8,43,75,.10)] dark:shadow-none" style={{ background: `conic-gradient(#22c55e 0 ${safeOnTime}%, #ef4444 ${safeOnTime}% 100%)` }}>
+      <div className="absolute inset-7 flex flex-col items-center justify-center rounded-full bg-white text-center shadow-inner dark:bg-[#061F36] dark:shadow-none">
+        <p className="text-base font-extrabold text-[#082B4B] dark:text-white">{formatMoney(total)}</p>
+        <p className="mt-1 text-xs font-bold text-slate-500 dark:text-slate-300">Total em aberto</p>
       </div>
     </div>
   );
@@ -283,11 +302,11 @@ function DonutChart({ onTimePercent, total }) {
 
 function Legend({ color, title, value }) {
   return (
-    <div className="flex items-start gap-3 rounded-2xl border border-slate-100 bg-slate-50/70 p-3">
+    <div className="flex items-start gap-3 rounded-[16px] border border-[#E6F0FB] bg-[#F8FAFC] p-3 dark:border-white/10 dark:bg-[#061F36]/65">
       <span className={`mt-1 h-4 w-4 shrink-0 rounded ${color}`} />
       <div>
-        <p className="font-black text-[#10254a]">{title}</p>
-        <p className="mt-1 text-xs font-semibold text-[#51657f]">{value}</p>
+        <p className="font-extrabold text-[#082B4B] dark:text-white">{title}</p>
+        <p className="mt-1 text-xs font-semibold text-slate-500 dark:text-slate-300">{value}</p>
       </div>
     </div>
   );
@@ -307,12 +326,12 @@ function LineChart({ data }) {
   const area = `${path} L ${points[points.length - 1].x} ${height - padding.bottom} L ${points[0].x} ${height - padding.bottom} Z`;
 
   return (
-    <div className="mt-4 overflow-hidden rounded-xl">
+    <div className="mt-4 overflow-hidden rounded-xl text-[#005AA7] dark:text-sky-300">
       <svg className="h-[275px] w-full" viewBox={`0 0 ${width} ${height}`} role="img" aria-label="Evolução das cobranças">
         <defs>
           <linearGradient id="chargesAreaPremium" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stopColor="#0B4EA2" stopOpacity="0.24" />
-            <stop offset="100%" stopColor="#0B4EA2" stopOpacity="0.02" />
+            <stop offset="0%" stopColor="currentColor" stopOpacity="0.24" />
+            <stop offset="100%" stopColor="currentColor" stopOpacity="0.02" />
           </linearGradient>
         </defs>
         {[0, 0.25, 0.5, 0.75, 1].map((ratio) => {
@@ -320,18 +339,18 @@ function LineChart({ data }) {
           const label = `${Math.round(((1 - ratio) * maxValue) / 1000)}K`;
           return (
             <g key={ratio}>
-              <line x1={padding.left} x2={width - padding.right} y1={y} y2={y} stroke="#e2e8f0" strokeWidth="1" />
-              <text x={padding.left - 12} y={y + 4} textAnchor="end" fontSize="12" fontWeight="800" fill="#334155">{label}</text>
+              <line x1={padding.left} x2={width - padding.right} y1={y} y2={y} stroke="currentColor" strokeOpacity="0.18" strokeWidth="1" />
+              <text x={padding.left - 12} y={y + 4} textAnchor="end" fontSize="12" fontWeight="800" fill="currentColor" opacity="0.82">{label}</text>
             </g>
           );
         })}
         <path d={area} fill="url(#chargesAreaPremium)" />
-        <path d={path} fill="none" stroke="#0B4EA2" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+        <path d={path} fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
         {points.map((point) => (
           <g key={point.label}>
-            <circle cx={point.x} cy={point.y} r="6" fill="white" stroke="#0B4EA2" strokeWidth="4" />
-            <text x={point.x} y={point.y - 14} textAnchor="middle" fontSize="12" fontWeight="900" fill="#0f172a">{formatCompact(point.value)}</text>
-            <text x={point.x} y={height - 12} textAnchor="middle" fontSize="12" fontWeight="800" fill="#475569">{point.label}</text>
+            <circle cx={point.x} cy={point.y} r="6" fill="white" stroke="currentColor" strokeWidth="4" />
+            <text x={point.x} y={point.y - 14} textAnchor="middle" fontSize="12" fontWeight="900" fill="currentColor">{formatCompact(point.value)}</text>
+            <text x={point.x} y={height - 12} textAnchor="middle" fontSize="12" fontWeight="800" fill="currentColor" opacity="0.78">{point.label}</text>
           </g>
         ))}
       </svg>
@@ -341,27 +360,27 @@ function LineChart({ data }) {
 
 function RecentActivity({ icon: Icon, title, description, time, tone }) {
   return (
-    <div className="grid grid-cols-[40px_1fr_auto] items-start gap-3 rounded-2xl border border-slate-100 bg-slate-50/60 p-3">
+    <div className="grid grid-cols-[40px_1fr_auto] items-start gap-3 rounded-[16px] border border-[#E6F0FB] bg-[#F8FAFC] p-3 dark:border-white/10 dark:bg-[#061F36]/65">
       <div className={`flex h-10 w-10 items-center justify-center rounded-2xl ${tone.bg} ${tone.text}`}>
         <Icon size={21} />
       </div>
       <div className="min-w-0">
-        <p className="truncate text-sm font-black text-imetro-navy">{title}</p>
-        <p className="mt-1 text-xs font-semibold leading-5 text-[#51657f]">{description}</p>
+        <p className="truncate text-sm font-extrabold text-[#082B4B] dark:text-white">{title}</p>
+        <p className="mt-1 text-xs font-semibold leading-5 text-slate-500 dark:text-slate-300">{description}</p>
       </div>
-      <p className="whitespace-pre-line text-right text-xs font-semibold leading-5 text-[#64748b]">{time}</p>
+      <p className="whitespace-pre-line text-right text-xs font-semibold leading-5 text-slate-500 dark:text-slate-400">{time}</p>
     </div>
   );
 }
 
 function FeatureCard({ icon: Icon, title, description }) {
   return (
-    <div className="rounded-[1.6rem] border border-white bg-white/92 p-5 shadow-[0_18px_60px_rgba(15,23,42,.06)]">
-      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-imetro-navy text-imetro-gold">
+    <div className="rounded-[20px] border border-[#E6F0FB] bg-white p-5 shadow-[0_18px_55px_rgba(8,43,75,.06)] dark:border-white/10 dark:bg-[#082B4B]/78 dark:shadow-none">
+      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#082B4B] text-[#F2B300] dark:bg-white/10 dark:text-[#F2B300]">
         <Icon size={23} />
       </div>
-      <p className="mt-5 text-base font-black text-imetro-navy">{title}</p>
-      <p className="mt-2 text-sm font-semibold leading-6 text-[#51657f]">{description}</p>
+      <p className="mt-5 text-base font-extrabold text-[#082B4B] dark:text-white">{title}</p>
+      <p className="mt-2 text-sm font-semibold leading-6 text-slate-500 dark:text-slate-300">{description}</p>
     </div>
   );
 }
@@ -396,7 +415,7 @@ function buildMonthlyEvolution(charges) {
 
 function buildRecentActivities(charges) {
   const fallback = [
-    { id: 'health', icon: CheckCircle2, title: 'API operacional', description: 'Serviço financeiro disponível em produção', time: 'Online', tone: { bg: 'bg-emerald-50', text: 'text-emerald-600' } },
+    { id: 'health', icon: CheckCircle2, title: 'API operacional', description: 'Serviço financeiro disponível em produção', time: 'Online', tone: { bg: 'bg-emerald-50 dark:bg-emerald-400/12', text: 'text-emerald-600 dark:text-emerald-200' } },
   ];
 
   if (!charges.length) return fallback;
@@ -410,7 +429,7 @@ function buildRecentActivities(charges) {
       title: overdue ? 'Cobrança vencida identificada' : `Cobrança ${status.toLowerCase()}`,
       description: `${charge.studentName || 'Estudante'} · ${charge.description || charge.chargeCode || 'Propina mensal'}`,
       time: index === 0 ? 'Hoje\nAgora' : 'Recente',
-      tone: overdue ? { bg: 'bg-red-50', text: 'text-red-500' } : { bg: 'bg-blue-50', text: 'text-blue-600' },
+      tone: overdue ? { bg: 'bg-red-50 dark:bg-red-500/12', text: 'text-red-500 dark:text-red-200' } : { bg: 'bg-blue-50 dark:bg-sky-500/12', text: 'text-blue-600 dark:text-sky-200' },
     };
   });
 
