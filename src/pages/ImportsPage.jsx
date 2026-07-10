@@ -151,7 +151,7 @@ export default function ImportsPage() {
             </div>
             <h1 className="mt-4 text-2xl font-black tracking-tight sm:text-4xl">Importações académicas</h1>
             <p className="mt-3 max-w-3xl text-sm font-medium leading-6 text-white/80 sm:text-base">
-              Importe CSV, valide o staging e sincronize estudantes, cursos e turmas reais com segurança e sem duplicidade.
+              Importe CSV ou Excel, valide o staging e sincronize estudantes, cursos e turmas reais com segurança e sem duplicidade.
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -239,26 +239,28 @@ function UploadModal({ onClose, onUploaded, suggestedInstitutionId }) {
 
   async function submit(event) {
     event.preventDefault();
-    if (!file) return setError('Selecione um ficheiro CSV.');
+    if (!file) return setError('Selecione um ficheiro CSV ou Excel.');
+    const extension = String(file.name || '').split('.').pop()?.toLowerCase();
+    if (!['csv', 'xlsx', 'xls'].includes(extension)) return setError('Formato inválido. Utilize CSV, XLSX ou XLS.');
     if (!form.institutionId.trim()) return setError('Informe o ID da instituição.');
     setUploading(true); setError('');
     try { const batch = await uploadImportCsv({ ...form, file }); await onUploaded(batch); }
-    catch (err) { setError(readError(err, 'Não foi possível importar o CSV.')); }
+    catch (err) { setError(readError(err, 'Não foi possível importar o ficheiro.')); }
     finally { setUploading(false); }
   }
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-sm" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
       <form onSubmit={submit} className="w-full max-w-2xl rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl dark:border-white/10 dark:bg-[#0D1B2E]">
-        <div className="flex items-start justify-between gap-4"><div><h2 className="text-xl font-black text-slate-950 dark:text-white">Nova importação WebSchool</h2><p className="mt-1 text-sm font-semibold text-slate-500 dark:text-slate-300">Envie CSV UTF-8 com cabeçalhos. Limite de 10 MB.</p></div><button type="button" onClick={onClose} className="rounded-xl border border-slate-200 p-2 dark:border-white/10"><X size={18} /></button></div>
+        <div className="flex items-start justify-between gap-4"><div><h2 className="text-xl font-black text-slate-950 dark:text-white">Nova importação WebSchool</h2><p className="mt-1 text-sm font-semibold text-slate-500 dark:text-slate-300">Envie CSV UTF-8, XLSX ou XLS com cabeçalhos. Limite de 10 MB.</p></div><button type="button" onClick={onClose} className="rounded-xl border border-slate-200 p-2 dark:border-white/10"><X size={18} /></button></div>
         <div className="mt-5 grid gap-4 sm:grid-cols-2">
-          <label className="sm:col-span-2"><span className="mb-2 block text-xs font-black uppercase tracking-wide text-slate-500">Ficheiro CSV</span><input type="file" accept=".csv,text/csv" onChange={(e) => setFile(e.target.files?.[0] || null)} className="input-premium" /></label>
+          <label className="sm:col-span-2"><span className="mb-2 block text-xs font-black uppercase tracking-wide text-slate-500">Ficheiro CSV ou Excel</span><input type="file" accept=".csv,.xlsx,.xls,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" onChange={(e) => setFile(e.target.files?.[0] || null)} className="input-premium" /></label>
           <Field label="ID da instituição"><input value={form.institutionId} onChange={(e) => setForm((p) => ({ ...p, institutionId: e.target.value }))} className="input-premium" placeholder="UUID da instituição" /></Field>
           <Field label="Ano letivo"><input value={form.academicYear} onChange={(e) => setForm((p) => ({ ...p, academicYear: e.target.value }))} className="input-premium" /></Field>
           <Field label="Semestre"><select value={form.semester} onChange={(e) => setForm((p) => ({ ...p, semester: e.target.value }))} className="input-premium"><option value="1">1º semestre</option><option value="2">2º semestre</option></select></Field>
           <Field label="Origem"><input value={form.sourceName} onChange={(e) => setForm((p) => ({ ...p, sourceName: e.target.value }))} className="input-premium" /></Field>
         </div>
-        <div className="mt-4 rounded-2xl border border-blue-100 bg-blue-50 p-4 text-xs font-semibold text-blue-900 dark:border-blue-400/20 dark:bg-blue-500/10 dark:text-blue-100">Colunas mínimas: <strong>Número do estudante, Nome e Curso</strong>. Também são reconhecidas: Ano Lectivo, Semestre, Turma, Turno, Telefone, WhatsApp e E-mail.</div>
+        <div className="mt-4 rounded-2xl border border-blue-100 bg-blue-50 p-4 text-xs font-semibold text-blue-900 dark:border-blue-400/20 dark:bg-blue-500/10 dark:text-blue-100">Colunas mínimas: <strong>Número do estudante, Nome e Curso</strong>. Também são reconhecidas: Ano Lectivo, Semestre, Turma, Turno, Telefone, WhatsApp e E-mail. No Excel, a primeira folha será utilizada.</div>
         {error && <div className="mt-4 rounded-2xl border border-red-200 bg-red-50 p-3 text-sm font-bold text-red-700 dark:border-red-400/20 dark:bg-red-500/10 dark:text-red-200">{error}</div>}
         <div className="mt-6 flex justify-end gap-3"><button type="button" onClick={onClose} className="btn-secondary">Cancelar</button><button type="submit" disabled={uploading} className="btn-primary">{uploading ? <Loader2 className="animate-spin" size={18} /> : <UploadCloud size={18} />} Importar e validar</button></div>
       </form>
