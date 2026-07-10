@@ -42,7 +42,7 @@ const monthLabels = {
   12: 'Dezembro',
 };
 
-const inputClass = 'w-full rounded-2xl border border-slate-200 bg-white px-3.5 py-3 text-sm font-bold text-imetro-navy outline-none transition focus:border-blue-300 focus:ring-4 focus:ring-blue-100';
+const inputClass = 'input-premium font-bold text-[#082B4B] dark:text-white';
 
 export default function OperationsPage() {
   const [readiness, setReadiness] = useState(null);
@@ -133,15 +133,15 @@ export default function OperationsPage() {
 
   return (
     <div className="space-y-5">
-      <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#061936] via-[#08285A] to-[#061936] p-5 text-white shadow-[0_24px_70px_rgba(7,20,45,.16)] sm:p-7">
+      <section className="premium-hero">
         <div className="relative flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-[11px] font-black uppercase tracking-[.18em] text-white/80">
+            <div className="premium-pill">
               <ShieldCheck size={14} />
               Operações institucionais
             </div>
-            <h1 className="mt-4 text-2xl font-black tracking-tight sm:text-4xl">Central operacional da DCR</h1>
-            <p className="mt-3 max-w-4xl text-sm font-medium leading-6 text-white/80 sm:text-base">
+            <h1 className="mt-4 text-2xl font-extrabold tracking-[-.04em] text-white sm:text-[34px]">Central operacional da DCR</h1>
+            <p className="mt-3 max-w-4xl text-sm font-medium leading-6 text-white/85 sm:text-[15px]">
               Gere mensalidades do novo ciclo académico, rode notificações financeiras, acompanhe registros, auditoria e conciliação em uma única área.
             </p>
           </div>
@@ -188,18 +188,18 @@ export default function OperationsPage() {
             </Field>
           </div>
 
-          <div className="mt-4 rounded-3xl border border-blue-100 bg-blue-50/70 p-4 text-sm font-semibold leading-6 text-blue-900">
+          <div className="mt-4 rounded-3xl border border-blue-100 bg-blue-50/70 p-4 text-sm font-semibold leading-6 text-blue-900 dark:border-white/10 dark:bg-white/10 dark:text-sky-100">
             <p className="font-black">Meses considerados:</p>
             <p className="mt-1">{monthPreview}</p>
-            <p className="mt-2 text-xs text-blue-700">Agosto e Dezembro ficam fora por regra operacional. O vencimento será no dia {form.dueDay || 10}.</p>
+            <p className="mt-2 text-xs text-blue-700 dark:text-sky-200">Agosto e Dezembro ficam fora por regra operacional. O vencimento será no dia {form.dueDay || 10}.</p>
           </div>
 
           <div className="mt-5 flex flex-wrap gap-3">
-            <button onClick={() => handleGenerate(true)} disabled={running} className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-black text-slate-700 shadow-sm transition hover:bg-slate-50 disabled:opacity-60">
+            <button onClick={() => handleGenerate(true)} disabled={running} className="btn-secondary gap-2">
               {running ? <Loader2 className="animate-spin" size={17} /> : <PlayCircle size={17} />}
               Simular geração
             </button>
-            <button onClick={() => handleGenerate(false)} disabled={running} className="inline-flex items-center justify-center gap-2 rounded-2xl bg-imetro-navy px-4 py-3 text-sm font-black text-white shadow-[0_16px_44px_rgba(6,25,54,.18)] transition hover:bg-[#092755] disabled:opacity-60">
+            <button onClick={() => handleGenerate(false)} disabled={running} className="btn-primary gap-2">
               {running ? <Loader2 className="animate-spin" size={17} /> : <WalletCards size={17} />}
               Gerar mensalidades
             </button>
@@ -231,8 +231,8 @@ export default function OperationsPage() {
           </div>
           <LogList items={notificationLogs.slice(0, 8)} empty="Nenhuma notificação registrada." render={(log) => (
             <>
-              <p className="font-black text-imetro-navy">{translateNotificationType(log.notificationType)} · {translateChannel(log.channel)}</p>
-              <p className="mt-1 text-xs font-semibold text-slate-500">{translateStatus(log.status)} · {formatDateTime(log.sentAt || log.createdAt)}</p>
+              <p className="font-black text-imetro-navy dark:text-white">{translateNotificationType(log.notificationType)} · {translateChannel(log.channel)}</p>
+              <p className="mt-1 text-xs font-semibold text-slate-500 dark:text-slate-300">{translateStatus(log.status)} · {formatDateTime(log.sentAt || log.createdAt)}</p>
               {log.errorMessage ? <p className="mt-2 text-xs font-semibold text-red-600">{log.errorMessage}</p> : null}
             </>
           )} />
@@ -241,9 +241,9 @@ export default function OperationsPage() {
         <Panel title="Auditoria institucional" subtitle="Ações recentes gravadas pela API.">
           <LogList items={auditLogs.slice(0, 8)} empty="Nenhuma auditoria registrada." render={(log) => (
             <>
-              <p className="font-black text-imetro-navy">{translateAudit(log.action)}</p>
-              <p className="mt-1 text-xs font-semibold text-slate-500">{log.actor || 'Sistema'} · {formatDateTime(log.createdAt)}</p>
-              <p className="mt-2 line-clamp-2 text-xs font-semibold text-slate-600">{log.details || log.entityType || '-'}</p>
+              <p className="font-black text-imetro-navy dark:text-white">{translateAudit(log.action)}</p>
+              <p className="mt-1 text-xs font-semibold text-slate-500 dark:text-slate-300">{log.actor || 'Sistema'} · {formatDateTime(log.createdAt)}</p>
+              <p className="mt-2 line-clamp-2 text-xs font-semibold text-slate-600 dark:text-slate-300">{log.details || log.entityType || '-'}</p>
             </>
           )} />
         </Panel>
@@ -251,9 +251,9 @@ export default function OperationsPage() {
         <Panel title="Conciliação de pagamentos" subtitle="Transações registradas na retaguarda financeira.">
           <LogList items={transactions.slice(0, 8)} empty="Nenhuma transação registrada." render={(transaction) => (
             <>
-              <p className="font-black text-imetro-navy">{translateProvider(transaction.provider)} · {translateStatus(transaction.status)}</p>
-              <p className="mt-1 text-xs font-semibold text-slate-500">{translatePaymentMethod(transaction.paymentMethod)} · {formatDateTime(transaction.paidAt || transaction.createdAt)}</p>
-              <p className="mt-2 text-sm font-black text-emerald-700">{formatMoney(transaction.amount)} {transaction.currency || ''}</p>
+              <p className="font-black text-imetro-navy dark:text-white">{translateProvider(transaction.provider)} · {translateStatus(transaction.status)}</p>
+              <p className="mt-1 text-xs font-semibold text-slate-500 dark:text-slate-300">{translatePaymentMethod(transaction.paymentMethod)} · {formatDateTime(transaction.paidAt || transaction.createdAt)}</p>
+              <p className="mt-2 text-sm font-black text-emerald-700 dark:text-emerald-300">{formatMoney(transaction.amount)} {transaction.currency || ''}</p>
             </>
           )} />
         </Panel>
@@ -277,44 +277,44 @@ export default function OperationsPage() {
 
 function Notice({ tone, icon: Icon, text }) {
   const tones = {
-    green: 'border-emerald-200 bg-emerald-50 text-emerald-900',
-    red: 'border-red-200 bg-red-50 text-red-900',
+    green: 'border-emerald-200 bg-emerald-50 text-emerald-900 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-300',
+    red: 'border-red-200 bg-red-50 text-red-900 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-300',
   };
-  return <div className={`rounded-3xl border p-4 shadow-[0_16px_46px_rgba(15,23,42,.05)] ${tones[tone] || tones.green}`}><div className="flex gap-3"><Icon className="mt-0.5 shrink-0" size={20} /><p className="text-sm font-semibold leading-6">{text}</p></div></div>;
+  return <div className={`rounded-3xl border p-4 shadow-[0_16px_46px_rgba(15,23,42,.05)] dark:shadow-none ${tones[tone] || tones.green}`}><div className="flex gap-3"><Icon className="mt-0.5 shrink-0" size={20} /><p className="text-sm font-semibold leading-6">{text}</p></div></div>;
 }
 
 function Metric({ icon: Icon, label, value, helper, tone }) {
-  const tones = { blue: 'bg-blue-50 text-blue-700', amber: 'bg-amber-50 text-amber-700', emerald: 'bg-emerald-50 text-emerald-700', violet: 'bg-violet-50 text-violet-700' };
-  return <div className="rounded-3xl border border-white bg-white/92 p-5 shadow-[0_18px_60px_rgba(15,23,42,.07)]"><div className="flex items-start justify-between gap-4"><div><p className="text-sm font-black text-slate-500">{label}</p><p className="mt-2 text-2xl font-black text-imetro-navy">{value}</p><p className="mt-1 text-xs font-semibold text-slate-500">{helper}</p></div><div className={`flex h-12 w-12 items-center justify-center rounded-2xl ${tones[tone] || tones.blue}`}><Icon size={23} /></div></div></div>;
+  const tones = { blue: 'bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-200', amber: 'bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-200', emerald: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-200', violet: 'bg-violet-50 text-violet-700 dark:bg-violet-500/10 dark:text-violet-200' };
+  return <div className="card"><div className="flex items-start justify-between gap-4"><div><p className="text-sm font-black text-slate-500 dark:text-slate-300">{label}</p><p className="mt-2 text-2xl font-black text-imetro-navy dark:text-white">{value}</p><p className="mt-1 text-xs font-semibold text-slate-500 dark:text-slate-300">{helper}</p></div><div className={`flex h-12 w-12 items-center justify-center rounded-2xl ${tones[tone] || tones.blue}`}><Icon size={23} /></div></div></div>;
 }
 
 function Panel({ title, subtitle, children }) {
-  return <div className="rounded-3xl border border-white bg-white/92 p-5 shadow-[0_18px_60px_rgba(15,23,42,.07)] backdrop-blur-xl"><div><h2 className="text-lg font-black text-imetro-navy">{title}</h2>{subtitle ? <p className="mt-2 text-sm font-semibold leading-6 text-slate-500">{subtitle}</p> : null}</div><div className="mt-5">{children}</div></div>;
+  return <div className="card"><div><h2 className="text-lg font-black text-imetro-navy dark:text-white">{title}</h2>{subtitle ? <p className="mt-2 text-sm font-semibold leading-6 text-slate-500 dark:text-slate-300">{subtitle}</p> : null}</div><div className="mt-5">{children}</div></div>;
 }
 
 function Field({ label, children }) {
-  return <label className="block"><span className="mb-2 block text-xs font-black uppercase tracking-wide text-slate-500">{label}</span>{children}</label>;
+  return <label className="block"><span className="mb-2 block text-xs font-black uppercase tracking-wide text-slate-500 dark:text-slate-300">{label}</span>{children}</label>;
 }
 
 function ResultRow({ label, value }) {
-  return <div className="flex items-center justify-between gap-4 rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3"><p className="text-sm font-black text-slate-500">{label}</p><p className="text-right text-sm font-black text-imetro-navy">{String(value ?? '-')}</p></div>;
+  return <div className="flex items-center justify-between gap-4 rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3 dark:border-white/10 dark:bg-white/10"><p className="text-sm font-black text-slate-500 dark:text-slate-300">{label}</p><p className="text-right text-sm font-black text-imetro-navy dark:text-white">{String(value ?? '-')}</p></div>;
 }
 
 function ResultTile({ label, value }) {
-  return <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4"><p className="text-xs font-black uppercase tracking-wide text-slate-500">{label}</p><p className="mt-2 text-2xl font-black text-imetro-navy">{Number(value || 0)}</p></div>;
+  return <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4 dark:border-white/10 dark:bg-white/10"><p className="text-xs font-black uppercase tracking-wide text-slate-500 dark:text-slate-300">{label}</p><p className="mt-2 text-2xl font-black text-imetro-navy dark:text-white">{Number(value || 0)}</p></div>;
 }
 
 function MiniStat({ label, value }) {
-  return <div className="rounded-2xl border border-slate-100 bg-slate-50 p-3"><p className="text-[11px] font-black uppercase tracking-wide text-slate-500">{label}</p><p className="mt-1 text-xl font-black text-imetro-navy">{value}</p></div>;
+  return <div className="rounded-2xl border border-slate-100 bg-slate-50 p-3 dark:border-white/10 dark:bg-white/10"><p className="text-[11px] font-black uppercase tracking-wide text-slate-500 dark:text-slate-300">{label}</p><p className="mt-1 text-xl font-black text-imetro-navy dark:text-white">{value}</p></div>;
 }
 
 function EmptyState({ icon: Icon, title, text }) {
-  return <div className="rounded-3xl border border-dashed border-slate-200 bg-slate-50/70 p-6 text-center"><Icon className="mx-auto text-slate-400" size={34} /><p className="mt-3 font-black text-imetro-navy">{title}</p><p className="mt-1 text-sm font-semibold leading-6 text-slate-500">{text}</p></div>;
+  return <div className="rounded-3xl border border-dashed border-slate-200 bg-slate-50/70 p-6 text-center dark:border-white/10 dark:bg-white/10"><Icon className="mx-auto text-slate-400 dark:text-slate-300" size={34} /><p className="mt-3 font-black text-imetro-navy dark:text-white">{title}</p><p className="mt-1 text-sm font-semibold leading-6 text-slate-500 dark:text-slate-300">{text}</p></div>;
 }
 
 function LogList({ items, empty, render }) {
   if (!items.length) return <EmptyState icon={FileClock} title="Sem registros" text={empty} />;
-  return <div className="space-y-3">{items.map((item, index) => <div key={item.id || index} className="rounded-2xl border border-slate-100 bg-slate-50/70 p-3">{render(item)}</div>)}</div>;
+  return <div className="space-y-3">{items.map((item, index) => <div key={item.id || index} className="rounded-2xl border border-slate-100 bg-slate-50/70 p-3 dark:border-white/10 dark:bg-white/10">{render(item)}</div>)}</div>;
 }
 
 function translateReadiness(value) {
