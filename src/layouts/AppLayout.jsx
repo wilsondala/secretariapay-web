@@ -26,7 +26,7 @@ export default function AppLayout() {
 
   const toggleCollapsed = () => setCollapsed((value) => !value);
   const toggleTheme = () => setTheme((value) => (value === 'dark' ? 'light' : 'dark'));
-  const routeClass = location.pathname === '/operations' ? 'operations-page' : '';
+  const routeClass = location.pathname === '/operations' ? 'panel-page operations-page' : 'panel-page';
 
   return (
     <div className="app-shell relative min-h-screen overflow-x-hidden text-[14px] text-slate-950 transition-colors duration-300 dark:text-white">
