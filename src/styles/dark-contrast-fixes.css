@@ -1,0 +1,78 @@
+/* Ajustes complementares de contraste para utilitários usados nas páginas do painel.
+   Mantém o Tailwind como base e corrige apenas combinações que ficam claras demais no dark mode. */
+
+html.dark .to-white {
+  --tw-gradient-to: rgba(9, 23, 39, 0.96) var(--tw-gradient-to-position) !important;
+}
+
+html.dark .from-red-50 {
+  --tw-gradient-from: rgba(127, 29, 29, 0.28) var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: rgba(127, 29, 29, 0) var(--tw-gradient-to-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+}
+
+html.dark .bg-indigo-50,
+html.dark [class*="bg-indigo-50/"] {
+  background-color: rgba(79, 70, 229, 0.16) !important;
+}
+
+html.dark .bg-emerald-50,
+html.dark [class*="bg-emerald-50/"] {
+  background-color: rgba(16, 185, 129, 0.15) !important;
+}
+
+html.dark .bg-violet-50,
+html.dark [class*="bg-violet-50/"] {
+  background-color: rgba(139, 92, 246, 0.16) !important;
+}
+
+html.dark .text-indigo-600,
+html.dark .text-indigo-700,
+html.dark .text-indigo-900 {
+  color: #c7d2fe !important;
+}
+
+html.dark .text-emerald-600,
+html.dark .text-emerald-700,
+html.dark .text-emerald-900 {
+  color: #a7f3d0 !important;
+}
+
+html.dark .text-violet-600,
+html.dark .text-violet-700,
+html.dark .text-violet-900 {
+  color: #ddd6fe !important;
+}
+
+html.dark .ring-indigo-100,
+html.dark .ring-emerald-100,
+html.dark .ring-violet-100 {
+  --tw-ring-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+html.dark .border-red-100 {
+  border-color: rgba(248, 113, 113, 0.22) !important;
+}
+
+html.dark .text-red-600,
+html.dark .text-red-700,
+html.dark .text-red-900 {
+  color: #fecaca !important;
+}
+
+html.dark .dark\:to-\[\#061F36\]\/70,
+html.dark .dark\:to-\[\#082B4B\]\/70,
+html.dark .dark\:from-\[\#061F36\]\/80 {
+  --tw-gradient-to: rgba(9, 23, 39, 0.96) var(--tw-gradient-to-position) !important;
+}
+
+html.dark .dark\:bg-\[\#061F36\]\/70,
+html.dark .dark\:bg-\[\#061F36\]\/65,
+html.dark .dark\:bg-\[\#082B4B\]\/78 {
+  background-color: rgba(13, 27, 46, 0.96) !important;
+}
+
+html.dark .dark\:text-white\/82,
+html.dark .dark\:text-white\/85 {
+  color: rgba(248, 250, 252, 0.9) !important;
+}
