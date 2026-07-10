@@ -75,103 +75,36 @@ function normalizeRow(row, index = 0) {
     ...row,
     id: row?.id || `${row?.studentNumber || row?.student_number || index}-${index}`,
     rowNumber: row?.rowNumber || row?.row_number || index + 1,
-    studentNumber: row?.studentNumber || row?.student_number || '-',
-    fullName: row?.fullName || row?.full_name || row?.studentName || '-',
-    courseName: row?.courseName || row?.course_name || '-',
-    className: row?.className || row?.class_name || '-',
-    shiftName: row?.shiftName || row?.shift_name || '-',
-    email: row?.email || '-',
-    phone: row?.phone || '-',
-    whatsapp: row?.whatsapp || '-',
+    academicYear: row?.academicYear || row?.academic_year || '',
+    semesterNumber: row?.semesterNumber ?? row?.semester_number ?? '',
+    studentNumber: row?.studentNumber || row?.student_number || '',
+    fullName: row?.fullName || row?.full_name || row?.studentName || '',
+    courseName: row?.courseName || row?.course_name || '',
+    className: row?.className || row?.class_name || '',
+    shiftName: row?.shiftName || row?.shift_name || '',
+    departmentName: row?.departmentName || row?.department_name || '',
+    email: row?.email || '',
+    phone: row?.phone || '',
+    whatsapp: row?.whatsapp || '',
+    responsibleName: row?.responsibleName || row?.responsible_name || '',
+    responsiblePhone: row?.responsiblePhone || row?.responsible_phone || '',
+    responsibleEmail: row?.responsibleEmail || row?.responsible_email || '',
     status: row?.status || 'PENDING',
     validationMessage: row?.validationMessage || row?.validation_message || '',
     matchedStudentId: row?.matchedStudentId || row?.matched_student_id,
   };
 }
 
-const demoBatches = [
-  {
-    id: '6155d281-2bdd-4d8e-ab41-ba8c939e1040',
-    importCode: 'WSI-1783164337518',
-    sourceSystem: 'WEBSCHOOL',
-    sourceName: 'WebSchool IMETRO',
-    fileName: 'webschool-alunos-2024-2025.csv',
-    academicYear: '2024/2025',
-    semester: '2º semestre',
-    status: 'COMPLETED',
-    totalRows: 3,
-    validRows: 3,
-    invalidRows: 0,
-    importedRows: 3,
-    syncedRows: 3,
-    reusedCourses: 3,
-    reusedClasses: 3,
-    updatedStudents: 3,
-    createdAt: '2026-07-04T09:44:36',
-    completedAt: '2026-07-04T09:44:36',
-    notes: 'Sincronização concluída: staging WebSchool ligado ao cadastro académico real.',
-  },
-  {
-    id: 'demo-ei-2026',
-    importCode: 'WSI-DEMO-ENG-2026',
-    sourceSystem: 'WEBSCHOOL',
-    sourceName: 'WebSchool IMETRO',
-    fileName: 'engenharia-informatica-2026.xlsx',
-    academicYear: '2026',
-    semester: '1º semestre',
-    status: 'PENDING_VALIDATION',
-    totalRows: 2,
-    validRows: 2,
-    invalidRows: 0,
-    importedRows: 0,
-    syncedRows: 0,
-    createdAt: '2026-07-05T08:30:00',
-    notes: 'Lote demonstrativo para homologação do painel.',
-  },
-];
-
-const demoRows = [
-  {
-    id: 'row-1', rowNumber: 1, studentNumber: '20200629', fullName: 'Yasser Nahari Quianica Coimbra',
-    courseName: 'Licenciatura em Gestão de Recursos Humanos', className: 'LRH4M', shiftName: 'NIGHT',
-    phone: '+244954485547', whatsapp: '+244954485547', status: 'SYNCED', matchedStudentId: 'ca481cf1-4bae-4b85-9460-33765303f4c6',
-  },
-  {
-    id: 'row-2', rowNumber: 2, studentNumber: '20200925', fullName: 'Maludi Adélia André Bernardo',
-    courseName: 'Licenciatura em Gestão de Recursos Humanos', className: 'LRH4M', shiftName: 'NIGHT',
-    phone: '+5511915102566', whatsapp: '+5511915102566', status: 'SYNCED', matchedStudentId: '749b612e-2ea6-4a28-9d57-9e955b491918',
-  },
-  {
-    id: 'row-3', rowNumber: 3, studentNumber: '20230294', fullName: 'Luísa Mbala Sebastião',
-    courseName: 'Licenciatura em Administração de Empresas', className: 'LAD2T', shiftName: 'NIGHT',
-    phone: '+244925939243', whatsapp: '+244925939243', status: 'SYNCED', matchedStudentId: '7efcac5e-6f1f-473e-95e9-0a13634b64bc',
-  },
-];
-
 export async function fetchImportBatches() {
   const paths = ['/api/v1/academic-student-imports', '/api/v1/admin/academic-student-imports', '/api/v1/admin/imports', '/api/v1/imports/academic-students'];
-  try {
-    const result = await tryGet(paths);
-    return { items: normalizeArray(result.data).map(normalizeBatch), source: result.path, isDemo: false };
-  } catch (error) {
-    const status = error?.response?.status;
-    if (status === 401 || status === 403) throw error;
-    return { items: demoBatches.map(normalizeBatch), source: 'dados demonstrativos', isDemo: true };
-  }
+  const result = await tryGet(paths);
+  return { items: normalizeArray(result.data).map(normalizeBatch), source: result.path, isDemo: false };
 }
 
 export async function fetchImportRows(batchId) {
-  if (!batchId || String(batchId).startsWith('demo-')) return { items: demoRows.map(normalizeRow), source: 'dados demonstrativos', isDemo: true };
   const paths = [`/api/v1/academic-student-imports/${batchId}/rows`, `/api/v1/admin/academic-student-imports/${batchId}/rows`, `/api/v1/admin/imports/${batchId}/rows`, `/api/v1/academic-student-imports/${batchId}`];
-  try {
-    const result = await tryGet(paths);
-    const rawRows = normalizeArray(result.data) || normalizeArray(result.data?.rows);
-    return { items: rawRows.length ? rawRows.map(normalizeRow) : [], source: result.path, isDemo: false };
-  } catch (error) {
-    const status = error?.response?.status;
-    if (status === 401 || status === 403) throw error;
-    return { items: demoRows.map(normalizeRow), source: 'dados demonstrativos', isDemo: true };
-  }
+  const result = await tryGet(paths);
+  return { items: normalizeArray(result.data).map(normalizeRow), source: result.path, isDemo: false };
 }
 
 export async function uploadImportCsv({ file, institutionId, academicYear, semester, sourceName }) {
@@ -181,10 +114,25 @@ export async function uploadImportCsv({ file, institutionId, academicYear, semes
   if (academicYear) formData.append('academicYear', academicYear);
   if (semester) formData.append('semester', semester);
   if (sourceName) formData.append('sourceName', sourceName);
-  const { data } = await api.post('/api/v1/academic-student-imports/upload', formData, {
-    headers: { 'Content-Type': 'multipart/form-data' },
-  });
+  const { data } = await api.post('/api/v1/academic-student-imports/upload', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
   return normalizeBatch(data);
+}
+
+export async function updateImportRow(batchId, rowId, payload) {
+  const { data } = await api.put(`/api/v1/academic-student-imports/${batchId}/rows/${rowId}`, payload);
+  return normalizeRow(data);
+}
+
+export async function downloadImportErrors(batchId, importCode = 'importacao') {
+  const response = await api.get(`/api/v1/academic-student-imports/${batchId}/errors.csv`, { responseType: 'blob' });
+  const url = URL.createObjectURL(response.data);
+  const anchor = document.createElement('a');
+  anchor.href = url;
+  anchor.download = `erros-${importCode}.csv`;
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
+  URL.revokeObjectURL(url);
 }
 
 export async function validateImportBatch(batchId) {
