@@ -76,3 +76,86 @@ html.dark .dark\:text-white\/82,
 html.dark .dark\:text-white\/85 {
   color: rgba(248, 250, 252, 0.9) !important;
 }
+
+/* Badges de indicador/status: evita o aspeto branco e ofuscado nas páginas
+   Cobranças, Comprovativos, Recibos, WhatsApp e Configurações. */
+html.dark span[class*="bg-blue-50"],
+html.dark span[class*="bg-sky-50"] {
+  background-color: rgba(14, 165, 233, 0.16) !important;
+  color: #bae6fd !important;
+}
+
+html.dark span[class*="bg-emerald-50"],
+html.dark span[class*="bg-green-50"] {
+  background-color: rgba(16, 185, 129, 0.17) !important;
+  color: #a7f3d0 !important;
+}
+
+html.dark span[class*="bg-amber-50"],
+html.dark span[class*="bg-yellow-50"],
+html.dark span[class*="bg-orange-50"] {
+  background-color: rgba(245, 158, 11, 0.18) !important;
+  color: #fde68a !important;
+}
+
+html.dark span[class*="bg-red-50"],
+html.dark span[class*="bg-rose-50"] {
+  background-color: rgba(239, 68, 68, 0.17) !important;
+  color: #fecaca !important;
+}
+
+html.dark span[class*="bg-indigo-50"],
+html.dark span[class*="bg-violet-50"],
+html.dark span[class*="bg-purple-50"] {
+  background-color: rgba(124, 58, 237, 0.17) !important;
+  color: #ddd6fe !important;
+}
+
+/* Também cobre badges construídos com fundos claros 100/200. */
+html.dark span[class*="bg-blue-100"],
+html.dark span[class*="bg-sky-100"] {
+  background-color: rgba(14, 165, 233, 0.18) !important;
+  color: #bae6fd !important;
+}
+
+html.dark span[class*="bg-emerald-100"],
+html.dark span[class*="bg-green-100"] {
+  background-color: rgba(16, 185, 129, 0.18) !important;
+  color: #a7f3d0 !important;
+}
+
+html.dark span[class*="bg-amber-100"],
+html.dark span[class*="bg-yellow-100"],
+html.dark span[class*="bg-orange-100"] {
+  background-color: rgba(245, 158, 11, 0.19) !important;
+  color: #fde68a !important;
+}
+
+html.dark span[class*="bg-red-100"],
+html.dark span[class*="bg-rose-100"] {
+  background-color: rgba(239, 68, 68, 0.18) !important;
+  color: #fecaca !important;
+}
+
+/* Avisos informativos e institucionais destacados nos prints. */
+html.dark [class*="border-emerald-"][class*="bg-emerald-"],
+html.dark [class*="border-green-"][class*="bg-green-"] {
+  color: #d1fae5 !important;
+}
+
+html.dark [class*="border-amber-"][class*="bg-amber-"],
+html.dark [class*="border-orange-"][class*="bg-orange-"] {
+  color: #fef3c7 !important;
+}
+
+html.dark [class*="text-emerald-800"],
+html.dark [class*="text-emerald-900"] {
+  color: #d1fae5 !important;
+}
+
+html.dark [class*="text-amber-800"],
+html.dark [class*="text-amber-900"],
+html.dark [class*="text-orange-800"],
+html.dark [class*="text-orange-900"] {
+  color: #fef3c7 !important;
+}
