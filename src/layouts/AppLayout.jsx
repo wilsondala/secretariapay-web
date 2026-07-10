@@ -27,10 +27,10 @@ export default function AppLayout() {
   const toggleTheme = () => setTheme((value) => (value === 'dark' ? 'light' : 'dark'));
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-[#F8FAFC] text-[14px] text-slate-950 transition-colors duration-300 dark:bg-[#0B1120] dark:text-slate-50">
+    <div className="min-h-screen overflow-x-hidden bg-[#F2F5F9] text-[14px] text-slate-950 transition-colors duration-300 dark:bg-[#061F36] dark:bg-[linear-gradient(180deg,#061F36_0%,#082B4B_100%)] dark:text-white">
       <div className="pointer-events-none fixed inset-0 opacity-80">
-        <div className="absolute left-[16rem] top-[-12rem] h-[34rem] w-[34rem] rounded-full bg-blue-200/40 blur-3xl dark:bg-blue-900/20" />
-        <div className="absolute bottom-[-16rem] right-[-8rem] h-[36rem] w-[36rem] rounded-full bg-teal-100/60 blur-3xl dark:bg-teal-900/20" />
+        <div className="absolute left-[16rem] top-[-12rem] h-[34rem] w-[34rem] rounded-full bg-[#007DB8]/12 blur-3xl dark:bg-[#007DB8]/16" />
+        <div className="absolute bottom-[-16rem] right-[-8rem] h-[36rem] w-[36rem] rounded-full bg-[#F2B300]/14 blur-3xl dark:bg-[#F2B300]/10" />
       </div>
 
       <Sidebar open={open} collapsed={collapsed} onClose={() => setOpen(false)} onToggleCollapsed={toggleCollapsed} />
