@@ -27,18 +27,16 @@ export default function AppLayout() {
   const toggleTheme = () => setTheme((value) => (value === 'dark' ? 'light' : 'dark'));
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden bg-[#F5F7FB] text-[14px] text-slate-950 transition-colors duration-300 dark:bg-[#07111F] dark:text-white">
-      <div className="pointer-events-none fixed inset-0 overflow-hidden" aria-hidden="true">
-        <div className="absolute left-[8%] top-[-18rem] h-[42rem] w-[42rem] rounded-full bg-[#2F80ED]/10 blur-[110px] dark:bg-[#2F80ED]/16" />
-        <div className="absolute right-[-10rem] top-[18%] h-[34rem] w-[34rem] rounded-full bg-[#F4B400]/8 blur-[120px] dark:bg-[#F4B400]/7" />
-        <div className="absolute bottom-[-22rem] left-[38%] h-[38rem] w-[38rem] rounded-full bg-[#1769E0]/7 blur-[120px] dark:bg-[#1769E0]/10" />
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(148,163,184,.035)_1px,transparent_1px),linear-gradient(90deg,rgba(148,163,184,.035)_1px,transparent_1px)] bg-[size:32px_32px] opacity-40 dark:opacity-20" />
+    <div className="app-shell relative min-h-screen overflow-x-hidden text-[14px] text-slate-950 transition-colors duration-300 dark:text-white">
+      <div className="app-ambient pointer-events-none fixed inset-0 overflow-hidden" aria-hidden="true">
+        <div className="ambient-blue absolute left-[12%] top-[-18rem] h-[42rem] w-[42rem] rounded-full blur-[120px]" />
+        <div className="ambient-gold absolute right-[-12rem] top-[8%] h-[34rem] w-[34rem] rounded-full blur-[130px]" />
       </div>
 
       <Sidebar open={open} collapsed={collapsed} onClose={() => setOpen(false)} onToggleCollapsed={toggleCollapsed} />
-      <div className={collapsed ? 'relative transition-all duration-300 lg:pl-[96px]' : 'relative transition-all duration-300 lg:pl-[292px]'}>
+      <div className={collapsed ? 'relative transition-all duration-300 lg:pl-[84px]' : 'relative transition-all duration-300 lg:pl-[252px]'}>
         <Topbar onMenuClick={() => setOpen(true)} collapsed={collapsed} onToggleSidebar={toggleCollapsed} theme={theme} onToggleTheme={toggleTheme} />
-        <main className="relative mx-auto w-full max-w-[1540px] px-4 pb-10 pt-[108px] sm:px-6 lg:px-8 xl:px-10">
+        <main className="relative mx-auto w-full max-w-[1600px] px-4 pb-10 pt-[96px] sm:px-6 lg:px-7 xl:px-8">
           <Outlet />
         </main>
       </div>
