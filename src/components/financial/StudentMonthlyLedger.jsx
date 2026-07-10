@@ -21,19 +21,19 @@ export default function StudentMonthlyLedger({ student, charges = [], loading = 
   const stats = buildStats(rows, charges);
 
   return (
-    <div className="rounded-[22px] border border-slate-200 bg-white p-4 text-sm text-slate-950 shadow-premium dark:border-slate-800 dark:bg-slate-900 dark:text-slate-50 dark:shadow-none sm:p-5">
-      <div className="flex items-center gap-3 border-b border-slate-100 pb-4 dark:border-slate-800">
-        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-[0_14px_30px_rgba(245,158,11,.22)] dark:shadow-none">
+    <div className="rounded-[22px] border border-slate-200 bg-white p-4 text-sm text-slate-950 shadow-premium dark:!border-slate-700 dark:!bg-[#0F172A] dark:text-slate-50 dark:shadow-none sm:p-5">
+      <div className="flex items-center gap-3 border-b border-slate-100 pb-4 dark:border-slate-700">
+        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-teal-600 text-white shadow-[0_14px_30px_rgba(37,99,235,.22)] dark:shadow-none">
           <WalletCards size={20} />
         </div>
         <div>
-          <p className="text-[15px] font-extrabold text-slate-950 dark:text-slate-50">Resumo financeiro mensal</p>
-          <p className="mt-1 text-[12px] font-semibold text-slate-500 dark:text-slate-400">Mês 1 ao 12, incluindo meses sem propina</p>
+          <p className="text-[15px] font-extrabold text-slate-950 dark:!text-white">Resumo financeiro mensal</p>
+          <p className="mt-1 text-[12px] font-semibold text-slate-600 dark:!text-slate-300">Mês 1 ao 12, incluindo meses sem propina</p>
         </div>
       </div>
 
       {loading ? (
-        <p className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm font-semibold text-slate-700 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300">Carregando cobranças...</p>
+        <p className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm font-semibold text-slate-700 dark:!border-slate-700 dark:!bg-[#111827] dark:!text-slate-200">Carregando cobranças...</p>
       ) : (
         <>
           <div className="mt-4 grid grid-cols-2 gap-3">
@@ -45,11 +45,11 @@ export default function StudentMonthlyLedger({ student, charges = [], loading = 
             <Mini label="Não letivos" value={stats.nonPayable} />
           </div>
 
-          <p className="mt-4 rounded-2xl border border-blue-100 bg-blue-50/80 p-3 text-xs font-semibold leading-5 text-blue-900 dark:border-blue-900/40 dark:bg-blue-950/35 dark:text-blue-100">
+          <p className="mt-4 rounded-2xl border border-blue-200 bg-blue-50 p-3 text-xs font-semibold leading-5 text-blue-950 dark:!border-blue-800/70 dark:!bg-blue-950/40 dark:!text-blue-100">
             Em Angola o aluno não paga obrigatoriamente os 12 meses completos. Os meses fora do calendário de cobrança aparecem como “Não letivo”.
           </p>
 
-          <div className="mt-4 max-h-[560px] space-y-3 overflow-y-auto pr-1">
+          <div className="mt-4 max-h-[560px] space-y-3 overflow-y-auto pr-1 [scrollbar-color:#64748b_transparent]">
             {rows.map((row) => <MonthRow key={row.label} row={row} studentName={getStudentName(student)} />)}
           </div>
         </>
@@ -64,29 +64,29 @@ function MonthRow({ row, studentName }) {
   const neutral = row.status === 'NA';
 
   const cardClass = paid
-    ? 'border-emerald-200 bg-emerald-50 text-emerald-950 dark:border-emerald-800/70 dark:bg-emerald-950/25 dark:text-emerald-50'
+    ? 'border-emerald-200 bg-white text-slate-950 ring-1 ring-emerald-100 dark:!border-emerald-700/70 dark:!bg-[#0B2A22] dark:!text-emerald-50 dark:ring-emerald-500/20'
     : open
-      ? 'border-amber-300 bg-amber-50 text-amber-950 dark:border-amber-700/70 dark:bg-amber-950/25 dark:text-amber-50'
-      : 'border-slate-200 bg-slate-50 text-slate-800 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-200';
+      ? 'border-amber-200 bg-white text-slate-950 ring-1 ring-amber-100 dark:!border-amber-500/70 dark:!bg-[#1E293B] dark:!text-slate-50 dark:ring-amber-500/20'
+      : 'border-slate-200 bg-white text-slate-950 ring-1 ring-slate-100 dark:!border-slate-700 dark:!bg-[#111827] dark:!text-slate-100 dark:ring-slate-700/60';
 
   return (
     <div className={`rounded-[18px] border p-4 shadow-sm dark:shadow-none ${cardClass}`}>
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="text-sm font-extrabold text-slate-950 dark:text-slate-50">Mês {row.index} · {row.short}</p>
-          <p className="mt-1 text-[12px] font-semibold text-slate-600 dark:text-slate-300">{row.label}</p>
+          <p className="text-sm font-extrabold text-slate-950 dark:!text-white">Mês {row.index} · {row.short}</p>
+          <p className="mt-1 text-[12px] font-bold text-slate-600 dark:!text-slate-300">{row.label}</p>
         </div>
         <StatusPill paid={paid} open={open} neutral={neutral} label={row.statusLabel} />
       </div>
 
       {paid && (
-        <p className="mt-3 rounded-2xl border border-emerald-200 bg-white px-3 py-2 text-xs font-extrabold leading-5 text-emerald-800 dark:border-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-100">
+        <p className="mt-3 rounded-2xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs font-extrabold leading-5 text-emerald-900 dark:!border-emerald-700/70 dark:!bg-emerald-950/45 dark:!text-emerald-100">
           {studentName} - {row.short} - pago - {formatPaidAt(row.paidAt)}
         </p>
       )}
 
       {neutral ? (
-        <p className="mt-3 rounded-2xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold leading-5 text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300">Mês sem cobrança regular de propina.</p>
+        <p className="mt-3 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold leading-5 text-slate-700 dark:!border-slate-700 dark:!bg-slate-950/60 dark:!text-slate-300">Mês sem cobrança regular de propina.</p>
       ) : (
         <div className="mt-3 grid grid-cols-2 gap-2 text-[12px] font-bold">
           <Amount label="Base" value={row.amount} />
@@ -101,10 +101,10 @@ function MonthRow({ row, studentName }) {
 
 function StatusPill({ paid, open, neutral, label }) {
   const className = paid
-    ? 'bg-emerald-100 text-emerald-800 ring-emerald-200 dark:bg-emerald-500/15 dark:text-emerald-200 dark:ring-emerald-400/25'
+    ? 'bg-emerald-100 text-emerald-800 ring-emerald-200 dark:!bg-emerald-500/20 dark:!text-emerald-100 dark:ring-emerald-400/30'
     : open
-      ? 'bg-amber-100 text-amber-900 ring-amber-200 dark:bg-amber-500/15 dark:text-amber-200 dark:ring-amber-400/25'
-      : 'bg-slate-200 text-slate-700 ring-slate-300 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700';
+      ? 'bg-amber-100 text-amber-900 ring-amber-200 dark:!bg-amber-500/20 dark:!text-amber-100 dark:ring-amber-400/35'
+      : 'bg-slate-200 text-slate-700 ring-slate-300 dark:!bg-slate-700 dark:!text-slate-200 dark:ring-slate-600';
 
   return (
     <span className={`inline-flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-extrabold ring-1 ${className}`}>
@@ -116,16 +116,16 @@ function StatusPill({ paid, open, neutral, label }) {
 
 function Amount({ label, value, tone = 'default' }) {
   const toneClass = {
-    default: 'text-slate-700 dark:text-slate-300',
-    muted: 'text-slate-500 dark:text-slate-400',
-    danger: 'text-red-700 dark:text-red-300',
-    strong: 'text-slate-950 dark:text-white',
+    default: 'text-slate-950 dark:!text-white',
+    muted: 'text-slate-700 dark:!text-slate-300',
+    danger: 'text-red-700 dark:!text-red-200',
+    strong: 'text-blue-900 dark:!text-blue-100',
   }[tone];
 
   return (
-    <div className="rounded-2xl border border-white/70 bg-white/70 px-3 py-2 dark:border-slate-800 dark:bg-slate-900/80">
-      <p className="text-[10px] font-extrabold uppercase tracking-wide text-slate-500 dark:text-slate-400">{label}</p>
-      <p className={`mt-1 break-words text-[12px] font-extrabold ${toneClass}`}>{formatMoney(value)}</p>
+    <div className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 dark:!border-slate-700 dark:!bg-[#0B1120]">
+      <p className="text-[10px] font-extrabold uppercase tracking-wide text-slate-600 dark:!text-slate-400">{label}</p>
+      <p className={`mt-1 break-words text-[13px] font-extrabold ${toneClass}`}>{formatMoney(value)}</p>
     </div>
   );
 }
@@ -183,14 +183,14 @@ function formatPaidAt(value) {
 
 function Mini({ label, value, wide, tone = 'navy' }) {
   const tones = {
-    navy: 'border-blue-200 bg-blue-50 text-blue-900 dark:border-blue-900/50 dark:bg-blue-950/35 dark:text-blue-100',
-    warning: 'border-amber-200 bg-amber-50 text-amber-900 dark:border-amber-900/50 dark:bg-amber-950/35 dark:text-amber-100',
-    danger: 'border-red-200 bg-red-50 text-red-800 dark:border-red-900/50 dark:bg-red-950/35 dark:text-red-100',
-    success: 'border-emerald-200 bg-emerald-50 text-emerald-800 dark:border-emerald-900/50 dark:bg-emerald-950/35 dark:text-emerald-100',
+    navy: 'border-blue-200 bg-blue-50 text-blue-950 dark:!border-blue-800/70 dark:!bg-blue-950/40 dark:!text-blue-100',
+    warning: 'border-amber-200 bg-amber-50 text-amber-950 dark:!border-amber-700/70 dark:!bg-amber-950/35 dark:!text-amber-100',
+    danger: 'border-red-200 bg-red-50 text-red-800 dark:!border-red-800/70 dark:!bg-red-950/35 dark:!text-red-100',
+    success: 'border-emerald-200 bg-emerald-50 text-emerald-900 dark:!border-emerald-800/70 dark:!bg-emerald-950/35 dark:!text-emerald-100',
   };
   return (
     <div className={`rounded-2xl border p-3 ${tones[tone] || tones.navy} ${wide ? 'col-span-2' : ''}`}>
-      <p className="text-[10px] font-extrabold uppercase tracking-wide opacity-75">{label}</p>
+      <p className="text-[10px] font-extrabold uppercase tracking-wide opacity-80">{label}</p>
       <p className="mt-1 break-words text-base font-extrabold">{value}</p>
     </div>
   );
