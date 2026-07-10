@@ -44,6 +44,7 @@ function normalizeBatch(batch) {
   return {
     ...batch,
     id: batch?.id || batch?.batchId || batch?.batch_id,
+    institutionId: batch?.institutionId || batch?.institution_id,
     importCode: batch?.importCode || batch?.import_code || batch?.code || '-',
     sourceSystem: batch?.sourceSystem || batch?.source_system || 'WEBSCHOOL',
     sourceName: batch?.sourceName || batch?.source_name || batch?.source || 'WebSchool',
@@ -131,57 +132,27 @@ const demoBatches = [
 
 const demoRows = [
   {
-    id: 'row-1',
-    rowNumber: 1,
-    studentNumber: '20200629',
-    fullName: 'Yasser Nahari Quianica Coimbra',
-    courseName: 'Licenciatura em Gestão de Recursos Humanos',
-    className: 'LRH4M',
-    shiftName: 'NIGHT',
-    phone: '+244954485547',
-    whatsapp: '+244954485547',
-    status: 'SYNCED',
-    matchedStudentId: 'ca481cf1-4bae-4b85-9460-33765303f4c6',
+    id: 'row-1', rowNumber: 1, studentNumber: '20200629', fullName: 'Yasser Nahari Quianica Coimbra',
+    courseName: 'Licenciatura em Gestão de Recursos Humanos', className: 'LRH4M', shiftName: 'NIGHT',
+    phone: '+244954485547', whatsapp: '+244954485547', status: 'SYNCED', matchedStudentId: 'ca481cf1-4bae-4b85-9460-33765303f4c6',
   },
   {
-    id: 'row-2',
-    rowNumber: 2,
-    studentNumber: '20200925',
-    fullName: 'Maludi Adélia André Bernardo',
-    courseName: 'Licenciatura em Gestão de Recursos Humanos',
-    className: 'LRH4M',
-    shiftName: 'NIGHT',
-    phone: '+5511915102566',
-    whatsapp: '+5511915102566',
-    status: 'SYNCED',
-    matchedStudentId: '749b612e-2ea6-4a28-9d57-9e955b491918',
+    id: 'row-2', rowNumber: 2, studentNumber: '20200925', fullName: 'Maludi Adélia André Bernardo',
+    courseName: 'Licenciatura em Gestão de Recursos Humanos', className: 'LRH4M', shiftName: 'NIGHT',
+    phone: '+5511915102566', whatsapp: '+5511915102566', status: 'SYNCED', matchedStudentId: '749b612e-2ea6-4a28-9d57-9e955b491918',
   },
   {
-    id: 'row-3',
-    rowNumber: 3,
-    studentNumber: '20230294',
-    fullName: 'Luísa Mbala Sebastião',
-    courseName: 'Licenciatura em Administração de Empresas',
-    className: 'LAD2T',
-    shiftName: 'NIGHT',
-    phone: '+244925939243',
-    whatsapp: '+244925939243',
-    status: 'SYNCED',
-    matchedStudentId: '7efcac5e-6f1f-473e-95e9-0a13634b64bc',
+    id: 'row-3', rowNumber: 3, studentNumber: '20230294', fullName: 'Luísa Mbala Sebastião',
+    courseName: 'Licenciatura em Administração de Empresas', className: 'LAD2T', shiftName: 'NIGHT',
+    phone: '+244925939243', whatsapp: '+244925939243', status: 'SYNCED', matchedStudentId: '7efcac5e-6f1f-473e-95e9-0a13634b64bc',
   },
 ];
 
 export async function fetchImportBatches() {
-  const paths = [
-    '/api/v1/academic-student-imports',
-    '/api/v1/admin/academic-student-imports',
-    '/api/v1/admin/imports',
-    '/api/v1/imports/academic-students',
-  ];
+  const paths = ['/api/v1/academic-student-imports', '/api/v1/admin/academic-student-imports', '/api/v1/admin/imports', '/api/v1/imports/academic-students'];
   try {
     const result = await tryGet(paths);
-    const batches = normalizeArray(result.data).map(normalizeBatch);
-    return { items: batches, source: result.path, isDemo: false };
+    return { items: normalizeArray(result.data).map(normalizeBatch), source: result.path, isDemo: false };
   } catch (error) {
     const status = error?.response?.status;
     if (status === 401 || status === 403) throw error;
@@ -190,22 +161,12 @@ export async function fetchImportBatches() {
 }
 
 export async function fetchImportRows(batchId) {
-  if (!batchId || String(batchId).startsWith('demo-')) {
-    return { items: demoRows.map(normalizeRow), source: 'dados demonstrativos', isDemo: true };
-  }
-
-  const paths = [
-    `/api/v1/academic-student-imports/${batchId}/rows`,
-    `/api/v1/admin/academic-student-imports/${batchId}/rows`,
-    `/api/v1/admin/imports/${batchId}/rows`,
-    `/api/v1/academic-student-imports/${batchId}`,
-  ];
-
+  if (!batchId || String(batchId).startsWith('demo-')) return { items: demoRows.map(normalizeRow), source: 'dados demonstrativos', isDemo: true };
+  const paths = [`/api/v1/academic-student-imports/${batchId}/rows`, `/api/v1/admin/academic-student-imports/${batchId}/rows`, `/api/v1/admin/imports/${batchId}/rows`, `/api/v1/academic-student-imports/${batchId}`];
   try {
     const result = await tryGet(paths);
     const rawRows = normalizeArray(result.data) || normalizeArray(result.data?.rows);
-    const rows = rawRows.length ? rawRows.map(normalizeRow) : demoRows.map(normalizeRow);
-    return { items: rows, source: result.path, isDemo: !rawRows.length };
+    return { items: rawRows.length ? rawRows.map(normalizeRow) : [], source: result.path, isDemo: false };
   } catch (error) {
     const status = error?.response?.status;
     if (status === 401 || status === 403) throw error;
@@ -213,12 +174,31 @@ export async function fetchImportRows(batchId) {
   }
 }
 
+export async function uploadImportCsv({ file, institutionId, academicYear, semester, sourceName }) {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('institutionId', institutionId);
+  if (academicYear) formData.append('academicYear', academicYear);
+  if (semester) formData.append('semester', semester);
+  if (sourceName) formData.append('sourceName', sourceName);
+  const { data } = await api.post('/api/v1/academic-student-imports/upload', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
+  return normalizeBatch(data);
+}
+
+export async function validateImportBatch(batchId) {
+  const { data } = await api.patch(`/api/v1/academic-student-imports/${batchId}/validate`);
+  return data;
+}
+
+export async function completeImportBatch(batchId) {
+  const { data } = await api.patch(`/api/v1/academic-student-imports/${batchId}/complete`);
+  return data;
+}
+
 export async function syncImportBatch(batchId) {
-  const paths = [
-    `/api/v1/academic-student-imports/${batchId}/sync`,
-    `/api/v1/admin/academic-student-imports/${batchId}/sync`,
-    `/api/v1/admin/imports/${batchId}/sync`,
-  ];
+  const paths = [`/api/v1/academic-student-imports/${batchId}/sync`, `/api/v1/admin/academic-student-imports/${batchId}/sync`, `/api/v1/admin/imports/${batchId}/sync`];
   const result = await tryMutation('PATCH', paths).catch(async (error) => {
     const status = error?.response?.status;
     if (status === 401 || status === 403) throw error;
