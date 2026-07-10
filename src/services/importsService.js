@@ -107,6 +107,11 @@ export async function fetchImportRows(batchId) {
   return { items: normalizeArray(result.data).map(normalizeRow), source: result.path, isDemo: false };
 }
 
+export async function fetchImportHistory(batchId) {
+  const { data } = await api.get(`/api/v1/academic-student-imports/${batchId}/history`);
+  return data;
+}
+
 export async function uploadImportCsv({ file, institutionId, academicYear, semester, sourceName }) {
   const formData = new FormData();
   formData.append('file', file);
@@ -143,6 +148,16 @@ export async function validateImportBatch(batchId) {
 export async function completeImportBatch(batchId) {
   const { data } = await api.patch(`/api/v1/academic-student-imports/${batchId}/complete`);
   return data;
+}
+
+export async function reprocessImportBatch(batchId) {
+  const { data } = await api.post(`/api/v1/academic-student-imports/${batchId}/reprocess`);
+  return data;
+}
+
+export async function cancelImportBatch(batchId, reason) {
+  const { data } = await api.post(`/api/v1/academic-student-imports/${batchId}/cancel`, { reason });
+  return normalizeBatch(data);
 }
 
 export async function syncImportBatch(batchId) {
