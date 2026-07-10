@@ -13,6 +13,7 @@ import {
   PanelLeftOpen,
   Settings,
   Sparkles,
+  UserCog,
   Users,
   Workflow,
   X,
@@ -46,8 +47,11 @@ const groups = [
     ],
   },
   {
-    label: 'Configurações',
-    items: [['Configurações', '/settings', Settings, 'Regras e ambiente']],
+    label: 'Administração',
+    items: [
+      ['Usuários e permissões', '/admin-users', UserCog, 'Acessos e perfis'],
+      ['Configurações', '/settings', Settings, 'Regras e ambiente'],
+    ],
   },
 ];
 
