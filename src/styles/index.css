@@ -106,6 +106,33 @@ section[class*="bg-gradient-to-br"] .page-subtitle {
   color: rgba(255, 255, 255, .82) !important;
 }
 
+/* Contraste reforçado para painéis de histórico/ledger em Cobranças e Estudantes. */
+html.dark .from-blue-50,
+html.dark .from-slate-50 {
+  --tw-gradient-from: #0B355A var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: rgba(11, 53, 90, 0) var(--tw-gradient-to-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+}
+
+html.dark .via-white,
+html.dark .via-slate-50 {
+  --tw-gradient-to: rgba(8, 43, 75, 0) var(--tw-gradient-to-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), #082B4B var(--tw-gradient-via-position), var(--tw-gradient-to) !important;
+}
+
+html.dark .to-slate-50,
+html.dark .to-blue-50,
+html.dark .to-blue-50\/60 {
+  --tw-gradient-to: #061F36 var(--tw-gradient-to-position) !important;
+}
+
+html.dark .from-amber-50,
+html.dark .via-orange-50,
+html.dark .to-orange-50 {
+  --tw-gradient-from: rgba(146, 64, 14, .42) var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: rgba(120, 53, 15, .30) var(--tw-gradient-to-position) !important;
+}
+
 html.dark .bg-white,
 html.dark [class*="bg-white/"],
 html.dark .card,
@@ -121,12 +148,30 @@ html.dark [class*="bg-slate-100/"] {
   background-color: rgba(6, 31, 54, .88) !important;
 }
 
+html.dark .bg-blue-50,
+html.dark [class*="bg-blue-50/"] {
+  background-color: rgba(7, 52, 89, .92) !important;
+}
+
+html.dark .bg-amber-50,
+html.dark [class*="bg-amber-50/"] {
+  background-color: rgba(120, 53, 15, .36) !important;
+}
+
+html.dark .bg-red-50,
+html.dark [class*="bg-red-50/"] {
+  background-color: rgba(127, 29, 29, .32) !important;
+}
+
 html.dark .border-white,
 html.dark [class*="border-white/"],
 html.dark .border-slate-100,
 html.dark .border-slate-200,
+html.dark .border-blue-100,
+html.dark .border-blue-200,
+html.dark .border-amber-100,
 html.dark .border-\[\#E6F0FB\] {
-  border-color: rgba(230, 240, 251, .12) !important;
+  border-color: rgba(230, 240, 251, .16) !important;
 }
 
 html.dark .text-imetro-ink,
@@ -141,6 +186,16 @@ html.dark .text-slate-700,
 html.dark .text-slate-600,
 html.dark .text-slate-500 {
   color: #CBD5E1 !important;
+}
+
+html.dark .text-blue-700,
+html.dark .text-blue-900 {
+  color: #DBEAFE !important;
+}
+
+html.dark .text-amber-700,
+html.dark .text-amber-900 {
+  color: #FDE68A !important;
 }
 
 html.dark table,
