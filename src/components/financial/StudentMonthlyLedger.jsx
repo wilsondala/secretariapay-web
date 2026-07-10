@@ -1,5 +1,5 @@
 import { AlertTriangle, CheckCircle2, Clock3, WalletCards } from 'lucide-react';
-import { chargeIsOpen, chargeIsOverdue, formatMoney, getStudentName, normalizeText } from '../../utils/formatters.js';
+import { chargeIsOverdue, formatMoney, getStudentName, normalizeText } from '../../utils/formatters.js';
 
 const MONTHS = [
   ['Janeiro/2026', 'Janeiro', true],
@@ -21,19 +21,19 @@ export default function StudentMonthlyLedger({ student, charges = [], loading = 
   const stats = buildStats(rows, charges);
 
   return (
-    <div className="rounded-3xl border border-amber-100 bg-gradient-to-br from-amber-50 via-white to-orange-50 p-4 text-sm text-imetro-navy">
-      <div className="flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-amber-500 text-white shadow-lg">
-          <WalletCards size={19} />
+    <div className="rounded-[22px] border border-slate-200 bg-white p-4 text-sm text-slate-950 shadow-premium dark:border-slate-800 dark:bg-slate-900 dark:text-slate-50 dark:shadow-none sm:p-5">
+      <div className="flex items-center gap-3 border-b border-slate-100 pb-4 dark:border-slate-800">
+        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-[0_14px_30px_rgba(245,158,11,.22)] dark:shadow-none">
+          <WalletCards size={20} />
         </div>
         <div>
-          <p className="font-black">Resumo financeiro mensal</p>
-          <p className="text-xs font-semibold text-slate-500">Mês 1 ao 12, incluindo meses sem propina</p>
+          <p className="text-[15px] font-extrabold text-slate-950 dark:text-slate-50">Resumo financeiro mensal</p>
+          <p className="mt-1 text-[12px] font-semibold text-slate-500 dark:text-slate-400">Mês 1 ao 12, incluindo meses sem propina</p>
         </div>
       </div>
 
       {loading ? (
-        <p className="mt-4 text-sm font-semibold">Carregando cobranças...</p>
+        <p className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm font-semibold text-slate-700 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300">Carregando cobranças...</p>
       ) : (
         <>
           <div className="mt-4 grid grid-cols-2 gap-3">
@@ -45,11 +45,11 @@ export default function StudentMonthlyLedger({ student, charges = [], loading = 
             <Mini label="Não letivos" value={stats.nonPayable} />
           </div>
 
-          <p className="mt-4 rounded-2xl border border-slate-100 bg-white/80 p-3 text-xs font-semibold leading-5 text-slate-600">
+          <p className="mt-4 rounded-2xl border border-blue-100 bg-blue-50/80 p-3 text-xs font-semibold leading-5 text-blue-900 dark:border-blue-900/40 dark:bg-blue-950/35 dark:text-blue-100">
             Em Angola o aluno não paga obrigatoriamente os 12 meses completos. Os meses fora do calendário de cobrança aparecem como “Não letivo”.
           </p>
 
-          <div className="mt-4 max-h-[520px] space-y-2 overflow-y-auto pr-1">
+          <div className="mt-4 max-h-[560px] space-y-3 overflow-y-auto pr-1">
             {rows.map((row) => <MonthRow key={row.label} row={row} studentName={getStudentName(student)} />)}
           </div>
         </>
@@ -62,35 +62,70 @@ function MonthRow({ row, studentName }) {
   const paid = row.status === 'PAID';
   const open = row.status === 'OPEN';
   const neutral = row.status === 'NA';
+
+  const cardClass = paid
+    ? 'border-emerald-200 bg-emerald-50 text-emerald-950 dark:border-emerald-800/70 dark:bg-emerald-950/25 dark:text-emerald-50'
+    : open
+      ? 'border-amber-300 bg-amber-50 text-amber-950 dark:border-amber-700/70 dark:bg-amber-950/25 dark:text-amber-50'
+      : 'border-slate-200 bg-slate-50 text-slate-800 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-200';
+
   return (
-    <div className={`rounded-2xl border p-3 ${paid ? 'border-emerald-100 bg-emerald-50/80' : open ? 'border-amber-100 bg-amber-50/80' : 'border-slate-100 bg-slate-50/80'}`}>
+    <div className={`rounded-[18px] border p-4 shadow-sm dark:shadow-none ${cardClass}`}>
       <div className="flex items-start justify-between gap-3">
-        <div>
-          <p className="font-black text-slate-900">Mês {row.index} · {row.short}</p>
-          <p className="mt-1 text-xs font-semibold text-slate-500">{row.label}</p>
+        <div className="min-w-0">
+          <p className="text-sm font-extrabold text-slate-950 dark:text-slate-50">Mês {row.index} · {row.short}</p>
+          <p className="mt-1 text-[12px] font-semibold text-slate-600 dark:text-slate-300">{row.label}</p>
         </div>
-        <span className={`inline-flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-black ${paid ? 'bg-emerald-100 text-emerald-700' : open ? 'bg-amber-100 text-amber-800' : 'bg-slate-200 text-slate-600'}`}>
-          {paid ? <CheckCircle2 size={12} /> : open ? <Clock3 size={12} /> : <AlertTriangle size={12} />}
-          {row.statusLabel}
-        </span>
+        <StatusPill paid={paid} open={open} neutral={neutral} label={row.statusLabel} />
       </div>
 
       {paid && (
-        <p className="mt-2 rounded-xl bg-white/80 px-3 py-2 text-xs font-black leading-5 text-emerald-800">
+        <p className="mt-3 rounded-2xl border border-emerald-200 bg-white px-3 py-2 text-xs font-extrabold leading-5 text-emerald-800 dark:border-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-100">
           {studentName} - {row.short} - pago - {formatPaidAt(row.paidAt)}
         </p>
       )}
 
       {neutral ? (
-        <p className="mt-2 text-xs font-semibold leading-5 text-slate-500">Mês sem cobrança regular de propina.</p>
+        <p className="mt-3 rounded-2xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold leading-5 text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300">Mês sem cobrança regular de propina.</p>
       ) : (
-        <div className="mt-3 grid grid-cols-2 gap-2 text-[11px] font-bold text-slate-700">
-          <span>Base: {formatMoney(row.amount)}</span>
-          <span>Multa: {formatMoney(row.fineAmount)}</span>
-          <span>Juros: {formatMoney(row.interestAmount)}</span>
-          <span>Total: {formatMoney(row.totalAmount)}</span>
+        <div className="mt-3 grid grid-cols-2 gap-2 text-[12px] font-bold">
+          <Amount label="Base" value={row.amount} />
+          <Amount label="Multa" value={row.fineAmount} tone={row.fineAmount > 0 ? 'danger' : 'muted'} />
+          <Amount label="Juros" value={row.interestAmount} tone={row.interestAmount > 0 ? 'danger' : 'muted'} />
+          <Amount label="Total" value={row.totalAmount} tone="strong" />
         </div>
       )}
+    </div>
+  );
+}
+
+function StatusPill({ paid, open, neutral, label }) {
+  const className = paid
+    ? 'bg-emerald-100 text-emerald-800 ring-emerald-200 dark:bg-emerald-500/15 dark:text-emerald-200 dark:ring-emerald-400/25'
+    : open
+      ? 'bg-amber-100 text-amber-900 ring-amber-200 dark:bg-amber-500/15 dark:text-amber-200 dark:ring-amber-400/25'
+      : 'bg-slate-200 text-slate-700 ring-slate-300 dark:bg-slate-800 dark:text-slate-300 dark:ring-slate-700';
+
+  return (
+    <span className={`inline-flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-extrabold ring-1 ${className}`}>
+      {paid ? <CheckCircle2 size={12} /> : open ? <Clock3 size={12} /> : <AlertTriangle size={12} />}
+      {neutral ? 'Não letivo' : label}
+    </span>
+  );
+}
+
+function Amount({ label, value, tone = 'default' }) {
+  const toneClass = {
+    default: 'text-slate-700 dark:text-slate-300',
+    muted: 'text-slate-500 dark:text-slate-400',
+    danger: 'text-red-700 dark:text-red-300',
+    strong: 'text-slate-950 dark:text-white',
+  }[tone];
+
+  return (
+    <div className="rounded-2xl border border-white/70 bg-white/70 px-3 py-2 dark:border-slate-800 dark:bg-slate-900/80">
+      <p className="text-[10px] font-extrabold uppercase tracking-wide text-slate-500 dark:text-slate-400">{label}</p>
+      <p className={`mt-1 break-words text-[12px] font-extrabold ${toneClass}`}>{formatMoney(value)}</p>
     </div>
   );
 }
@@ -148,15 +183,15 @@ function formatPaidAt(value) {
 
 function Mini({ label, value, wide, tone = 'navy' }) {
   const tones = {
-    navy: 'border-blue-100 bg-blue-50/70 text-imetro-navy',
-    warning: 'border-amber-100 bg-amber-50 text-amber-800',
-    danger: 'border-red-100 bg-red-50 text-red-700',
-    success: 'border-emerald-100 bg-emerald-50 text-emerald-700',
+    navy: 'border-blue-200 bg-blue-50 text-blue-900 dark:border-blue-900/50 dark:bg-blue-950/35 dark:text-blue-100',
+    warning: 'border-amber-200 bg-amber-50 text-amber-900 dark:border-amber-900/50 dark:bg-amber-950/35 dark:text-amber-100',
+    danger: 'border-red-200 bg-red-50 text-red-800 dark:border-red-900/50 dark:bg-red-950/35 dark:text-red-100',
+    success: 'border-emerald-200 bg-emerald-50 text-emerald-800 dark:border-emerald-900/50 dark:bg-emerald-950/35 dark:text-emerald-100',
   };
   return (
     <div className={`rounded-2xl border p-3 ${tones[tone] || tones.navy} ${wide ? 'col-span-2' : ''}`}>
-      <p className="text-[10px] font-black uppercase tracking-wide opacity-70">{label}</p>
-      <p className="mt-1 break-words text-base font-black">{value}</p>
+      <p className="text-[10px] font-extrabold uppercase tracking-wide opacity-75">{label}</p>
+      <p className="mt-1 break-words text-base font-extrabold">{value}</p>
     </div>
   );
 }
