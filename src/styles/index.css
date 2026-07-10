@@ -87,6 +87,25 @@ a { text-decoration: none; color: inherit; }
   .premium-card { @apply rounded-[20px] border border-[#E6F0FB] bg-white shadow-premium dark:border-white/10 dark:bg-[#082B4B]/85 dark:shadow-none; }
 }
 
+/* Garante títulos brancos em todos os blocos hero do painel.
+   O h1 global usa cor escura em páginas comuns, então esta regra preserva contraste nos banners azuis. */
+.premium-hero h1,
+section.text-white h1,
+section[class*="text-white"] h1,
+section[class*="from-[#061936]"] h1,
+section[class*="from-[#0B2A5B]"] h1,
+section[class*="from-[#005AA7]"] h1,
+section[class*="bg-gradient-to-br"] h1 {
+  color: #FFFFFF !important;
+}
+
+.premium-hero .page-subtitle,
+section.text-white .page-subtitle,
+section[class*="text-white"] .page-subtitle,
+section[class*="bg-gradient-to-br"] .page-subtitle {
+  color: rgba(255, 255, 255, .82) !important;
+}
+
 html.dark .bg-white,
 html.dark [class*="bg-white/"],
 html.dark .card,
