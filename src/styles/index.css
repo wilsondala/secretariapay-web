@@ -83,7 +83,7 @@ html.dark *::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, .26); bac
   .card,
   .card-premium,
   .premium-card {
-    @apply rounded-2xl border border-[#E5EAF2] bg-white/95 backdrop-blur-xl transition duration-200 hover:-translate-y-px hover:border-[#C8D4F7] dark:border-white/[.08] dark:bg-[#0D1B2E]/94 dark:hover:border-white/[.14];
+    @apply rounded-2xl border border-[#E5EAF2] bg-white/95 backdrop-blur-xl transition duration-200 hover:-translate-y-px hover:border-[#C8D4F7] dark:border-white/10 dark:bg-[#0D1B2E] dark:hover:border-white/20;
     box-shadow: 0 10px 30px rgba(15, 23, 42, .055);
   }
   html.dark .card,
@@ -91,13 +91,13 @@ html.dark *::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, .26); bac
   html.dark .premium-card { box-shadow: 0 14px 36px rgba(0, 0, 0, .18); }
 
   .btn-primary { @apply inline-flex h-10 items-center justify-center rounded-xl bg-[#3157D5] px-4 text-sm font-bold text-white shadow-[0_8px_20px_rgba(49,87,213,.22)] transition hover:bg-[#2449C6] disabled:cursor-not-allowed disabled:opacity-60 dark:shadow-none; }
-  .btn-secondary { @apply inline-flex h-10 items-center justify-center rounded-xl border border-[#E5EAF2] bg-white px-4 text-sm font-semibold text-[#3157D5] shadow-sm transition hover:bg-[#F8FAFD] disabled:cursor-not-allowed disabled:opacity-60 dark:border-white/[.08] dark:bg-white/[.04] dark:text-[#9BB4FF] dark:shadow-none dark:hover:bg-white/[.07]; }
+  .btn-secondary { @apply inline-flex h-10 items-center justify-center rounded-xl border border-[#E5EAF2] bg-white px-4 text-sm font-semibold text-[#3157D5] shadow-sm transition hover:bg-[#F8FAFD] disabled:cursor-not-allowed disabled:opacity-60 dark:border-white/10 dark:bg-white/5 dark:text-[#9BB4FF] dark:shadow-none dark:hover:bg-white/10; }
   .btn-light { @apply inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/10 px-4 text-sm font-bold text-white transition hover:bg-white/15; }
   .btn-white { @apply inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-white px-4 text-sm font-bold text-[#0F172A] shadow-sm transition hover:bg-slate-50; }
   .btn-gold { @apply inline-flex h-10 items-center justify-center rounded-xl bg-[#F4B400] px-4 text-sm font-extrabold text-[#0F172A] transition hover:bg-[#DFA600]; }
 
   .input,
-  .input-premium { @apply h-10 w-full rounded-xl border border-[#DDE4EE] bg-white px-3.5 py-2 text-sm font-medium text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 hover:border-[#BFCBE0] focus:border-[#3157D5] focus:ring-4 focus:ring-[#3157D5]/12 dark:border-white/[.08] dark:bg-[#091727] dark:text-white dark:shadow-none dark:placeholder:text-slate-500 dark:hover:border-white/[.16]; }
+  .input-premium { @apply h-10 w-full rounded-xl border border-[#DDE4EE] bg-white px-3.5 py-2 text-sm font-medium text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 hover:border-[#BFCBE0] focus:border-[#3157D5] focus:ring-4 focus:ring-[#3157D5]/20 dark:border-white/10 dark:bg-[#091727] dark:text-white dark:shadow-none dark:placeholder:text-slate-500 dark:hover:border-white/20; }
   .input-premium { @apply px-4; }
 
   .label { @apply mb-1.5 block text-[10px] font-extrabold uppercase tracking-[.08em] text-slate-500 dark:text-slate-400; }
@@ -111,7 +111,7 @@ html.dark *::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, .26); bac
   .compact-muted { @apply text-[12px] leading-5 text-slate-500 dark:text-slate-400; }
 
   .premium-hero {
-    @apply relative overflow-hidden rounded-2xl border border-[#DDE5F5] p-6 text-white shadow-[0_18px_44px_rgba(29,57,126,.14)] dark:border-white/[.08] dark:shadow-[0_18px_44px_rgba(0,0,0,.20)] sm:p-7;
+    @apply relative overflow-hidden rounded-2xl border border-[#DDE5F5] p-6 text-white shadow-[0_18px_44px_rgba(29,57,126,.14)] dark:border-white/10 dark:shadow-[0_18px_44px_rgba(0,0,0,.20)] sm:p-7;
     background:
       radial-gradient(circle at 88% 20%, rgba(244, 180, 0, .14), transparent 28%),
       linear-gradient(135deg, #3157D5 0%, #183A79 54%, #102542 100%);
@@ -121,12 +121,12 @@ html.dark *::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, .26); bac
       radial-gradient(circle at 88% 20%, rgba(244, 180, 0, .10), transparent 28%),
       linear-gradient(135deg, #15366F 0%, #102542 55%, #0B1B31 100%);
   }
-  .premium-pill { @apply inline-flex items-center gap-2 rounded-full border border-white/14 bg-white/10 px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-[.14em] text-white/85; }
+  .premium-pill { @apply inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-[.14em] text-white/80; }
 
-  .topbar-action { @apply inline-flex h-9 items-center gap-2 rounded-xl border border-[#E5EAF2] bg-white px-3 text-[11px] font-bold text-slate-600 shadow-sm transition hover:bg-slate-50 dark:border-white/[.08] dark:bg-white/[.04] dark:text-slate-200 dark:shadow-none dark:hover:bg-white/[.07]; }
+  .topbar-action { @apply inline-flex h-9 items-center gap-2 rounded-xl border border-[#E5EAF2] bg-white px-3 text-[11px] font-bold text-slate-600 shadow-sm transition hover:bg-slate-50 dark:border-white/10 dark:bg-white/5 dark:text-slate-200 dark:shadow-none dark:hover:bg-white/10; }
   .topbar-action-primary { @apply border-[#3157D5] bg-[#3157D5] text-white hover:bg-[#2449C6] dark:border-[#3157D5] dark:bg-[#3157D5] dark:text-white; }
   .topbar-action-success { @apply border-emerald-600 bg-emerald-600 text-white hover:bg-emerald-700 dark:border-emerald-600 dark:bg-emerald-600 dark:text-white; }
-  .topbar-icon { @apply inline-flex h-9 w-9 items-center justify-center rounded-xl border border-[#E5EAF2] bg-white text-slate-600 shadow-sm transition hover:bg-slate-50 dark:border-white/[.08] dark:bg-white/[.04] dark:text-slate-200 dark:shadow-none dark:hover:bg-white/[.07]; }
+  .topbar-icon { @apply inline-flex h-9 w-9 items-center justify-center rounded-xl border border-[#E5EAF2] bg-white text-slate-600 shadow-sm transition hover:bg-slate-50 dark:border-white/10 dark:bg-white/5 dark:text-slate-200 dark:shadow-none dark:hover:bg-white/10; }
 }
 
 .premium-hero::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(120deg, rgba(255,255,255,.08), transparent 38%, transparent 72%, rgba(255,255,255,.03)); }
