@@ -24,7 +24,7 @@ import { appInfo } from '../config/appInfo.js';
 const groups = [
   { label: 'Visão geral', items: [['Painel', '/dashboard', Home, 'Resumo executivo']] },
   {
-    label: 'Operação financeira',
+    label: 'Gestão financeira',
     items: [
       ['Estudantes', '/students', Users, 'Cadastro e contacto'],
       ['Cobranças', '/charges', FileText, 'Propinas e guias'],
@@ -33,14 +33,17 @@ const groups = [
     ],
   },
   {
-    label: 'Automação e análise',
+    label: 'Automação e canais',
     items: [
       ['WhatsApp', '/whatsapp', MessageCircle, 'Atendimento e avisos'],
       ['Operações', '/operations', Workflow, 'Automação institucional'],
       ['Importações', '/imports', Import, 'Carga de dados'],
       ['Relatórios', '/reports', BarChart3, 'Gestão executiva'],
-      ['Configurações', '/settings', Settings, 'Regras e ambiente'],
     ],
+  },
+  {
+    label: 'Configurações',
+    items: [['Configurações', '/settings', Settings, 'Regras e ambiente']],
   },
 ];
 
@@ -51,29 +54,30 @@ function NavItem({ label, path, Icon, helper, onClose, collapsed }) {
       onClick={onClose}
       title={collapsed ? `${label} — ${helper}` : undefined}
       className={({ isActive }) => [
-        'group relative flex items-center rounded-2xl text-[14px] font-medium transition duration-200',
-        collapsed ? 'justify-center px-2 py-3' : 'gap-3 px-3.5 py-3',
+        'group relative flex items-center rounded-xl text-[13px] font-semibold transition duration-200',
+        collapsed ? 'justify-center px-2 py-2.5' : 'gap-3 px-3 py-2.5',
         isActive
-          ? 'border border-white/12 bg-white/[.14] text-white shadow-[0_14px_34px_rgba(0,0,0,.12)]'
-          : 'text-[#E6F0FB]/78 hover:bg-white/[.08] hover:text-white',
+          ? 'bg-[#3157D5] text-white shadow-[0_10px_24px_rgba(49,87,213,.28)]'
+          : 'text-slate-600 hover:bg-[#EEF3FF] hover:text-[#2449C6] dark:text-slate-300 dark:hover:bg-white/[.07] dark:hover:text-white',
       ].join(' ')}
     >
       {({ isActive }) => (
         <>
-          {isActive && !collapsed ? <span className="absolute left-0 top-1/2 h-7 w-1 -translate-y-1/2 rounded-r-full bg-[#F2B300]" /> : null}
           <span className={[
-            'flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition',
-            isActive ? 'bg-[#F2B300] text-[#082B4B]' : 'bg-white/[.08] text-[#E6F0FB] group-hover:bg-white/[.12]',
+            'flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition',
+            isActive
+              ? 'bg-white/16 text-white'
+              : 'bg-slate-100 text-slate-500 group-hover:bg-white group-hover:text-[#3157D5] dark:bg-white/[.06] dark:text-slate-300 dark:group-hover:bg-white/[.10] dark:group-hover:text-white',
           ].join(' ')}>
-            <Icon size={19} strokeWidth={2.2} />
+            <Icon size={17} strokeWidth={2.1} />
           </span>
           {!collapsed ? (
             <>
               <span className="min-w-0 flex-1">
                 <span className="block truncate leading-5">{label}</span>
-                <span className={['mt-0.5 block truncate text-[11px] font-medium', isActive ? 'text-white/75' : 'text-[#E6F0FB]/48'].join(' ')}>{helper}</span>
+                <span className={['mt-0.5 block truncate text-[10px] font-medium', isActive ? 'text-white/72' : 'text-slate-400 dark:text-slate-500'].join(' ')}>{helper}</span>
               </span>
-              <ChevronRight size={16} className={isActive ? 'text-[#F2B300]' : 'text-white/30 group-hover:text-white/60'} />
+              <ChevronRight size={14} className={isActive ? 'text-white/75' : 'text-slate-300 dark:text-white/20'} />
             </>
           ) : null}
         </>
@@ -84,21 +88,20 @@ function NavItem({ label, path, Icon, helper, onClose, collapsed }) {
 
 function Content({ onClose, collapsed = false, onToggleCollapsed }) {
   return (
-    <div className="flex h-full flex-col overflow-hidden bg-[linear-gradient(180deg,#005AA7_0%,#082B4B_100%)] text-white shadow-[28px_0_70px_rgba(8,43,75,.20)] dark:shadow-none">
-      <div className={collapsed ? 'relative px-3 pb-4 pt-5' : 'relative px-5 pb-5 pt-7'}>
-        <div className="pointer-events-none absolute -right-20 -top-20 h-48 w-48 rounded-full bg-white/12 blur-3xl" />
-        <div className="pointer-events-none absolute left-0 top-24 h-24 w-24 rounded-full bg-[#F2B300]/20 blur-2xl" />
+    <div className="sidebar-surface flex h-full flex-col overflow-hidden border-r border-[#E5EAF2] bg-white text-[#0F172A] shadow-[18px_0_48px_rgba(15,23,42,.06)] dark:border-white/[.07] dark:bg-[#081321] dark:text-white dark:shadow-[18px_0_50px_rgba(0,0,0,.22)]">
+      <div className={collapsed ? 'relative px-3 pb-4 pt-5' : 'relative px-4 pb-4 pt-5'}>
         <div className={collapsed ? 'relative flex flex-col items-center gap-3' : 'relative flex items-start gap-3'}>
-          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-[1.15rem] border border-white/14 bg-white/[.12] text-lg font-extrabold shadow-[0_18px_44px_rgba(0,0,0,.12)]">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#3157D5] text-sm font-extrabold text-white shadow-[0_10px_24px_rgba(49,87,213,.25)]">
             SP
           </div>
           {!collapsed ? (
-            <div className="min-w-0 flex-1">
-              <p className="text-[21px] font-extrabold leading-tight tracking-tight">{env.appName}</p>
-              <p className="mt-2 max-w-[210px] text-[12px] font-semibold uppercase tracking-[.14em] text-[#FDE68A]">IMETRO · DCR</p>
+            <div className="min-w-0 flex-1 pt-0.5">
+              <p className="text-[16px] font-extrabold leading-tight tracking-tight">Secretária<span className="text-[#3157D5] dark:text-[#7EA0FF]">Pay</span></p>
+              <p className="mt-1 text-[11px] font-bold uppercase tracking-[.12em] text-slate-400 dark:text-slate-500">Académico</p>
+              <p className="mt-1 text-[10px] font-semibold text-slate-400 dark:text-slate-500">IMETRO · DCR</p>
             </div>
           ) : null}
-          <button className="rounded-xl p-2 text-white/70 hover:bg-white/10 lg:hidden" onClick={onClose} aria-label="Fechar menu">
+          <button className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/10 lg:hidden" onClick={onClose} aria-label="Fechar menu">
             <X size={18} />
           </button>
         </div>
@@ -106,33 +109,19 @@ function Content({ onClose, collapsed = false, onToggleCollapsed }) {
         <button
           type="button"
           onClick={onToggleCollapsed}
-          className={['relative mt-4 hidden h-10 items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[.08] px-3 text-[12px] font-semibold text-[#E6F0FB] transition hover:bg-white/[.14] hover:text-white lg:inline-flex', collapsed ? 'w-full px-2' : 'w-auto'].join(' ')}
+          className={['relative mt-4 hidden h-9 items-center justify-center gap-2 rounded-lg border border-[#E5EAF2] bg-[#F8FAFC] px-3 text-[11px] font-semibold text-slate-500 transition hover:border-[#C7D4F8] hover:bg-[#EEF3FF] hover:text-[#3157D5] dark:border-white/[.08] dark:bg-white/[.04] dark:text-slate-300 dark:hover:bg-white/[.08] lg:inline-flex', collapsed ? 'w-full px-2' : 'w-auto'].join(' ')}
           title={collapsed ? 'Abrir menu lateral' : 'Recolher menu lateral'}
         >
-          {collapsed ? <PanelLeftOpen size={17} /> : <PanelLeftClose size={17} />}
+          {collapsed ? <PanelLeftOpen size={16} /> : <PanelLeftClose size={16} />}
           {!collapsed ? 'Recolher menu' : null}
         </button>
-
-        {!collapsed ? (
-          <div className="relative mt-5 rounded-[18px] border border-white/10 bg-white/[.08] p-4">
-            <div className="flex items-center gap-3">
-              <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald-400/14 text-emerald-200">
-                <ShieldCheck size={19} />
-              </span>
-              <div>
-                <p className="text-sm font-bold">Painel financeiro</p>
-                <p className="mt-1 text-xs font-medium text-[#E6F0FB]/62">Propinas · guias · recibos</p>
-              </div>
-            </div>
-          </div>
-        ) : null}
       </div>
 
-      <nav className={collapsed ? 'flex-1 space-y-4 overflow-y-auto px-3 pb-5' : 'flex-1 space-y-6 overflow-y-auto px-4 pb-5'}>
+      <nav className={collapsed ? 'flex-1 space-y-4 overflow-y-auto px-3 pb-5' : 'flex-1 space-y-5 overflow-y-auto px-3 pb-5'}>
         {groups.map((group) => (
           <div key={group.label}>
-            {!collapsed ? <p className="mb-2 px-3 text-[11px] font-bold uppercase tracking-[.18em] text-[#E6F0FB]/46">{group.label}</p> : null}
-            <div className="space-y-1.5">
+            {!collapsed ? <p className="mb-2 px-3 text-[10px] font-extrabold uppercase tracking-[.14em] text-slate-400 dark:text-slate-500">{group.label}</p> : null}
+            <div className="space-y-1">
               {group.items.map(([label, path, Icon, helper]) => (
                 <NavItem key={path} label={label} path={path} Icon={Icon} helper={helper} onClose={onClose} collapsed={collapsed} />
               ))}
@@ -141,16 +130,17 @@ function Content({ onClose, collapsed = false, onToggleCollapsed }) {
         ))}
       </nav>
 
-      <div className={collapsed ? 'px-3 pb-5' : 'px-4 pb-5'}>
-        <div className="rounded-[18px] border border-white/10 bg-white/[.08] p-4 shadow-[0_18px_42px_rgba(0,0,0,.10)] dark:shadow-none">
+      <div className={collapsed ? 'px-3 pb-4' : 'px-3 pb-4'}>
+        <div className="rounded-xl border border-[#E5EAF2] bg-[#F7F9FC] p-3.5 dark:border-white/[.08] dark:bg-white/[.04]">
           <div className="flex items-center justify-between gap-3">
-            <CalendarDays size={18} className="text-[#F2B300]" />
-            {!collapsed ? <span className="rounded-full border border-[#F2B300]/28 bg-[#F2B300]/14 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-[#FDE68A]">Demo ativa</span> : null}
+            <CalendarDays size={17} className="text-[#3157D5] dark:text-[#7EA0FF]" />
+            {!collapsed ? <span className="rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-emerald-700 dark:text-emerald-300">Online</span> : null}
           </div>
           {!collapsed ? (
             <>
-              <p className="mt-3 text-[12px] font-medium leading-5 text-[#E6F0FB]/72">{env.institutionName}</p>
-              <p className="mt-3 flex items-center gap-2 text-xs font-bold text-white"><Sparkles size={14} className="text-[#F2B300]" /> v{appInfo.version} · {appInfo.environmentLabel}</p>
+              <p className="mt-3 text-[11px] font-medium leading-4 text-slate-500 dark:text-slate-400">Suporte DCR</p>
+              <p className="mt-1 truncate text-[11px] font-semibold text-slate-700 dark:text-slate-200">{env.institutionName}</p>
+              <p className="mt-2 flex items-center gap-1.5 text-[10px] font-bold text-slate-500 dark:text-slate-400"><Sparkles size={12} className="text-[#F4B400]" /> v{appInfo.version} · {appInfo.environmentLabel}</p>
             </>
           ) : null}
         </div>
@@ -162,13 +152,13 @@ function Content({ onClose, collapsed = false, onToggleCollapsed }) {
 export default function Sidebar({ open, onClose, collapsed, onToggleCollapsed }) {
   return (
     <>
-      <aside className={collapsed ? 'fixed inset-y-0 left-0 z-40 hidden w-[96px] transition-all duration-300 lg:block' : 'fixed inset-y-0 left-0 z-40 hidden w-[292px] transition-all duration-300 lg:block'}>
+      <aside className={collapsed ? 'fixed inset-y-0 left-0 z-40 hidden w-[84px] transition-all duration-300 lg:block' : 'fixed inset-y-0 left-0 z-40 hidden w-[252px] transition-all duration-300 lg:block'}>
         <Content collapsed={collapsed} onToggleCollapsed={onToggleCollapsed} />
       </aside>
       {open && (
         <div className="fixed inset-0 z-50 lg:hidden">
-          <button className="absolute inset-0 bg-slate-950/55 backdrop-blur-md" onClick={onClose} aria-label="Fechar menu" />
-          <aside className="relative h-full w-[292px] max-w-[88vw]">
+          <button className="absolute inset-0 bg-slate-950/55 backdrop-blur-sm" onClick={onClose} aria-label="Fechar menu" />
+          <aside className="relative h-full w-[252px] max-w-[88vw]">
             <Content onClose={onClose} collapsed={false} onToggleCollapsed={onToggleCollapsed} />
           </aside>
         </div>
