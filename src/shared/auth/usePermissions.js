@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import useAuth from './useAuth.js';
 import { can, canAccessRoute, normalizeRole } from './permissions.js';
 
-export default function usePermissions() {
+export function usePermissions() {
   const { user } = useAuth();
 
   return useMemo(() => ({
@@ -12,3 +12,5 @@ export default function usePermissions() {
     canAccessRoute: (path) => canAccessRoute(user, path),
   }), [user]);
 }
+
+export default usePermissions;
