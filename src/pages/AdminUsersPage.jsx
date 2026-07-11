@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { KeyRound, Pencil, Plus, Search, ShieldCheck, UserCheck, UserX, Users } from 'lucide-react';
 import { changeAdminUserStatus, createAdminUser, fetchAdminUserRoles, fetchAdminUsers, updateAdminUser } from '../services/adminUsersService.js';
 import { env } from '../config/env.js';
+import usePermissions from '../shared/auth/usePermissions.js';
 
 const roleLabels = {
   ADMIN_GLOBAL: 'Administrador global', ADMIN_INSTITUTION: 'Administrador institucional', ADMIN_IMETRO: 'Administrador IMETRO',
@@ -11,6 +12,8 @@ const roleLabels = {
 };
 
 export default function AdminUsersPage() {
+  const { can } = usePermissions();
+  const canManageUsers = can('manageUsers');
   const [users, setUsers] = useState([]);
   const [roles, setRoles] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -34,9 +37,9 @@ export default function AdminUsersPage() {
   }, [users, search]);
 
   const active = users.filter((user) => user.status === 'ACTIVE').length;
-  const blocked = users.filter((user) => user.status === 'BLOCKED').length;
 
   async function toggleStatus(user) {
+    if (!canManageUsers) return;
     const next = user.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE';
     if (!confirm(`${next === 'ACTIVE' ? 'Ativar' : 'Desativar'} ${user.fullName}?`)) return;
     await changeAdminUserStatus(user.id, next);
@@ -47,9 +50,11 @@ export default function AdminUsersPage() {
     <section className="rounded-3xl bg-gradient-to-r from-[#061936] via-[#0B2D63] to-[#061936] p-6 text-white">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div><div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-[11px] font-black uppercase tracking-[.16em]"><ShieldCheck size={14}/> Segurança institucional</div><h1 className="mt-4 text-3xl font-black">Usuários e permissões</h1><p className="mt-2 text-sm font-semibold text-white/75">Controle operadores, perfis de acesso e estado das contas administrativas.</p></div>
-        <button onClick={() => setEditing({})} className="btn-primary"><Plus size={18}/> Novo usuário</button>
+        {canManageUsers ? <button onClick={() => setEditing({})} className="btn-primary"><Plus size={18}/> Novo usuário</button> : null}
       </div>
     </section>
+
+    {!canManageUsers ? <div className="rounded-2xl border border-amber-300/40 bg-amber-50 p-4 text-sm font-bold text-amber-800 dark:border-amber-400/20 dark:bg-amber-500/10 dark:text-amber-200">Acesso em modo de consulta. O seu perfil não pode criar, editar, ativar ou desativar usuários.</div> : null}
 
     <div className="grid gap-4 sm:grid-cols-3">
       <Summary title="Usuários" value={users.length} icon={Users}/><Summary title="Ativos" value={active} icon={UserCheck}/><Summary title="Bloqueados/inativos" value={users.length - active} icon={UserX}/>
@@ -62,12 +67,12 @@ export default function AdminUsersPage() {
           <div><p className="font-black text-slate-950 dark:text-white">{user.fullName}</p><p className="text-xs font-semibold text-slate-500">{user.email}</p>{user.whatsapp && <p className="mt-1 text-xs text-slate-400">WhatsApp: {user.whatsapp}</p>}</div>
           <div><p className="text-sm font-black text-slate-700 dark:text-slate-200">{roleLabels[user.role] || user.role}</p><p className="text-xs text-slate-500">{user.institutionName || env.institutionShortName}</p></div>
           <span className={`w-fit rounded-full px-3 py-1 text-xs font-black ${user.status === 'ACTIVE' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300' : 'bg-red-100 text-red-700 dark:bg-red-500/15 dark:text-red-300'}`}>{user.status}</span>
-          <div className="flex flex-wrap justify-end gap-2"><button onClick={() => setEditing(user)} className="btn-secondary"><Pencil size={15}/> Editar</button><button onClick={() => toggleStatus(user)} className="btn-secondary">{user.status === 'ACTIVE' ? <UserX size={15}/> : <UserCheck size={15}/>} {user.status === 'ACTIVE' ? 'Desativar' : 'Ativar'}</button></div>
+          <div className="flex flex-wrap justify-end gap-2">{canManageUsers ? <><button onClick={() => setEditing(user)} className="btn-secondary"><Pencil size={15}/> Editar</button><button onClick={() => toggleStatus(user)} className="btn-secondary">{user.status === 'ACTIVE' ? <UserX size={15}/> : <UserCheck size={15}/>} {user.status === 'ACTIVE' ? 'Desativar' : 'Ativar'}</button></> : <span className="text-xs font-bold text-slate-400">Somente leitura</span>}</div>
         </div>)}
       </div>
     </section>
 
-    {editing && <UserModal user={editing} roles={roles} onClose={() => setEditing(null)} onSaved={async () => { setEditing(null); await load(); }}/>} 
+    {editing && canManageUsers ? <UserModal user={editing} roles={roles} onClose={() => setEditing(null)} onSaved={async () => { setEditing(null); await load(); }}/> : null}
   </div>;
 }
 
