@@ -15,7 +15,12 @@ import EmptyState from '../components/ui/EmptyState.jsx';
 import ErrorState from '../components/ui/ErrorState.jsx';
 import LoadingState from '../components/ui/LoadingState.jsx';
 import StatusBadge from '../components/ui/StatusBadge.jsx';
-import { approvePaymentProof, listPaymentProofs, openPaymentProofAttachment, rejectPaymentProof } from '../services/proofsService.js';
+import {
+  approvePaymentProof,
+  listPaymentProofs,
+  openPaymentProofAttachment,
+  rejectPaymentProof,
+} from '../services/proofsService.js';
 import usePermissions from '../shared/auth/usePermissions.js';
 import {
   formatMoney,
@@ -24,6 +29,8 @@ import {
   normalizeProofStatus,
   normalizeText,
 } from '../utils/formatters.js';
+
+const REVIEWABLE_STATUSES = ['PENDING', 'PENDING_REVIEW', 'UNDER_REVIEW'];
 
 export default function ProofsPage() {
   const { can } = usePermissions();
@@ -39,14 +46,17 @@ export default function ProofsPage() {
   const [notes, setNotes] = useState('');
 
   const proofs = useMemo(() => rawProofs.map(normalizePaymentProof), [rawProofs]);
+  const selectedStatus = String(selected?.status || '').toUpperCase();
+  const selectedIsReviewable = REVIEWABLE_STATUSES.includes(selectedStatus);
 
-  const load = async () => {
+  const load = async (preferredId = selected?.id) => {
     setLoading(true);
     setError(null);
     try {
       const data = await listPaymentProofs();
+      const normalized = data.map(normalizePaymentProof);
       setRawProofs(data);
-      if (data.length > 0 && !selected) setSelected(normalizePaymentProof(data[0]));
+      setSelected(normalized.find((item) => item.id === preferredId) || normalized[0] || null);
     } catch (err) {
       setError(err?.response?.data?.message || err.message || 'Falha ao carregar comprovativos.');
     } finally {
@@ -55,7 +65,7 @@ export default function ProofsPage() {
   };
 
   useEffect(() => {
-    load();
+    load(null);
   }, []);
 
   const filtered = useMemo(() => {
@@ -78,7 +88,7 @@ export default function ProofsPage() {
   }, [proofs, search, status]);
 
   const stats = useMemo(() => {
-    const pending = proofs.filter((item) => ['PENDING', 'PENDING_REVIEW', 'UNDER_REVIEW'].includes(String(item.status).toUpperCase()));
+    const pending = proofs.filter((item) => REVIEWABLE_STATUSES.includes(String(item.status).toUpperCase()));
     const approved = proofs.filter((item) => ['APPROVED', 'VALIDATED'].includes(String(item.status).toUpperCase()));
     const rejected = proofs.filter((item) => String(item.status).toUpperCase() === 'REJECTED');
     return {
@@ -95,14 +105,25 @@ export default function ProofsPage() {
       setActionMessage({ type: 'error', text: 'O seu perfil não possui permissão para aprovar comprovativos.' });
       return;
     }
-    if (!selected?.id) return;
+    if (!selected?.id || !selectedIsReviewable) {
+      setActionMessage({ type: 'error', text: 'Este comprovativo já foi processado e não pode ser aprovado novamente.' });
+      return;
+    }
+    const confirmed = window.confirm(`Confirma a aprovação do comprovativo ${selected.proofCode}? Esta ação poderá emitir o recibo institucional.`);
+    if (!confirmed) return;
+
     setWorking(true);
     setActionMessage(null);
     try {
-      const result = await approvePaymentProof(selected.id, { notes: notes || 'Aprovado pela DCR no painel.' });
-      setActionMessage({ type: 'success', text: `Comprovativo aprovado. ${result?.receiptCode ? `Recibo: ${result.receiptCode}` : 'Aguardando retorno do backend.'}` });
+      const result = await approvePaymentProof(selected.id, { notes: notes.trim() || 'Aprovado pela DCR no painel.' });
+      setActionMessage({
+        type: 'success',
+        text: result?.receiptCode
+          ? `Comprovativo aprovado. Recibo emitido: ${result.receiptCode}.`
+          : 'Comprovativo aprovado. O estado do recibo será atualizado pelo backend.',
+      });
       setNotes('');
-      await load();
+      await load(selected.id);
     } catch (err) {
       setActionMessage({ type: 'error', text: err?.response?.data?.message || err.message || 'Falha ao aprovar comprovativo.' });
     } finally {
@@ -115,14 +136,25 @@ export default function ProofsPage() {
       setActionMessage({ type: 'error', text: 'O seu perfil não possui permissão para rejeitar comprovativos.' });
       return;
     }
-    if (!selected?.id) return;
+    if (!selected?.id || !selectedIsReviewable) {
+      setActionMessage({ type: 'error', text: 'Este comprovativo já foi processado e não pode ser rejeitado novamente.' });
+      return;
+    }
+    const reason = notes.trim();
+    if (!reason) {
+      setActionMessage({ type: 'error', text: 'Informe obrigatoriamente o motivo da rejeição na observação da DCR.' });
+      return;
+    }
+    const confirmed = window.confirm(`Confirma a rejeição do comprovativo ${selected.proofCode}? O estudante deverá corrigir ou reenviar o documento.`);
+    if (!confirmed) return;
+
     setWorking(true);
     setActionMessage(null);
     try {
-      await rejectPaymentProof(selected.id, { reason: notes || 'Comprovativo rejeitado pela DCR.' });
+      await rejectPaymentProof(selected.id, { reason });
       setActionMessage({ type: 'success', text: 'Comprovativo rejeitado e registado para correção.' });
       setNotes('');
-      await load();
+      await load(selected.id);
     } catch (err) {
       setActionMessage({ type: 'error', text: err?.response?.data?.message || err.message || 'Falha ao rejeitar comprovativo.' });
     } finally {
@@ -147,7 +179,7 @@ export default function ProofsPage() {
   };
 
   if (loading) return <LoadingState message="Carregando comprovativos enviados pelos estudantes..." />;
-  if (error) return <ErrorState message={error} onRetry={load} />;
+  if (error) return <ErrorState message={error} onRetry={() => load(selected?.id)} />;
 
   return (
     <div className="space-y-5">
@@ -165,7 +197,7 @@ export default function ProofsPage() {
               Análise manual dos comprovativos recebidos antes da emissão do recibo institucional.
             </p>
           </div>
-          <button className="inline-flex w-fit items-center justify-center gap-2 rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-sm font-black text-white transition hover:bg-white/15" onClick={load} disabled={working}>
+          <button className="inline-flex w-fit items-center justify-center gap-2 rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-sm font-black text-white transition hover:bg-white/15" onClick={() => load(selected?.id)} disabled={working}>
             <RefreshCw size={17} />
             Atualizar
           </button>
@@ -215,7 +247,16 @@ export default function ProofsPage() {
             ) : (
               <div className="space-y-3">
                 {filtered.map((proof) => (
-                  <ProofCard key={proof.id || proof.proofCode} proof={proof} active={selected?.id === proof.id} onClick={() => setSelected(proof)} />
+                  <ProofCard
+                    key={proof.id || proof.proofCode}
+                    proof={proof}
+                    active={selected?.id === proof.id}
+                    onClick={() => {
+                      setSelected(proof);
+                      setNotes('');
+                      setActionMessage(null);
+                    }}
+                  />
                 ))}
               </div>
             )}
@@ -247,17 +288,21 @@ export default function ProofsPage() {
 
               <div>
                 <label className="label">Observação da DCR</label>
-                <textarea className="input min-h-28" placeholder="Ex.: valor confirmado no extrato, referência bancária validada, ou motivo da rejeição..." value={notes} onChange={(event) => setNotes(event.target.value)} disabled={!canValidateProofs} />
+                <textarea
+                  className="input min-h-28"
+                  placeholder={selectedIsReviewable ? 'Ex.: valor confirmado no extrato, referência validada ou motivo obrigatório da rejeição...' : 'Este comprovativo já foi processado.'}
+                  value={notes}
+                  onChange={(event) => setNotes(event.target.value)}
+                  disabled={!canValidateProofs || !selectedIsReviewable}
+                />
               </div>
 
               <div className="flex flex-wrap gap-2">
-                {selected.fileUrl && (
-                  <button type="button" className="btn-secondary" onClick={handleOpenAttachment} disabled={working}>
-                    <Eye size={16} className="mr-2" />
-                    Ver anexo
-                  </button>
-                )}
-                {canValidateProofs && (
+                <button type="button" className="btn-secondary" onClick={handleOpenAttachment} disabled={working}>
+                  <Eye size={16} className="mr-2" />
+                  Ver anexo
+                </button>
+                {canValidateProofs && selectedIsReviewable && (
                   <>
                     <button className="btn-primary" onClick={handleApprove} disabled={working}>
                       <CheckCircle2 size={16} className="mr-2" />
@@ -270,6 +315,12 @@ export default function ProofsPage() {
                   </>
                 )}
               </div>
+
+              {!selectedIsReviewable && (
+                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3 text-sm font-semibold text-slate-600 dark:border-white/10 dark:bg-white/5 dark:text-slate-300">
+                  Este comprovativo já foi processado. As ações de aprovação e rejeição foram bloqueadas para evitar duplicidade.
+                </div>
+              )}
 
               <div className="rounded-3xl border border-amber-100 bg-gradient-to-br from-amber-50 via-white to-orange-50 p-4 text-sm text-amber-900">
                 <div className="flex gap-3">
