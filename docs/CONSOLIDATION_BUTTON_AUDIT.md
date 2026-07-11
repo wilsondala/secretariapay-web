@@ -80,29 +80,28 @@ Pendências de fechamento:
 
 ### Comprovativos
 
-Estado: revisão funcional concluída no frontend; ajustes de segurança operacional identificados.
+Estado: fechado no frontend; contrato único da API ainda precisa ser consolidado.
 
 Confirmado:
 
-- **Atualizar** recarrega comprovativos reais;
-- **Ver anexo** abre o ficheiro por endpoint autenticado e usa `responseType: blob`;
-- **Aprovar** chama `PATCH {endpoint}/{id}/approve`;
-- **Rejeitar** chama `PATCH {endpoint}/{id}/reject`;
+- **Atualizar** recarrega comprovativos reais e preserva o item selecionado;
+- **Ver anexo** usa sempre o endpoint autenticado de attachment, sem depender de `fileUrl` no objeto;
+- **Aprovar** e **Rejeitar** aparecem somente para estados `PENDING`, `PENDING_REVIEW` ou `UNDER_REVIEW`;
+- comprovativos já aprovados ou rejeitados entram em modo bloqueado contra duplicidade;
+- aprovação exige confirmação explícita;
+- rejeição exige motivo obrigatório e confirmação explícita;
 - payload inclui `reviewNote` e, quando disponível, `reviewedByUserId` do utilizador autenticado;
 - aprovação e rejeição estão protegidas por `validateProofs`;
-- observação da DCR fica bloqueada em modo de consulta;
+- observação da DCR fica bloqueada para perfis de consulta e para comprovativos já processados;
 - botões ficam bloqueados durante processamento;
-- após a ação, a lista é recarregada e a mensagem de sucesso/erro é exibida.
+- após a ação, a lista é recarregada, a seleção é preservada e a mensagem de sucesso/erro é exibida;
+- o retorno com `receiptCode` é apresentado como recibo emitido; sem código, o painel informa que aguardará atualização do backend.
 
-Ajustes obrigatórios antes de marcar como fechado:
+Pendências de integração:
 
-- exibir **Ver anexo** pela existência do registo/attachment no backend, e não apenas por `fileUrl` no objeto normalizado;
-- mostrar **Aprovar** e **Rejeitar** somente para estados pendentes ou em análise;
-- exigir confirmação antes de aprovar ou rejeitar;
-- exigir motivo não vazio para rejeição;
-- decidir se **Marcar em análise** será ação oficial; o serviço existe, mas o botão ainda não está exposto;
-- confirmar que a aprovação retorna o recibo emitido ou um estado transacional padronizado;
-- substituir os três endpoints candidatos por uma única rota oficial.
+- decidir se **Marcar em análise** será ação oficial; o serviço existe, mas o botão permanece oculto;
+- padronizar definitivamente a resposta da aprovação com `receiptCode`, `receiptId` e `receiptStatus`;
+- substituir os endpoints candidatos por uma única rota oficial.
 
 ### Recibos
 
@@ -173,12 +172,11 @@ Revisar:
 
 ## Ordem de fechamento
 
-1. Aplicar os ajustes identificados em Comprovativos.
-2. Consolidar rota oficial de Cobranças e Guias.
-3. Consolidar rota oficial de Recibos.
-4. Consolidar rota oficial de WhatsApp.
-5. Revalidar Usuários e Permissões.
-6. Auditar Configurações e Relatórios.
-7. Executar teste final por perfil.
+1. Consolidar rota oficial de Cobranças e Guias.
+2. Consolidar rota oficial de Recibos.
+3. Consolidar rota oficial de WhatsApp.
+4. Revalidar Usuários e Permissões.
+5. Auditar Configurações e Relatórios.
+6. Executar teste final por perfil.
 
 Nenhuma nova ação visual deve ser adicionada sem endpoint real e permissão correspondente.
