@@ -18,6 +18,7 @@ import EmptyState from '../components/ui/EmptyState.jsx';
 import ErrorState from '../components/ui/ErrorState.jsx';
 import LoadingState from '../components/ui/LoadingState.jsx';
 import StatusBadge from '../components/ui/StatusBadge.jsx';
+import { usePermissions } from '../shared/auth/usePermissions.js';
 import {
   generateTuitionCharges,
   listCharges,
@@ -39,6 +40,11 @@ import {
 const DEFAULT_MONTH = '2026-07';
 
 export default function ChargesPageV2() {
+  const { can } = usePermissions();
+  const canGenerateCharges = can('generateMonthlyCharges');
+  const canSendGuides = can('sendWhatsapp');
+  const consultationOnly = !canGenerateCharges && !canSendGuides;
+
   const [rawCharges, setRawCharges] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -129,7 +135,15 @@ export default function ChargesPageV2() {
     };
   }, [studentLedger]);
 
+  const denyAction = (text) => {
+    setActionMessage({ type: 'error', text });
+  };
+
   const handleSendGuide = async (charge) => {
+    if (!canSendGuides) {
+      denyAction('O seu perfil possui acesso apenas para consulta e não pode enviar guias.');
+      return;
+    }
     setWorking(true);
     setActionMessage(null);
     try {
@@ -143,6 +157,10 @@ export default function ChargesPageV2() {
   };
 
   const handleGenerateMonth = async () => {
+    if (!canGenerateCharges) {
+      denyAction('O seu perfil possui acesso apenas para consulta e não pode gerar propinas.');
+      return;
+    }
     setWorking(true);
     setActionMessage(null);
     try {
@@ -166,6 +184,10 @@ export default function ChargesPageV2() {
   };
 
   const handleSendBatch = async () => {
+    if (!canSendGuides) {
+      denyAction('O seu perfil possui acesso apenas para consulta e não pode enviar guias em lote.');
+      return;
+    }
     setWorking(true);
     setActionMessage(null);
     try {
@@ -208,11 +230,21 @@ export default function ChargesPageV2() {
           </div>
           <div className="flex flex-wrap gap-2">
             <button className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-sm font-black text-white transition hover:bg-white/15" onClick={load} disabled={working}><RefreshCw size={16} />Atualizar</button>
-            <button className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-sm font-black text-white transition hover:bg-white/15" onClick={handleGenerateMonth} disabled={working}><CalendarDays size={16} />Gerar propinas teste</button>
-            <button className="inline-flex items-center justify-center gap-2 rounded-2xl bg-emerald-500 px-4 py-3 text-sm font-black text-white shadow-[0_16px_38px_rgba(16,185,129,.25)] transition hover:bg-emerald-600" onClick={handleSendBatch} disabled={working}><Send size={16} />Enviar guias</button>
+            {canGenerateCharges && (
+              <button className="inline-flex items-center justify-center gap-2 rounded-2xl border border-amber-300/45 bg-amber-400/15 px-4 py-3 text-sm font-black text-amber-100 transition hover:bg-amber-400/25" onClick={handleGenerateMonth} disabled={working}><CalendarDays size={16} />Gerar propinas teste</button>
+            )}
+            {canSendGuides && (
+              <button className="inline-flex items-center justify-center gap-2 rounded-2xl bg-emerald-500 px-4 py-3 text-sm font-black text-white shadow-[0_16px_38px_rgba(16,185,129,.25)] transition hover:bg-emerald-600" onClick={handleSendBatch} disabled={working}><Send size={16} />Enviar guias</button>
+            )}
           </div>
         </div>
       </section>
+
+      {consultationOnly && (
+        <div className="rounded-2xl border border-blue-200/70 bg-blue-50 px-4 py-3 text-sm font-bold text-blue-800 dark:border-blue-400/20 dark:bg-blue-500/10 dark:text-blue-200">
+          Perfil em modo de consulta. A geração de propinas e o envio de guias estão disponíveis apenas para perfis financeiros autorizados.
+        </div>
+      )}
 
       {actionMessage && <div className={`rounded-2xl border p-4 text-sm font-black ${actionMessage.type === 'success' ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-red-200 bg-red-50 text-red-700'}`}>{actionMessage.text}</div>}
 
@@ -246,7 +278,10 @@ export default function ChargesPageV2() {
               <div className="grid grid-cols-2 gap-2 2xl:grid-cols-4"><Mini label="Base" value={formatMoney(selected.amount, selected.currency)} /><Mini label="Multa" value={formatMoney(selected.fineAmount, selected.currency)} danger={selected.fineAmount > 0} /><Mini label="Juros" value={formatMoney(selected.interestAmount, selected.currency)} danger={selected.interestAmount > 0} /><Mini label="Total" value={formatMoney(selected.totalAmount, selected.currency)} strong /></div>
               <div className="rounded-3xl border border-slate-100 bg-white p-4 text-sm shadow-[0_14px_38px_rgba(15,23,42,.04)]"><div className="mb-3 flex items-center gap-3"><div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-imetro-navy text-white shadow-lg"><ShieldCheck size={18} /></div><p className="font-black text-slate-900">Informações operacionais</p></div><Line label="Estudante" value={selected.studentName} /><Line label="Matrícula" value={selected.studentNumber} /><Line label="Referência" value={selected.referenceMonth} /><Line label="Vencimento" value={formatDate(selected.dueDate)} /><Line label="Estado" value={chargeIsOverdue(selected) ? 'Vencida/em atraso' : safeText(selected.status)} /></div>
               <StudentLedger charges={studentLedger} stats={studentStats} />
-              <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-1 2xl:grid-cols-2"><a className="btn-secondary" href={paymentGuidePdfUrl(selected.chargeCode)} target="_blank" rel="noreferrer"><Eye size={15} className="mr-2" />Ver guia PDF</a><button className="btn-primary" onClick={() => handleSendGuide(selected)} disabled={working}><Send size={15} className="mr-2" />Enviar guia</button></div>
+              <div className={`grid gap-2 ${canSendGuides ? 'sm:grid-cols-2 xl:grid-cols-1 2xl:grid-cols-2' : ''}`}>
+                <a className="btn-secondary" href={paymentGuidePdfUrl(selected.chargeCode)} target="_blank" rel="noreferrer"><Eye size={15} className="mr-2" />Ver guia PDF</a>
+                {canSendGuides && <button className="btn-primary" onClick={() => handleSendGuide(selected)} disabled={working}><Send size={15} className="mr-2" />Enviar guia</button>}
+              </div>
               <div className="rounded-3xl border border-amber-100 bg-gradient-to-br from-amber-50 via-white to-orange-50 p-4 text-sm text-imetro-navy"><div className="flex gap-3"><AlertTriangle className="mt-0.5 shrink-0 text-amber-600" size={19} /><div><p className="font-black">Regra operacional</p><p className="mt-1 text-xs font-semibold leading-5 text-slate-600">Para conciliação, confira estudante, meses pagos, juros, multas e bordereaux emitidos.</p></div></div></div>
             </div>
           )}
