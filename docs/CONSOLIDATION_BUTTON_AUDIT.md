@@ -56,66 +56,96 @@ Pendências de consolidação:
 
 ### Cobranças e Propinas
 
-Estado: revisão funcional iniciada.
+Estado: revisão funcional concluída no frontend; contrato da API ainda precisa ser fechado.
+
+Confirmado:
 
 - botão demonstrativo **Gerar propinas teste** removido;
-- **Atualizar**, **Enviar guias**, **Ver guia PDF** e **Enviar guia** estão ligados a serviços reais;
+- **Atualizar** chama `GET /api/v1/charges`;
+- **Enviar guia** chama `POST /api/v1/secretariapay/financial-flow/charges/{chargeId}/send-guide`;
+- **Enviar guias** chama `POST /api/v1/imetro/tuition-charges/send-guides`;
+- **Ver guia PDF** usa `GET /api/v1/public/payment-guides/{chargeCode}/pdf`;
 - envio em lote usa mês selecionado ou mês corrente;
-- ações protegidas por perfil.
+- ações de envio ficam escondidas para perfis sem `sendWhatsapp`;
+- chamadas do serviço também validam a permissão antes de atingir a API;
+- botões ficam bloqueados durante processamento.
 
-Pendências:
+Pendências de fechamento:
 
-- confirmar contratos exatos dos endpoints de envio individual e em lote;
-- revisar confirmação manual e cancelamento de cobrança nas telas onde forem expostos;
-- validar nomenclatura final dos PDFs.
+- confirmar na API os contratos definitivos dos endpoints de envio individual e em lote;
+- remover do serviço qualquer rota alternativa quando o endpoint oficial estiver confirmado;
+- expor confirmação manual e cancelamento somente quando houver ação visual com confirmação institucional;
+- aplicar a nomenclatura final dos PDFs oficiais;
+- substituir a mensagem genérica de envio pelo retorno padronizado do backend.
 
 ### Comprovativos
 
-Estado: pendente de fechamento.
+Estado: revisão funcional concluída no frontend; ajustes de segurança operacional identificados.
 
-Revisar:
+Confirmado:
 
-- abrir anexo;
-- aprovar;
-- rejeitar;
-- marcar em análise;
-- payload do usuário revisor;
-- emissão automática do recibo após aprovação.
+- **Atualizar** recarrega comprovativos reais;
+- **Ver anexo** abre o ficheiro por endpoint autenticado e usa `responseType: blob`;
+- **Aprovar** chama `PATCH {endpoint}/{id}/approve`;
+- **Rejeitar** chama `PATCH {endpoint}/{id}/reject`;
+- payload inclui `reviewNote` e, quando disponível, `reviewedByUserId` do utilizador autenticado;
+- aprovação e rejeição estão protegidas por `validateProofs`;
+- observação da DCR fica bloqueada em modo de consulta;
+- botões ficam bloqueados durante processamento;
+- após a ação, a lista é recarregada e a mensagem de sucesso/erro é exibida.
+
+Ajustes obrigatórios antes de marcar como fechado:
+
+- exibir **Ver anexo** pela existência do registo/attachment no backend, e não apenas por `fileUrl` no objeto normalizado;
+- mostrar **Aprovar** e **Rejeitar** somente para estados pendentes ou em análise;
+- exigir confirmação antes de aprovar ou rejeitar;
+- exigir motivo não vazio para rejeição;
+- decidir se **Marcar em análise** será ação oficial; o serviço existe, mas o botão ainda não está exposto;
+- confirmar que a aprovação retorna o recibo emitido ou um estado transacional padronizado;
+- substituir os três endpoints candidatos por uma única rota oficial.
 
 ### Recibos
 
-Estado: pendente de fechamento.
+Estado: revisão funcional concluída para consulta.
 
-Já disponível:
+Confirmado:
 
-- atualizar;
-- visualizar PDF;
-- baixar PDF.
+- **Atualizar** recarrega recibos reais;
+- **Baixar PDF** e **Ver recibo** apontam para o PDF real;
+- nenhuma ação de reenvio, cancelamento ou segunda via é exibida sem endpoint oficial;
+- permissões futuras já existem na matriz central (`issueReceipts`, `resendReceipts`, `cancelReceipts`);
+- perfis sem ação financeira veem aviso de modo consulta.
 
-Ainda não devem ser exibidos até existirem endpoints oficiais:
+Pendências de fechamento:
 
-- reenviar recibo;
-- cancelar recibo;
-- emitir segunda via controlada.
+- substituir os endpoints candidatos por uma única rota oficial;
+- confirmar se a rota pública final será por `receiptCode`;
+- implementar reenvio somente depois do endpoint real e do template oficial de mensagem;
+- implementar cancelamento apenas com motivo, confirmação e auditoria;
+- definir a nomenclatura oficial do ficheiro PDF.
 
 ### WhatsApp Financeiro
 
-Estado: pendente de fechamento.
+Estado: revisão funcional concluída para monitorização; ações operacionais ainda não devem ser expostas.
 
-Já disponível:
+Confirmado:
 
-- atualizar histórico;
-- consultar mensagens;
-- consultar sessões;
-- abrir guia associada quando houver cobrança.
+- **Atualizar histórico** carrega mensagens e sessões reais;
+- filtros de estado, canal e tipo são funcionais;
+- seleção de mensagem e sessão é apenas consulta;
+- guia associada abre pelo código da cobrança quando disponível;
+- mensagens demonstrativas foram removidas;
+- quando nenhum endpoint responde, a tela informa que o histórico real está indisponível.
 
-Ainda não devem ser exibidos até existirem endpoints oficiais:
+Pendências críticas:
 
-- reenviar mensagem;
-- pausar fila;
-- retomar fila;
-- editar template;
-- executar scheduler manualmente.
+- o serviço ainda tenta múltiplos endpoints candidatos para mensagens e sessões;
+- o serviço contém `resendPaymentGuide`, mas a tela não expõe o botão até existir contrato oficial;
+- remover tentativa de `GET` em endpoint de reenvio após consolidar a rota `POST` oficial;
+- usar `env.apiBaseUrl` no lugar de leitura direta de `import.meta.env` na página;
+- adicionar proteção por `resendWhatsapp` quando o reenvio for ativado;
+- não expor **Pausar fila**, **Retomar fila**, **Editar template** ou **Executar scheduler** antes dos endpoints oficiais;
+- consolidar estados de entrega (`SENT`, `DELIVERED`, `READ`, `FAILED`) conforme o callback real da Meta.
 
 ### Usuários e Permissões
 
@@ -129,14 +159,26 @@ Revisar:
 - redefinir palavra-passe;
 - compatibilidade entre perfis do frontend e autoridades do backend.
 
+### Configurações e Relatórios
+
+Estado: pendente.
+
+Revisar:
+
+- salvar configurações institucionais;
+- simular regra financeira;
+- exportar PDF e Excel;
+- garantir que botões indisponíveis não sejam exibidos;
+- validar acesso por perfil no frontend e backend.
+
 ## Ordem de fechamento
 
-1. Cobranças e Propinas.
-2. Comprovativos.
-3. Recibos.
-4. WhatsApp Financeiro.
-5. Usuários e Permissões.
-6. Configurações e Relatórios.
-7. Teste final por perfil.
+1. Aplicar os ajustes identificados em Comprovativos.
+2. Consolidar rota oficial de Cobranças e Guias.
+3. Consolidar rota oficial de Recibos.
+4. Consolidar rota oficial de WhatsApp.
+5. Revalidar Usuários e Permissões.
+6. Auditar Configurações e Relatórios.
+7. Executar teste final por perfil.
 
 Nenhuma nova ação visual deve ser adicionada sem endpoint real e permissão correspondente.
