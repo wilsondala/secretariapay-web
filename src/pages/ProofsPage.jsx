@@ -16,6 +16,7 @@ import ErrorState from '../components/ui/ErrorState.jsx';
 import LoadingState from '../components/ui/LoadingState.jsx';
 import StatusBadge from '../components/ui/StatusBadge.jsx';
 import { approvePaymentProof, listPaymentProofs, openPaymentProofAttachment, rejectPaymentProof } from '../services/proofsService.js';
+import usePermissions from '../shared/auth/usePermissions.js';
 import {
   formatMoney,
   normalizeDateTime,
@@ -25,6 +26,8 @@ import {
 } from '../utils/formatters.js';
 
 export default function ProofsPage() {
+  const { can } = usePermissions();
+  const canValidateProofs = can('validateProofs');
   const [rawProofs, setRawProofs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -88,6 +91,10 @@ export default function ProofsPage() {
   }, [proofs]);
 
   const handleApprove = async () => {
+    if (!canValidateProofs) {
+      setActionMessage({ type: 'error', text: 'O seu perfil não possui permissão para aprovar comprovativos.' });
+      return;
+    }
     if (!selected?.id) return;
     setWorking(true);
     setActionMessage(null);
@@ -104,6 +111,10 @@ export default function ProofsPage() {
   };
 
   const handleReject = async () => {
+    if (!canValidateProofs) {
+      setActionMessage({ type: 'error', text: 'O seu perfil não possui permissão para rejeitar comprovativos.' });
+      return;
+    }
     if (!selected?.id) return;
     setWorking(true);
     setActionMessage(null);
@@ -160,6 +171,12 @@ export default function ProofsPage() {
           </button>
         </div>
       </section>
+
+      {!canValidateProofs && (
+        <div className="rounded-2xl border border-blue-200 bg-blue-50 p-4 text-sm font-semibold text-blue-800 dark:border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-200">
+          Perfil em modo de consulta. A aprovação e a rejeição de comprovativos estão protegidas para perfis autorizados da DCR e área financeira.
+        </div>
+      )}
 
       {actionMessage && (
         <div className={`rounded-2xl border p-4 text-sm font-black ${actionMessage.type === 'success' ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-red-200 bg-red-50 text-red-700'}`}>
@@ -230,7 +247,7 @@ export default function ProofsPage() {
 
               <div>
                 <label className="label">Observação da DCR</label>
-                <textarea className="input min-h-28" placeholder="Ex.: valor confirmado no extrato, referência bancária validada, ou motivo da rejeição..." value={notes} onChange={(event) => setNotes(event.target.value)} />
+                <textarea className="input min-h-28" placeholder="Ex.: valor confirmado no extrato, referência bancária validada, ou motivo da rejeição..." value={notes} onChange={(event) => setNotes(event.target.value)} disabled={!canValidateProofs} />
               </div>
 
               <div className="flex flex-wrap gap-2">
@@ -240,14 +257,18 @@ export default function ProofsPage() {
                     Ver anexo
                   </button>
                 )}
-                <button className="btn-primary" onClick={handleApprove} disabled={working}>
-                  <CheckCircle2 size={16} className="mr-2" />
-                  Aprovar
-                </button>
-                <button className="btn-secondary border-red-200 text-red-700 hover:bg-red-50" onClick={handleReject} disabled={working}>
-                  <XCircle size={16} className="mr-2" />
-                  Rejeitar
-                </button>
+                {canValidateProofs && (
+                  <>
+                    <button className="btn-primary" onClick={handleApprove} disabled={working}>
+                      <CheckCircle2 size={16} className="mr-2" />
+                      Aprovar
+                    </button>
+                    <button className="btn-secondary border-red-200 text-red-700 hover:bg-red-50" onClick={handleReject} disabled={working}>
+                      <XCircle size={16} className="mr-2" />
+                      Rejeitar
+                    </button>
+                  </>
+                )}
               </div>
 
               <div className="rounded-3xl border border-amber-100 bg-gradient-to-br from-amber-50 via-white to-orange-50 p-4 text-sm text-amber-900">
