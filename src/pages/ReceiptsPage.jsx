@@ -5,6 +5,7 @@ import EmptyState from '../components/ui/EmptyState.jsx';
 import ErrorState from '../components/ui/ErrorState.jsx';
 import LoadingState from '../components/ui/LoadingState.jsx';
 import StatusBadge from '../components/ui/StatusBadge.jsx';
+import { usePermissions } from '../shared/auth/usePermissions.js';
 import { listReceipts, receiptPdfUrl } from '../services/receiptsService.js';
 import {
   formatMoney,
@@ -15,6 +16,12 @@ import {
 } from '../utils/formatters.js';
 
 export default function ReceiptsPage() {
+  const { can } = usePermissions();
+  const canIssueReceipts = can('issueReceipts');
+  const canResendReceipts = can('resendReceipts');
+  const canCancelReceipts = can('cancelReceipts');
+  const consultationOnly = !canIssueReceipts && !canResendReceipts && !canCancelReceipts;
+
   const [rawReceipts, setRawReceipts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -95,6 +102,12 @@ export default function ReceiptsPage() {
           </button>
         </div>
       </section>
+
+      {consultationOnly && (
+        <div className="rounded-2xl border border-blue-200/70 bg-blue-50 px-4 py-3 text-sm font-bold text-blue-800 dark:border-blue-400/20 dark:bg-blue-500/10 dark:text-blue-200">
+          Perfil em modo de consulta. Emissão, reenvio e cancelamento de recibos estarão disponíveis apenas para perfis financeiros autorizados.
+        </div>
+      )}
 
       <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard title="Total de recibos" value={stats.total} description="Registos emitidos" icon={ReceiptText} />
