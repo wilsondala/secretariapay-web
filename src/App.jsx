@@ -1,5 +1,6 @@
 import { Route, Routes } from 'react-router-dom';
 import ProtectedRoute from './shared/routes/ProtectedRoute.jsx';
+import RoleRoute from './shared/routes/RoleRoute.jsx';
 import AppLayout from './layouts/AppLayout.jsx';
 import PublicHomePage from './pages/PublicHomePage.jsx';
 import PublicGuidePage from './pages/PublicGuidePage.jsx';
@@ -21,6 +22,8 @@ import PublicDemoCarouselPage from './pages/PublicDemoCarouselPage.jsx';
 import ReportsPage from './pages/ReportsPage.jsx';
 import NotFoundPage from './pages/NotFoundPage.jsx';
 
+const secured = (path, element) => <RoleRoute path={path}>{element}</RoleRoute>;
+
 export default function App() {
   return (
     <Routes>
@@ -31,18 +34,18 @@ export default function App() {
       <Route path="/demo-publica" element={<PublicDemoCarouselPage />} />
       <Route element={<ProtectedRoute />}>
         <Route element={<AppLayout />}>
-          <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/students" element={<StudentsPage />} />
-          <Route path="/charges" element={<ChargesPage />} />
-          <Route path="/proofs" element={<ProofsPage />} />
-          <Route path="/receipts" element={<ReceiptsPage />} />
-          <Route path="/whatsapp" element={<WhatsappPage />} />
-          <Route path="/operations" element={<OperationsPage />} />
-          <Route path="/imports" element={<ImportsPage />} />
-          <Route path="/academic-catalog" element={<AcademicCatalogPage />} />
-          <Route path="/admin-users" element={<AdminUsersPage />} />
-          <Route path="/settings" element={<SettingsPage />} />
-          <Route path="/reports" element={<ReportsPage />} />
+          <Route path="/dashboard" element={secured('/dashboard', <DashboardPage />)} />
+          <Route path="/students" element={secured('/students', <StudentsPage />)} />
+          <Route path="/charges" element={secured('/charges', <ChargesPage />)} />
+          <Route path="/proofs" element={secured('/proofs', <ProofsPage />)} />
+          <Route path="/receipts" element={secured('/receipts', <ReceiptsPage />)} />
+          <Route path="/whatsapp" element={secured('/whatsapp', <WhatsappPage />)} />
+          <Route path="/operations" element={secured('/operations', <OperationsPage />)} />
+          <Route path="/imports" element={secured('/imports', <ImportsPage />)} />
+          <Route path="/academic-catalog" element={secured('/academic-catalog', <AcademicCatalogPage />)} />
+          <Route path="/admin-users" element={secured('/admin-users', <AdminUsersPage />)} />
+          <Route path="/settings" element={secured('/settings', <SettingsPage />)} />
+          <Route path="/reports" element={secured('/reports', <ReportsPage />)} />
           <Route path="/demo" element={<DemoChecklistPage />} />
           <Route path="/about" element={<AboutPage />} />
         </Route>
