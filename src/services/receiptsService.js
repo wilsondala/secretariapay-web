@@ -29,12 +29,6 @@ export async function listReceipts() {
   return asList(response.data);
 }
 
-export async function listReceiptsByStudent(studentId) {
-  const id = requireReceiptId(studentId);
-  const response = await api.get(`${RECEIPTS_ENDPOINT}/student/${id}`);
-  return asList(response.data);
-}
-
 export async function getReceipt(id) {
   const response = await api.get(`${RECEIPTS_ENDPOINT}/${requireReceiptId(id)}`);
   return response.data;
