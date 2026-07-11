@@ -20,7 +20,6 @@ import LoadingState from '../components/ui/LoadingState.jsx';
 import StatusBadge from '../components/ui/StatusBadge.jsx';
 import { usePermissions } from '../shared/auth/usePermissions.js';
 import {
-  generateTuitionCharges,
   listCharges,
   paymentGuidePdfUrl,
   sendIndividualGuide,
@@ -37,13 +36,15 @@ import {
   safeText,
 } from '../utils/formatters.js';
 
-const DEFAULT_MONTH = '2026-07';
+function currentReferenceMonth() {
+  const now = new Date();
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+}
 
 export default function ChargesPageV2() {
   const { can } = usePermissions();
-  const canGenerateCharges = can('generateMonthlyCharges');
   const canSendGuides = can('sendWhatsapp');
-  const consultationOnly = !canGenerateCharges && !canSendGuides;
+  const consultationOnly = !canSendGuides;
 
   const [rawCharges, setRawCharges] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -156,33 +157,6 @@ export default function ChargesPageV2() {
     }
   };
 
-  const handleGenerateMonth = async () => {
-    if (!canGenerateCharges) {
-      denyAction('O seu perfil possui acesso apenas para consulta e não pode gerar propinas.');
-      return;
-    }
-    setWorking(true);
-    setActionMessage(null);
-    try {
-      const result = await generateTuitionCharges({
-        institutionId: INSTITUTION_ID,
-        academicYear: '2024/2025',
-        referenceMonth: DEFAULT_MONTH,
-        dueDate: '2026-07-30',
-        referenceDate: '2026-07-04',
-        baseAmount: 45000,
-        serviceCode: 'PROPINA',
-        descriptionPrefix: 'Propina',
-      });
-      setActionMessage({ type: 'success', text: `Geração concluída: ${result?.createdCharges || 0} criadas, ${result?.reusedCharges || 0} reutilizadas.` });
-      await load();
-    } catch (err) {
-      setActionMessage({ type: 'error', text: err?.response?.data?.message || err.message || 'Falha ao gerar propinas.' });
-    } finally {
-      setWorking(false);
-    }
-  };
-
   const handleSendBatch = async () => {
     if (!canSendGuides) {
       denyAction('O seu perfil possui acesso apenas para consulta e não pode enviar guias em lote.');
@@ -191,9 +165,10 @@ export default function ChargesPageV2() {
     setWorking(true);
     setActionMessage(null);
     try {
+      const referenceMonth = month === 'ALL' ? currentReferenceMonth() : month;
       const result = await sendTuitionGuides({
         institutionId: INSTITUTION_ID,
-        referenceMonth: month === 'ALL' ? DEFAULT_MONTH : month,
+        referenceMonth,
         chargeCodePrefix: 'IMT-PROPINA-',
         sendWhatsapp: true,
         sendEmail: true,
@@ -202,7 +177,7 @@ export default function ChargesPageV2() {
         forceResend: false,
         maxItems: 50,
       });
-      setActionMessage({ type: 'success', text: `Envio concluído: WhatsApp ${result?.sentWhatsapp || 0}, e-mail ${result?.sentEmail || 0}, SMS ${result?.sentSms || 0}.` });
+      setActionMessage({ type: 'success', text: `Envio concluído para ${referenceMonth}: WhatsApp ${result?.sentWhatsapp || 0}, e-mail ${result?.sentEmail || 0}, SMS ${result?.sentSms || 0}.` });
       await load();
     } catch (err) {
       setActionMessage({ type: 'error', text: err?.response?.data?.message || err.message || 'Falha ao enviar guias em lote.' });
@@ -230,9 +205,6 @@ export default function ChargesPageV2() {
           </div>
           <div className="flex flex-wrap gap-2">
             <button className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-sm font-black text-white transition hover:bg-white/15" onClick={load} disabled={working}><RefreshCw size={16} />Atualizar</button>
-            {canGenerateCharges && (
-              <button className="inline-flex items-center justify-center gap-2 rounded-2xl border border-amber-300/45 bg-amber-400/15 px-4 py-3 text-sm font-black text-amber-100 transition hover:bg-amber-400/25" onClick={handleGenerateMonth} disabled={working}><CalendarDays size={16} />Gerar propinas teste</button>
-            )}
             {canSendGuides && (
               <button className="inline-flex items-center justify-center gap-2 rounded-2xl bg-emerald-500 px-4 py-3 text-sm font-black text-white shadow-[0_16px_38px_rgba(16,185,129,.25)] transition hover:bg-emerald-600" onClick={handleSendBatch} disabled={working}><Send size={16} />Enviar guias</button>
             )}
@@ -242,7 +214,7 @@ export default function ChargesPageV2() {
 
       {consultationOnly && (
         <div className="rounded-2xl border border-blue-200/70 bg-blue-50 px-4 py-3 text-sm font-bold text-blue-800 dark:border-blue-400/20 dark:bg-blue-500/10 dark:text-blue-200">
-          Perfil em modo de consulta. A geração de propinas e o envio de guias estão disponíveis apenas para perfis financeiros autorizados.
+          Perfil em modo de consulta. O envio de guias está disponível apenas para perfis financeiros autorizados.
         </div>
       )}
 
