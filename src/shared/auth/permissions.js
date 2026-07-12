@@ -29,6 +29,7 @@ export const ROUTE_ROLES = {
   '/charges': [...FINANCE, ROLES.OPERADOR_ATENDIMENTO, ...READ_ONLY],
   '/proofs': [...FINANCE, ...READ_ONLY],
   '/receipts': [...FINANCE, ROLES.OPERADOR_ATENDIMENTO, ...READ_ONLY],
+  '/academic-services': [...FINANCE, ROLES.SECRETARIA, ROLES.OPERADOR_ATENDIMENTO, ...READ_ONLY],
   '/academic-catalog': [...ACADEMIC, ...READ_ONLY],
   '/whatsapp': [...FINANCE, ROLES.OPERADOR_ATENDIMENTO, ...READ_ONLY],
   '/operations': [...MANAGEMENT, ROLES.DCR_COORDENACAO, ROLES.DCR_OPERADOR, ROLES.FINANCEIRO],
@@ -42,6 +43,7 @@ export const ACTION_ROLES = {
   manageUsers: MANAGEMENT,
   manageSettings: MANAGEMENT,
   manageAcademicCatalog: ACADEMIC,
+  manageAcademicServices: [...ADMINS, ROLES.DIRECAO, ROLES.FINANCEIRO, ROLES.TESOURARIA, ROLES.DCR_COORDENACAO, ROLES.TIC],
   importAcademicData: [...ACADEMIC, ROLES.TIC],
   manageCharges: FINANCE,
   generateMonthlyCharges: [...ADMINS, ROLES.DIRECAO, ROLES.FINANCEIRO, ROLES.DCR_COORDENACAO],
@@ -77,6 +79,6 @@ export function can(user, action) {
 }
 
 export function getDefaultRoute(user) {
-  const preferred = ['/dashboard', '/students', '/charges', '/academic-catalog', '/whatsapp', '/reports'];
+  const preferred = ['/dashboard', '/students', '/charges', '/academic-services', '/academic-catalog', '/whatsapp', '/reports'];
   return preferred.find((path) => canAccessRoute(user, path)) || '/login';
 }
