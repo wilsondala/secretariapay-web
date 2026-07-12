@@ -13,6 +13,7 @@ import {
   PanelLeftOpen,
   Settings,
   Sparkles,
+  Tags,
   UserCog,
   Users,
   Workflow,
@@ -31,6 +32,7 @@ const groups = [
     items: [
       ['Estudantes', '/students', Users, 'Cadastro e contacto'],
       ['Cobranças', '/charges', FileText, 'Propinas e guias'],
+      ['Serviços e preços', '/academic-services', Tags, 'Tabela institucional'],
       ['Comprovativos', '/proofs', FileCheck2, 'Validação DCR'],
       ['Recibos', '/receipts', Banknote, 'Documentos emitidos'],
     ],
