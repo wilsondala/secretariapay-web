@@ -36,11 +36,6 @@ import {
   safeText,
 } from '../utils/formatters.js';
 
-function currentReferenceMonth() {
-  const now = new Date();
-  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-}
-
 export default function ChargesPageV2() {
   const { can } = usePermissions();
   const canSendGuides = can('sendWhatsapp');
@@ -65,7 +60,11 @@ export default function ChargesPageV2() {
       const data = await listCharges();
       const normalized = data.map(normalizeCharge);
       setRawCharges(data);
-      setSelected((current) => (current?.id ? normalized.find((item) => item.id === current.id) || normalized[0] || null : normalized[0] || null));
+      setSelected((current) => (
+        current?.id
+          ? normalized.find((item) => item.id === current.id) || normalized[0] || null
+          : normalized[0] || null
+      ));
     } catch (err) {
       setError(err?.response?.data?.message || err.message || 'Falha ao carregar cobranças.');
     } finally {
@@ -77,14 +76,25 @@ export default function ChargesPageV2() {
     load();
   }, []);
 
-  const months = useMemo(() => Array.from(new Set(charges.map((charge) => charge.referenceMonth).filter(Boolean))).sort().reverse(), [charges]);
+  const months = useMemo(
+    () => Array.from(new Set(charges.map((charge) => charge.referenceMonth).filter(Boolean))).sort().reverse(),
+    [charges],
+  );
 
   const filtered = useMemo(() => {
     const term = normalizeText(search);
     return charges.filter((charge) => {
-      const text = normalizeText([charge.chargeCode, charge.description, charge.studentName, charge.studentNumber, charge.referenceMonth, charge.status].join(' '));
+      const text = normalizeText([
+        charge.chargeCode,
+        charge.description,
+        charge.studentName,
+        charge.studentNumber,
+        charge.referenceMonth,
+        charge.status,
+      ].join(' '));
       const matchesSearch = !term || text.includes(term);
-      const matchesStatus = status === 'ALL' || (status === 'OVERDUE' ? chargeIsOverdue(charge) : String(charge.status).toUpperCase() === status);
+      const matchesStatus = status === 'ALL'
+        || (status === 'OVERDUE' ? chargeIsOverdue(charge) : String(charge.status).toUpperCase() === status);
       const matchesMonth = month === 'ALL' || charge.referenceMonth === month;
       return matchesSearch && matchesStatus && matchesMonth;
     });
@@ -149,7 +159,10 @@ export default function ChargesPageV2() {
     setActionMessage(null);
     try {
       const result = await sendIndividualGuide(charge.id);
-      setActionMessage({ type: 'success', text: `Guia enviada/registrada para ${charge.chargeCode}. Estado: ${result?.status || 'processado'}` });
+      setActionMessage({
+        type: 'success',
+        text: `Guia enviada/registrada para ${charge.chargeCode}. Estado: ${result?.status || 'processado'}`,
+      });
     } catch (err) {
       setActionMessage({ type: 'error', text: err?.response?.data?.message || err.message || 'Falha ao enviar guia.' });
     } finally {
@@ -162,10 +175,12 @@ export default function ChargesPageV2() {
       denyAction('O seu perfil possui acesso apenas para consulta e não pode enviar guias em lote.');
       return;
     }
+
     setWorking(true);
     setActionMessage(null);
+
     try {
-      const referenceMonth = month === 'ALL' ? currentReferenceMonth() : month;
+      const referenceMonth = month === 'ALL' ? null : month;
       const result = await sendTuitionGuides({
         institutionId: INSTITUTION_ID,
         referenceMonth,
@@ -177,7 +192,12 @@ export default function ChargesPageV2() {
         forceResend: false,
         maxItems: 50,
       });
-      setActionMessage({ type: 'success', text: `Envio concluído para ${referenceMonth}: WhatsApp ${result?.sentWhatsapp || 0}, e-mail ${result?.sentEmail || 0}, SMS ${result?.sentSms || 0}.` });
+
+      const batchLabel = referenceMonth || 'todos os meses pendentes';
+      setActionMessage({
+        type: 'success',
+        text: `Envio concluído para ${batchLabel}: WhatsApp ${result?.sentWhatsapp || 0}, e-mail ${result?.sentEmail || 0}, SMS ${result?.sentSms || 0}.`,
+      });
       await load();
     } catch (err) {
       setActionMessage({ type: 'error', text: err?.response?.data?.message || err.message || 'Falha ao enviar guias em lote.' });
