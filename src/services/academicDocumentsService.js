@@ -32,7 +32,7 @@ export async function sendAcademicDocumentWhatsapp(id) {
   return data;
 }
 
-export function academicDocumentPdfUrl(id) {
-  const base = String(api.defaults.baseURL || '').replace(/\/$/, '');
-  return `${base}${BASE_URL}/${id}/pdf`;
+export async function downloadAcademicDocumentPdf(id) {
+  const { data } = await api.get(`${BASE_URL}/${id}/pdf`, { responseType: 'blob' });
+  return data;
 }
