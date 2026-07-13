@@ -5,3 +5,102 @@
 .w-13 {
   width: 3.25rem;
 }
+
+/* Ajuste responsivo exclusivo da tabela financeira de estudantes. */
+@media (min-width: 1024px) {
+  table[class*="min-w-[1120px]"] {
+    width: 100% !important;
+    min-width: 0 !important;
+    table-layout: fixed;
+  }
+
+  table[class*="min-w-[1120px]"] th,
+  table[class*="min-w-[1120px]"] td {
+    min-width: 0;
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+    vertical-align: middle;
+  }
+
+  table[class*="min-w-[1120px]"] th:nth-child(1),
+  table[class*="min-w-[1120px]"] td:nth-child(1) { width: 22%; }
+
+  table[class*="min-w-[1120px]"] th:nth-child(2),
+  table[class*="min-w-[1120px]"] td:nth-child(2) { width: 21%; }
+
+  table[class*="min-w-[1120px]"] th:nth-child(3),
+  table[class*="min-w-[1120px]"] td:nth-child(3) { width: 17%; }
+
+  table[class*="min-w-[1120px]"] th:nth-child(4),
+  table[class*="min-w-[1120px]"] td:nth-child(4) { width: 6%; }
+
+  table[class*="min-w-[1120px]"] th:nth-child(5),
+  table[class*="min-w-[1120px]"] td:nth-child(5) { width: 8%; }
+
+  table[class*="min-w-[1120px]"] th:nth-child(6),
+  table[class*="min-w-[1120px]"] td:nth-child(6) { width: 13%; }
+
+  table[class*="min-w-[1120px]"] th:nth-child(7),
+  table[class*="min-w-[1120px]"] td:nth-child(7) { width: 13%; }
+
+  /* A linha inteira já abre o painel lateral; a coluna Detalhe é redundante. */
+  table[class*="min-w-[1120px]"] th:nth-child(8),
+  table[class*="min-w-[1120px]"] td:nth-child(8) {
+    display: none;
+  }
+
+  table[class*="min-w-[1120px]"] div[class*="min-w-[240px]"] {
+    min-width: 0 !important;
+  }
+
+  table[class*="min-w-[1120px]"] td:nth-child(1) p,
+  table[class*="min-w-[1120px]"] td:nth-child(2) p,
+  table[class*="min-w-[1120px]"] td:nth-child(3) p {
+    max-width: 100% !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  table[class*="min-w-[1120px]"] td:nth-child(7) > span {
+    max-width: 100%;
+    white-space: normal;
+    text-align: center;
+    justify-content: center;
+  }
+
+  div:has(> table[class*="min-w-[1120px]"]) {
+    overflow-x: hidden !important;
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1180px) {
+  table[class*="min-w-[1120px]"] th,
+  table[class*="min-w-[1120px]"] td {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+  }
+
+  table[class*="min-w-[1120px]"] th:nth-child(3),
+  table[class*="min-w-[1120px]"] td:nth-child(3) {
+    display: none;
+  }
+
+  table[class*="min-w-[1120px]"] th:nth-child(1),
+  table[class*="min-w-[1120px]"] td:nth-child(1) { width: 27%; }
+
+  table[class*="min-w-[1120px]"] th:nth-child(2),
+  table[class*="min-w-[1120px]"] td:nth-child(2) { width: 25%; }
+
+  table[class*="min-w-[1120px]"] th:nth-child(4),
+  table[class*="min-w-[1120px]"] td:nth-child(4) { width: 8%; }
+
+  table[class*="min-w-[1120px]"] th:nth-child(5),
+  table[class*="min-w-[1120px]"] td:nth-child(5) { width: 10%; }
+
+  table[class*="min-w-[1120px]"] th:nth-child(6),
+  table[class*="min-w-[1120px]"] td:nth-child(6) { width: 15%; }
+
+  table[class*="min-w-[1120px]"] th:nth-child(7),
+  table[class*="min-w-[1120px]"] td:nth-child(7) { width: 15%; }
+}
