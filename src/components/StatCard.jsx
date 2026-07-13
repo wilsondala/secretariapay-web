@@ -65,24 +65,24 @@ export default function StatCard({ title, value, description, icon: Icon, tone =
   const current = tones[tone] || tones.navy;
 
   return (
-    <div className={`group relative overflow-hidden rounded-[1.35rem] border bg-gradient-to-br p-5 shadow-[0_18px_60px_rgba(15,23,42,.075)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_70px_rgba(15,23,42,.11)] dark:shadow-none ${current.card}`}>
-      <div className={`pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full blur-2xl ${current.glow}`} />
+    <div className={`group relative overflow-hidden rounded-[1.15rem] border bg-gradient-to-br p-4 shadow-[0_14px_42px_rgba(15,23,42,.07)] transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_20px_54px_rgba(15,23,42,.10)] dark:shadow-none ${current.card}`}>
+      <div className={`pointer-events-none absolute -right-8 -top-8 h-24 w-24 rounded-full blur-2xl ${current.glow}`} />
       <div className={`pointer-events-none absolute inset-x-0 top-0 h-1 ${current.accent}`} />
-      <div className="relative flex min-h-[126px] flex-col justify-between gap-5">
-        <div className="flex items-start justify-between gap-3">
-          <div>
-            <span className={`inline-flex rounded-full px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wide ${current.pill}`}>Indicador</span>
-            <p className={`mt-3 max-w-[170px] text-sm font-extrabold leading-5 ${current.label}`}>{title}</p>
+      <div className="relative flex min-h-[104px] flex-col justify-between gap-3.5">
+        <div className="flex items-start justify-between gap-2.5">
+          <div className="min-w-0">
+            <span className={`inline-flex rounded-full px-2 py-0.5 text-[9px] font-extrabold uppercase tracking-wide ${current.pill}`}>Indicador</span>
+            <p className={`mt-2 max-w-[150px] text-[12px] font-extrabold leading-4 ${current.label}`}>{title}</p>
           </div>
           {Icon && (
-            <div className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl shadow-lg ring-1 dark:shadow-none ${current.icon}`}>
-              <Icon size={24} strokeWidth={2.2} />
+            <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl shadow-md ring-1 dark:shadow-none ${current.icon}`}>
+              <Icon size={19} strokeWidth={2.2} />
             </div>
           )}
         </div>
         <div>
-          <p className={`break-words text-[2rem] font-extrabold leading-none tracking-[-.04em] drop-shadow-sm ${current.value}`}>{value}</p>
-          <p className={`mt-2 text-xs font-bold leading-5 ${current.description}`}>{description}</p>
+          <p className={`break-words text-[1.55rem] font-extrabold leading-[.95] tracking-[-.035em] drop-shadow-sm ${current.value}`}>{value}</p>
+          <p className={`mt-1.5 text-[10px] font-bold leading-4 ${current.description}`}>{description}</p>
         </div>
       </div>
     </div>
