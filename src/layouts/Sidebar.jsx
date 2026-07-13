@@ -5,6 +5,7 @@ import {
   CalendarDays,
   ChevronRight,
   FileCheck2,
+  FileSignature,
   FileText,
   Home,
   Import,
@@ -39,7 +40,10 @@ const groups = [
   },
   {
     label: 'Gestão académica',
-    items: [['Cursos e turmas', '/academic-catalog', BookOpen, 'Estrutura académica']],
+    items: [
+      ['Documentos académicos', '/academic-documents', FileSignature, 'Declarações e assinatura'],
+      ['Cursos e turmas', '/academic-catalog', BookOpen, 'Estrutura académica'],
+    ],
   },
   {
     label: 'Automação e canais',
