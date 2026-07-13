@@ -14,6 +14,7 @@ import WhatsappPage from './pages/WhatsappPage.jsx';
 import ImportsPage from './pages/ImportsPage.jsx';
 import AcademicCatalogPage from './pages/AcademicCatalogPage.jsx';
 import AcademicServicesPage from './pages/AcademicServicesPage.jsx';
+import AcademicDocumentsPage from './pages/AcademicDocumentsPage.jsx';
 import AdminUsersPage from './pages/AdminUsersPage.jsx';
 import SettingsPage from './pages/SettingsPage.jsx';
 import OperationsPage from './pages/OperationsPage.jsx';
@@ -41,6 +42,7 @@ export default function App() {
           <Route path="/proofs" element={secured('/proofs', <ProofsPage />)} />
           <Route path="/receipts" element={secured('/receipts', <ReceiptsPage />)} />
           <Route path="/academic-services" element={secured('/academic-services', <AcademicServicesPage />)} />
+          <Route path="/academic-documents" element={secured('/academic-documents', <AcademicDocumentsPage />)} />
           <Route path="/whatsapp" element={secured('/whatsapp', <WhatsappPage />)} />
           <Route path="/operations" element={secured('/operations', <OperationsPage />)} />
           <Route path="/imports" element={secured('/imports', <ImportsPage />)} />
