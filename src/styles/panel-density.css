@@ -1,55 +1,99 @@
 /* Densidade global do painel para visualização confortável em zoom 100%.
-   Atua apenas no layout e espaçamento; não altera componentes nem regras de negócio. */
+   Atua somente no shell administrativo; não altera páginas públicas ou regras de negócio. */
 
 .panel-page {
-  padding-top: 84px !important;
+  padding-top: 78px !important;
+  padding-bottom: 28px !important;
 }
 
 .panel-page > div {
-  gap: 14px !important;
-}
-
-.panel-page .premium-hero {
-  padding: 20px 24px !important;
-}
-
-.panel-page .premium-hero h1 {
-  margin-top: 10px !important;
-  font-size: clamp(26px, 2.15vw, 34px) !important;
-  line-height: 1.08 !important;
-}
-
-.panel-page .premium-hero p {
-  margin-top: 8px !important;
-  line-height: 1.45 !important;
-}
-
-.panel-page .premium-pill {
-  padding-top: 5px !important;
-  padding-bottom: 5px !important;
-}
-
-.panel-page section.grid {
   gap: 12px !important;
 }
 
-.panel-page .card,
-.panel-page .card-premium,
-.panel-page .premium-card {
-  padding: 16px !important;
+.panel-page .premium-hero {
+  padding: 16px 20px !important;
+  border-radius: 20px !important;
 }
 
+.panel-page .premium-hero h1,
 .panel-page .page-title {
-  font-size: clamp(24px, 2vw, 30px) !important;
-  line-height: 1.1 !important;
+  margin-top: 8px !important;
+  font-size: clamp(23px, 1.85vw, 29px) !important;
+  line-height: 1.06 !important;
 }
 
+.panel-page .premium-hero p,
 .panel-page .page-subtitle {
   margin-top: 6px !important;
-  line-height: 1.45 !important;
+  font-size: 12.5px !important;
+  line-height: 1.42 !important;
+}
+
+.panel-page .premium-pill {
+  padding: 4px 10px !important;
+  font-size: 9px !important;
+  letter-spacing: .12em !important;
+}
+
+.panel-page section.grid {
+  gap: 10px !important;
+}
+
+.panel-page .input,
+.panel-page .input-premium {
+  height: 36px !important;
+  padding-top: 7px !important;
+  padding-bottom: 7px !important;
+  font-size: 12px !important;
+}
+
+.panel-page .btn-primary,
+.panel-page .btn-secondary,
+.panel-page .btn-light,
+.panel-page .btn-white,
+.panel-page .btn-gold {
+  min-height: 36px !important;
+  height: 36px !important;
+  padding-left: 13px !important;
+  padding-right: 13px !important;
+  font-size: 12px !important;
+  border-radius: 11px !important;
+}
+
+.panel-page table {
+  font-size: 12px !important;
+}
+
+.panel-page th {
+  font-size: 9.5px !important;
+  line-height: 1.25 !important;
+}
+
+.panel-page td {
+  font-size: 12px !important;
+  line-height: 1.35 !important;
+}
+
+.panel-page .section-title,
+.panel-page .panel-heading {
+  font-size: 13px !important;
+}
+
+.panel-page .section-subtitle,
+.panel-page .panel-subtitle,
+.panel-page .compact-muted {
+  font-size: 11px !important;
+  line-height: 1.4 !important;
 }
 
 @media (min-width: 1280px) {
+  .panel-page {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+  }
+}
+
+@media (min-width: 1536px) {
   .panel-page {
     padding-left: 24px !important;
     padding-right: 24px !important;
@@ -58,10 +102,15 @@
 
 @media (max-width: 1023px) {
   .panel-page {
-    padding-top: 88px !important;
+    padding-top: 84px !important;
   }
 
   .panel-page .premium-hero {
-    padding: 18px !important;
+    padding: 16px !important;
+  }
+
+  .panel-page .premium-hero h1,
+  .panel-page .page-title {
+    font-size: 23px !important;
   }
 }
