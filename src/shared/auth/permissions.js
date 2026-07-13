@@ -46,7 +46,7 @@ export const ACTION_ROLES = {
   manageAcademicCatalog: ACADEMIC,
   manageAcademicServices: [...ADMINS, ROLES.DIRECAO, ROLES.FINANCEIRO, ROLES.TESOURARIA, ROLES.DCR_COORDENACAO, ROLES.TIC],
   prepareAcademicDocuments: [...ADMINS, ROLES.DIRECAO, ROLES.SECRETARIA, ROLES.DCR_COORDENACAO, ROLES.TIC],
-  signAcademicDocuments: [...ADMINS, ROLES.DIRECAO, ROLES.TIC],
+  signAcademicDocuments: [...ADMINS, ROLES.DIRECAO],
   sendAcademicDocuments: [...ADMINS, ROLES.DIRECAO, ROLES.SECRETARIA, ROLES.DCR_COORDENACAO, ROLES.TIC],
   importAcademicData: [...ACADEMIC, ROLES.TIC],
   manageCharges: FINANCE,
