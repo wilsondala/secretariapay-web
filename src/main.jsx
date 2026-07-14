@@ -12,4 +12,5 @@ import './styles/institutional-theme-tokens.css';
 import './styles/institutional-theme-shell.css';
 import './styles/institutional-theme-components.css';
 import './styles/institutional-theme-dark.css';
+import './styles/public-home-theme.css';
 ReactDOM.createRoot(document.getElementById('root')).render(<React.StrictMode><BrowserRouter><AuthProvider><App/></AuthProvider></BrowserRouter></React.StrictMode>);
