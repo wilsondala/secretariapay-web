@@ -177,10 +177,41 @@ html:not(.dark) .app-shell .panel-page > div > section.grid > div.bg-slate-50::b
   background: #27435A;
 }
 
+/* Os seis indicadores financeiros recebem classes próprias para garantir
+   a assinatura cromática correta independentemente das utilidades Tailwind. */
+html:not(.dark) .app-shell .students-finance-page .financial-stat {
+  position: relative;
+  overflow: hidden;
+  background: #FFFFFF !important;
+  border-color: #D8E0E8 !important;
+  box-shadow: 0 8px 22px rgba(16, 24, 40, .045) !important;
+}
+
+html:not(.dark) .app-shell .students-finance-page .financial-stat::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  background: #0077BE;
+}
+
+html:not(.dark) .app-shell .students-finance-page .financial-stat-green::before { background: #16A36A; }
+html:not(.dark) .app-shell .students-finance-page .financial-stat-red::before { background: #D64545; }
+html:not(.dark) .app-shell .students-finance-page .financial-stat-amber::before { background: #DAA520; }
+html:not(.dark) .app-shell .students-finance-page .financial-stat-violet::before { background: #6D5BD0; }
+html:not(.dark) .app-shell .students-finance-page .financial-stat-navy::before { background: #27435A; }
+
+html:not(.dark) .app-shell .students-finance-page .financial-stat-blue { color: #123B5A !important; }
+html:not(.dark) .app-shell .students-finance-page .financial-stat-green { color: #145C46 !important; }
+html:not(.dark) .app-shell .students-finance-page .financial-stat-red { color: #8F2727 !important; }
+html:not(.dark) .app-shell .students-finance-page .financial-stat-amber { color: #6E5211 !important; }
+html:not(.dark) .app-shell .students-finance-page .financial-stat-violet { color: #4E3D8D !important; }
+html:not(.dark) .app-shell .students-finance-page .financial-stat-navy { color: #17324A !important; }
+
 html:not(.dark) .app-shell .text-slate-500 {
-  color: #526174 !important;
+  color: #5B697A !important;
 }
 
 html:not(.dark) .app-shell .text-slate-400 {
-  color: #758397 !important;
+  color: #718096 !important;
 }
