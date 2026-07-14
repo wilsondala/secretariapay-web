@@ -17,11 +17,11 @@ import AcademicServicesPage from './pages/AcademicServicesPage.jsx';
 import AcademicDocumentsPage from './pages/AcademicDocumentsPage.jsx';
 import AdminUsersPage from './pages/AdminUsersPage.jsx';
 import SettingsPage from './pages/SettingsPage.jsx';
-import OperationsPage from './pages/OperationsPage.jsx';
+import OperationsPage from './pages/OperationsOfficialPage.jsx';
 import DemoChecklistPage from './pages/DemoChecklistPage.jsx';
 import AboutPage from './pages/AboutPage.jsx';
 import PublicDemoCarouselPage from './pages/PublicDemoCarouselPage.jsx';
-import ReportsPage from './pages/ReportsPage.jsx';
+import ReportsPage from './pages/ReportsOfficialPage.jsx';
 import NotFoundPage from './pages/NotFoundPage.jsx';
 
 const secured = (path, element) => <RoleRoute path={path}>{element}</RoleRoute>;
