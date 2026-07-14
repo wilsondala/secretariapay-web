@@ -1,9 +1,9 @@
 /* Shell, navegação e cabeçalhos institucionais. */
 .sidebar-surface {
   background: #FFFFFF !important;
-  border-color: #D9DEE7 !important;
+  border-color: #D7DFE8 !important;
   color: #101828 !important;
-  box-shadow: 18px 0 46px rgba(16, 24, 40, .055) !important;
+  box-shadow: 14px 0 38px rgba(16, 24, 40, .045) !important;
 }
 
 html.dark .sidebar-surface {
@@ -14,9 +14,9 @@ html.dark .sidebar-surface {
 }
 
 .app-shell > div.relative > header {
-  background: rgba(255, 255, 255, .94) !important;
-  border-color: #D9DEE7 !important;
-  box-shadow: 0 8px 28px rgba(16, 24, 40, .055) !important;
+  background: rgba(255, 255, 255, .97) !important;
+  border-color: #D7DFE8 !important;
+  box-shadow: 0 7px 24px rgba(16, 24, 40, .045) !important;
 }
 
 html.dark .app-shell > div.relative > header {
@@ -26,9 +26,14 @@ html.dark .app-shell > div.relative > header {
 }
 
 .app-shell .premium-hero {
-  border-color: rgba(0, 119, 190, .22) !important;
-  background: linear-gradient(135deg, #0077BE 0%, #005F99 52%, #12344D 100%) !important;
-  box-shadow: 0 18px 42px rgba(0, 77, 122, .16) !important;
+  border-color: rgba(0, 119, 190, .20) !important;
+  background: linear-gradient(135deg, #0077BE 0%, #00649F 52%, #12384F 100%) !important;
+  box-shadow: 0 16px 38px rgba(0, 77, 122, .14) !important;
+}
+
+html:not(.dark) .app-shell .premium-hero {
+  padding-top: 1.25rem !important;
+  padding-bottom: 1.25rem !important;
 }
 
 html.dark .app-shell .premium-hero {
