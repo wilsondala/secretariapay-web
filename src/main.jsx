@@ -8,4 +8,8 @@ import './styles/dark-contrast-fixes.css';
 import './styles/panel-density.css';
 import './styles/operations-button-fix.css';
 import './styles/students-table.css';
+import './styles/institutional-theme-tokens.css';
+import './styles/institutional-theme-shell.css';
+import './styles/institutional-theme-components.css';
+import './styles/institutional-theme-dark.css';
 ReactDOM.createRoot(document.getElementById('root')).render(<React.StrictMode><BrowserRouter><AuthProvider><App/></AuthProvider></BrowserRouter></React.StrictMode>);
