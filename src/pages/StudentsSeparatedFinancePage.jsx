@@ -79,7 +79,7 @@ export default function StudentsSeparatedFinancePage() {
   if (error) return <ErrorState message={error} onRetry={load} />;
 
   return (
-    <div className="space-y-5">
+    <div className="students-finance-page space-y-5">
       <section className="premium-hero">
         <div className="relative flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
           <div><div className="premium-pill"><WalletCards size={14} /> Contas financeiras separadas</div><h1 className="mt-4 text-2xl font-black text-white sm:text-4xl">Estudantes</h1><p className="mt-3 max-w-4xl text-sm font-medium leading-6 text-white/85">Propinas e serviços académicos possuem saldos, comprovativos e documentos independentes.</p></div>
@@ -87,13 +87,13 @@ export default function StudentsSeparatedFinancePage() {
         </div>
       </section>
 
-      <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-6">
+      <section className="financial-stat-grid grid gap-3 sm:grid-cols-2 xl:grid-cols-6">
         <Stat icon={Users} label="Estudantes" value={overview.total} />
         <Stat icon={CheckCircle2} label="Regularizados" value={overview.regularized} tone="green" />
         <Stat icon={AlertTriangle} label="Em atraso" value={overview.overdue} tone="red" />
         <Stat icon={GraduationCap} label="Saldo de propinas" value={formatMoney(overview.tuitionOpen)} tone="amber" />
         <Stat icon={BookOpenCheck} label="Saldo de serviços" value={formatMoney(overview.servicesOpen)} tone="violet" />
-        <Stat icon={WalletCards} label="Saldo total" value={formatMoney(overview.totalOpen)} />
+        <Stat icon={WalletCards} label="Saldo total" value={formatMoney(overview.totalOpen)} tone="navy" />
       </section>
 
       <section className="card-premium overflow-hidden">
@@ -118,5 +118,5 @@ export default function StudentsSeparatedFinancePage() {
 function StudentRow({ student, summary, onClick }) { return <tr onClick={onClick} className="cursor-pointer transition hover:bg-blue-50/70 dark:hover:bg-white/[.04]"><td className="px-4 py-4"><p className="truncate text-sm font-black text-slate-950 dark:text-white">{getStudentName(student)}</p><p className="mt-1 text-xs font-bold text-blue-700 dark:text-blue-300">{getStudentNumber(student)}</p></td><td className="px-4 py-4"><p className="truncate text-sm font-bold text-slate-800 dark:text-slate-100">{getStudentCourse(student)}</p><p className="mt-1 truncate text-xs font-semibold text-slate-500">{getStudentClass(student)}</p></td><td className="px-4 py-4"><Balance amount={summary.tuition.openAmount} paid={summary.tuition.paidAmount} /></td><td className="px-4 py-4"><Balance amount={summary.services.openAmount} paid={summary.services.paidAmount} /></td><td className="px-4 py-4"><p className={`text-sm font-black ${summary.totalOpen ? 'text-red-700' : 'text-emerald-700'}`}>{formatMoney(summary.totalOpen)}</p><p className="mt-1 text-[10px] font-semibold text-slate-500">{summary.overdueCount ? `${summary.overdueCount} vencida(s)` : 'Sem atraso'}</p></td></tr>; }
 function StudentCard({ student, summary, onClick }) { return <button onClick={onClick} className="w-full rounded-2xl border border-slate-200 bg-white p-4 text-left dark:border-white/10 dark:bg-white/[.03]"><div className="flex justify-between gap-3"><div><p className="text-sm font-black text-slate-950 dark:text-white">{getStudentName(student)}</p><p className="mt-1 text-xs font-bold text-blue-700 dark:text-blue-300">{getStudentNumber(student)}</p></div><ChevronRight size={18} className="text-slate-400" /></div><div className="mt-4 grid grid-cols-3 gap-2"><Small label="Propinas" value={formatMoney(summary.tuition.openAmount)} /><Small label="Serviços" value={formatMoney(summary.services.openAmount)} /><Small label="Total" value={formatMoney(summary.totalOpen)} /></div></button>; }
 function Balance({ amount, paid }) { return <div><p className={`text-sm font-black ${amount ? 'text-red-700' : 'text-emerald-700'}`}>{formatMoney(amount)}</p><p className="mt-1 text-[10px] font-semibold text-slate-500">Pago: {formatMoney(paid)}</p></div>; }
-function Stat({ icon: Icon, label, value, tone = 'blue' }) { const colors = { blue: 'border-blue-200 bg-blue-50 text-blue-950', green: 'border-emerald-200 bg-emerald-50 text-emerald-950', red: 'border-red-200 bg-red-50 text-red-900', amber: 'border-amber-200 bg-amber-50 text-amber-950', violet: 'border-violet-200 bg-violet-50 text-violet-950' }; return <div className={`rounded-2xl border p-4 ${colors[tone]}`}><div className="flex items-center justify-between gap-3"><div><p className="text-[10px] font-black uppercase tracking-wide opacity-70">{label}</p><p className="mt-2 break-words text-xl font-black">{value}</p></div><Icon size={20} /></div></div>; }
+function Stat({ icon: Icon, label, value, tone = 'blue' }) { const colors = { blue: 'border-blue-200 bg-blue-50 text-blue-950', green: 'border-emerald-200 bg-emerald-50 text-emerald-950', red: 'border-red-200 bg-red-50 text-red-900', amber: 'border-amber-200 bg-amber-50 text-amber-950', violet: 'border-violet-200 bg-violet-50 text-violet-950', navy: 'border-slate-200 bg-slate-50 text-slate-950' }; return <div className={`financial-stat financial-stat-${tone} rounded-2xl border p-4 ${colors[tone]}`}><div className="flex items-center justify-between gap-3"><div><p className="text-[10px] font-black uppercase tracking-wide opacity-70">{label}</p><p className="mt-2 break-words text-xl font-black">{value}</p></div><Icon size={20} /></div></div>; }
 function Small({ label, value }) { return <div className="rounded-xl bg-slate-50 p-2 dark:bg-white/5"><p className="text-[9px] font-black uppercase text-slate-400">{label}</p><p className="mt-1 break-words text-[10px] font-black text-slate-950 dark:text-white">{value}</p></div>; }

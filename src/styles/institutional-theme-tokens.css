@@ -1,0 +1,32 @@
+/* Paleta institucional limitada ao painel autenticado. */
+.app-shell {
+  --primary: #0077BE;
+  --primary-strong: #005F99;
+  --primary-soft: #E7F4FB;
+  --gold: #DAA520;
+  --bg: #F4F6F8;
+  --surface: #FFFFFF;
+  --surface-soft: #F8FAFC;
+  --border: #D7DFE8;
+  --text: #101828;
+  --muted: #526174;
+  --dark-bg: #020A13;
+  --dark-bg-2: #04111E;
+  --dark-surface: #0B1F33;
+  --dark-surface-soft: #102840;
+  --dark-border: #1D3A52;
+  --dark-text: #F8FAFC;
+  --dark-muted: #A8B8C9;
+  background-color: #F4F6F8 !important;
+  background-image: linear-gradient(180deg, #F7F8FA 0%, #EFF2F5 100%) !important;
+}
+
+html.dark .app-shell {
+  background-color: #020A13 !important;
+  background-image: linear-gradient(180deg, #020A13 0%, #04111E 100%) !important;
+}
+
+.app-shell .ambient-blue { background: rgba(0, 119, 190, .065) !important; }
+.app-shell .ambient-gold { background: rgba(218, 165, 32, .025) !important; }
+html.dark .app-shell .ambient-blue { background: rgba(0, 119, 190, .11) !important; }
+html.dark .app-shell .ambient-gold { background: rgba(218, 165, 32, .03) !important; }

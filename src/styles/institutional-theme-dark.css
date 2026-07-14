@@ -1,0 +1,96 @@
+/* Contraste do modo escuro em todas as páginas do painel. */
+html.dark .app-shell .text-slate-950,
+html.dark .app-shell .text-slate-900,
+html.dark .app-shell .text-slate-800,
+html.dark .app-shell .text-imetro-ink,
+html.dark .app-shell .text-imetro-navy {
+  color: #F8FAFC !important;
+}
+
+html.dark .app-shell .text-slate-700,
+html.dark .app-shell .text-slate-600 {
+  color: #D5DFE9 !important;
+}
+
+html.dark .app-shell .text-slate-500,
+html.dark .app-shell .text-slate-400 {
+  color: #A8B8C9 !important;
+}
+
+html.dark .app-shell .text-blue-300,
+html.dark .app-shell .text-blue-400,
+html.dark .app-shell .text-blue-500,
+html.dark .app-shell .text-blue-600,
+html.dark .app-shell .text-blue-700,
+html.dark .app-shell .text-blue-800,
+html.dark .app-shell [class*="text-[#7EA0FF]"],
+html.dark .app-shell [class*="text-[#8EA9FF]"],
+html.dark .app-shell [class*="text-[#9BB4FF]"] {
+  color: #65C2EE !important;
+}
+
+/* Indicadores usam tons 900/950 no modo claro. No modo escuro esses tons
+   ficavam quase pretos sobre cartões coloridos; aqui são convertidos para
+   variantes claras mantendo o significado funcional de cada categoria. */
+html.dark .app-shell .text-blue-900,
+html.dark .app-shell .text-blue-950 {
+  color: #BDE9FF !important;
+}
+
+html.dark .app-shell .text-violet-900,
+html.dark .app-shell .text-violet-950,
+html.dark .app-shell .text-purple-900,
+html.dark .app-shell .text-purple-950 {
+  color: #DDD3FF !important;
+}
+
+html.dark .app-shell .text-emerald-900,
+html.dark .app-shell .text-emerald-950,
+html.dark .app-shell .text-green-900,
+html.dark .app-shell .text-green-950 {
+  color: #B7F7D8 !important;
+}
+
+html.dark .app-shell .text-amber-900,
+html.dark .app-shell .text-amber-950 {
+  color: #FDE9A2 !important;
+}
+
+html.dark .app-shell .text-red-900,
+html.dark .app-shell .text-red-950 {
+  color: #FFD0D5 !important;
+}
+
+html.dark .app-shell .bg-blue-50,
+html.dark .app-shell .bg-blue-100 {
+  background-color: rgba(0, 119, 190, .17) !important;
+}
+
+html.dark .app-shell [class*="bg-[#08111F]"],
+html.dark .app-shell [class*="bg-[#081321]"],
+html.dark .app-shell [class*="bg-[#091727]"],
+html.dark .app-shell [class*="bg-[#0F172A]"],
+html.dark .app-shell [class*="bg-[#111827]"] {
+  background-color: #071827 !important;
+}
+
+html.dark .app-shell [class*="bg-[#0D1B2E]"],
+html.dark .app-shell [class*="bg-[#10223A]"] {
+  background-color: #0B1F33 !important;
+}
+
+html.dark .app-shell .border-slate-100,
+html.dark .app-shell .border-slate-200,
+html.dark .app-shell .border-slate-700,
+html.dark .app-shell .border-slate-800 {
+  border-color: #1D3A52 !important;
+}
+
+html.dark .app-shell tbody tr:hover,
+html.dark .app-shell button[class*="text-left"]:hover {
+  background-color: #102840 !important;
+}
+
+html.dark .app-shell ::placeholder {
+  color: #7890A6 !important;
+}

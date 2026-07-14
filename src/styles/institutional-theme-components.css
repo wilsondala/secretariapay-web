@@ -1,0 +1,217 @@
+/* Componentes globais do painel: azul #0077BE e dourado #DAA520. */
+.app-shell .btn-primary,
+.app-shell .topbar-action-primary {
+  background-color: #0077BE !important;
+  border-color: #0077BE !important;
+}
+
+.app-shell .btn-primary:hover,
+.app-shell .topbar-action-primary:hover {
+  background-color: #005F99 !important;
+}
+
+/* A regra genérica da topbar deixa ações brancas no modo claro.
+   Reaplicamos a ação financeira do WhatsApp após essa regra para manter
+   texto, ícone e fundo visíveis nos dois temas. */
+.app-shell .topbar-action-success {
+  background-color: #0077BE !important;
+  border-color: #0077BE !important;
+  color: #FFFFFF !important;
+}
+
+.app-shell .topbar-action-success:hover {
+  background-color: #005F99 !important;
+  border-color: #005F99 !important;
+  color: #FFFFFF !important;
+}
+
+html.dark .app-shell .topbar-action-success {
+  background-color: #0B1F33 !important;
+  border-color: #315772 !important;
+  color: #F8FAFC !important;
+}
+
+html.dark .app-shell .topbar-action-success:hover {
+  background-color: #102840 !important;
+  border-color: #3E6E8F !important;
+}
+
+.app-shell [class*="bg-[#3157D5]"] {
+  background-color: #0077BE !important;
+}
+
+.app-shell [class*="text-[#3157D5]"] {
+  color: #0077BE !important;
+}
+
+.app-shell [class*="text-[#F4B400]"],
+.app-shell .text-imetro-gold {
+  color: #DAA520 !important;
+}
+
+.app-shell [class*="bg-[#F4B400]"],
+.app-shell .btn-gold {
+  background-color: #DAA520 !important;
+  border-color: #DAA520 !important;
+  color: #0A0D12 !important;
+}
+
+.app-shell .text-blue-500,
+.app-shell .text-blue-600,
+.app-shell .text-blue-700,
+.app-shell .text-blue-800 {
+  color: #0077BE !important;
+}
+
+.app-shell .bg-blue-50,
+.app-shell .bg-blue-100 {
+  background-color: rgba(0, 119, 190, .10) !important;
+}
+
+.app-shell .border-blue-100,
+.app-shell .border-blue-200,
+.app-shell .border-blue-500 {
+  border-color: rgba(0, 119, 190, .30) !important;
+}
+
+.app-shell .card,
+.app-shell .card-premium,
+.app-shell .premium-card {
+  background: #FFFFFF !important;
+  border-color: #D7DFE8 !important;
+  box-shadow: 0 12px 30px rgba(16, 24, 40, .06) !important;
+}
+
+html.dark .app-shell .card,
+html.dark .app-shell .card-premium,
+html.dark .app-shell .premium-card {
+  background: #0B1F33 !important;
+  border-color: #1D3A52 !important;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, .22) !important;
+}
+
+.app-shell .input,
+.app-shell .input-premium {
+  background-color: #FFFFFF !important;
+  border-color: #CBD5E1 !important;
+  color: #101828 !important;
+}
+
+.app-shell .input:focus,
+.app-shell .input-premium:focus {
+  border-color: #0077BE !important;
+  --tw-ring-color: rgba(0, 119, 190, .18) !important;
+}
+
+html.dark .app-shell .input,
+html.dark .app-shell .input-premium,
+html.dark .app-shell input,
+html.dark .app-shell select,
+html.dark .app-shell textarea {
+  background-color: #071827 !important;
+  border-color: #23435D !important;
+  color: #F8FAFC !important;
+}
+
+.app-shell thead,
+.app-shell .bg-slate-50 {
+  background-color: #F8FAFC !important;
+}
+
+.app-shell .bg-slate-100 {
+  background-color: #EEF2F6 !important;
+}
+
+html.dark .app-shell thead,
+html.dark .app-shell .bg-slate-50,
+html.dark .app-shell .bg-slate-100 {
+  background-color: #071827 !important;
+}
+
+.app-shell [class*="border-dashed"] {
+  border-color: #C7D2DE !important;
+  background-color: #FBFCFD !important;
+}
+
+html.dark .app-shell [class*="border-dashed"] {
+  border-color: #315772 !important;
+  background-color: rgba(11, 31, 51, .62) !important;
+}
+
+/* No modo claro, os cartões de indicadores usam fundo neutro e a cor
+   aparece somente como assinatura visual. Isso reduz a competição entre
+   os KPIs e preserva a leitura financeira. */
+html:not(.dark) .app-shell .panel-page > div > section.grid > div.rounded-2xl.border {
+  position: relative;
+  overflow: hidden;
+  background: #FFFFFF !important;
+  border-color: #D8E0E8 !important;
+  box-shadow: 0 8px 22px rgba(16, 24, 40, .045) !important;
+}
+
+html:not(.dark) .app-shell .panel-page > div > section.grid > div.rounded-2xl.border::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  background: #0077BE;
+}
+
+html:not(.dark) .app-shell .panel-page > div > section.grid > div.bg-emerald-50::before {
+  background: #16A36A;
+}
+
+html:not(.dark) .app-shell .panel-page > div > section.grid > div.bg-red-50::before {
+  background: #D64545;
+}
+
+html:not(.dark) .app-shell .panel-page > div > section.grid > div.bg-amber-50::before {
+  background: #DAA520;
+}
+
+html:not(.dark) .app-shell .panel-page > div > section.grid > div.bg-violet-50::before {
+  background: #6D5BD0;
+}
+
+html:not(.dark) .app-shell .panel-page > div > section.grid > div.bg-slate-50::before {
+  background: #27435A;
+}
+
+/* Os seis indicadores financeiros recebem classes próprias para garantir
+   a assinatura cromática correta independentemente das utilidades Tailwind. */
+html:not(.dark) .app-shell .students-finance-page .financial-stat {
+  position: relative;
+  overflow: hidden;
+  background: #FFFFFF !important;
+  border-color: #D8E0E8 !important;
+  box-shadow: 0 8px 22px rgba(16, 24, 40, .045) !important;
+}
+
+html:not(.dark) .app-shell .students-finance-page .financial-stat::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  background: #0077BE;
+}
+
+html:not(.dark) .app-shell .students-finance-page .financial-stat-green::before { background: #16A36A; }
+html:not(.dark) .app-shell .students-finance-page .financial-stat-red::before { background: #D64545; }
+html:not(.dark) .app-shell .students-finance-page .financial-stat-amber::before { background: #DAA520; }
+html:not(.dark) .app-shell .students-finance-page .financial-stat-violet::before { background: #6D5BD0; }
+html:not(.dark) .app-shell .students-finance-page .financial-stat-navy::before { background: #27435A; }
+
+html:not(.dark) .app-shell .students-finance-page .financial-stat-blue { color: #123B5A !important; }
+html:not(.dark) .app-shell .students-finance-page .financial-stat-green { color: #145C46 !important; }
+html:not(.dark) .app-shell .students-finance-page .financial-stat-red { color: #8F2727 !important; }
+html:not(.dark) .app-shell .students-finance-page .financial-stat-amber { color: #6E5211 !important; }
+html:not(.dark) .app-shell .students-finance-page .financial-stat-violet { color: #4E3D8D !important; }
+html:not(.dark) .app-shell .students-finance-page .financial-stat-navy { color: #17324A !important; }
+
+html:not(.dark) .app-shell .text-slate-500 {
+  color: #5B697A !important;
+}
+
+html:not(.dark) .app-shell .text-slate-400 {
+  color: #718096 !important;
+}

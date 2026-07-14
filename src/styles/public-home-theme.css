@@ -1,0 +1,197 @@
+/* Home pública independente do tema armazenado no painel.
+   Mantém a identidade institucional em azul #0077BE, dourado #DAA520,
+   branco e azul-marinho, preservando verde apenas para ações do WhatsApp. */
+.public-home-scope {
+  min-height: 100vh;
+  background: #F4F6F8;
+  color: #101828;
+}
+
+.public-home-scope > .min-h-screen,
+html.dark .public-home-scope,
+html.dark .public-home-scope > .min-h-screen {
+  background: #F4F6F8 !important;
+  color: #101828 !important;
+}
+
+/* Hero */
+.public-home-scope > .min-h-screen > header {
+  background: #04111E !important;
+}
+
+.public-home-scope > .min-h-screen > header > .pointer-events-none > div:first-child {
+  background: linear-gradient(135deg, #04111E 0%, #063B5D 48%, #005F99 100%) !important;
+}
+
+.public-home-scope > .min-h-screen > header > .pointer-events-none > div:nth-child(2) {
+  opacity: .20 !important;
+}
+
+.public-home-scope > .min-h-screen > header > .pointer-events-none .border-emerald-600\/70 {
+  border-color: rgba(0, 119, 190, .70) !important;
+}
+
+.public-home-scope > .min-h-screen > header > .pointer-events-none .bg-white {
+  background: #F4F6F8 !important;
+}
+
+.public-home-scope header [class*="bg-white/10"] {
+  background-color: rgba(255, 255, 255, .09) !important;
+  border-color: rgba(255, 255, 255, .18) !important;
+}
+
+.public-home-scope header [class*="text-emerald-400"],
+.public-home-scope footer [class*="text-emerald-400"] {
+  color: #DAA520 !important;
+}
+
+.public-home-scope header section > div[class*="rounded-[2rem]"] {
+  box-shadow: 0 24px 70px rgba(0, 0, 0, .22) !important;
+}
+
+/* Conteúdo claro, mesmo quando o painel estiver em dark mode */
+.public-home-scope main,
+html.dark .public-home-scope main {
+  background: #F4F6F8 !important;
+  color: #101828 !important;
+}
+
+.public-home-scope main [class*="text-[#061936]"],
+html.dark .public-home-scope main [class*="text-[#061936]"] {
+  color: #102A43 !important;
+}
+
+.public-home-scope main .text-slate-600,
+html.dark .public-home-scope main .text-slate-600 {
+  color: #5B697A !important;
+}
+
+.public-home-scope main .bg-white,
+html.dark .public-home-scope main .bg-white {
+  background-color: #FFFFFF !important;
+}
+
+.public-home-scope main .bg-slate-50,
+html.dark .public-home-scope main .bg-slate-50 {
+  background-color: #EAF5FB !important;
+}
+
+.public-home-scope main .border-slate-100,
+html.dark .public-home-scope main .border-slate-100 {
+  border-color: #D8E0E8 !important;
+}
+
+/* Apresentação e funcionalidades */
+.public-home-scope main > section:first-child {
+  padding-top: 3.25rem !important;
+  padding-bottom: 2.25rem !important;
+}
+
+.public-home-scope main > section:first-child .grid > div {
+  position: relative;
+  overflow: hidden;
+  border-color: #D8E0E8 !important;
+  background: #FFFFFF !important;
+  box-shadow: 0 12px 30px rgba(16, 24, 40, .06) !important;
+}
+
+.public-home-scope main > section:first-child .grid > div::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  background: linear-gradient(90deg, #0077BE, #DAA520);
+}
+
+.public-home-scope main > section:first-child .grid > div > div:first-child {
+  background: #EAF5FB !important;
+  color: #0077BE !important;
+  box-shadow: inset 0 0 0 1px rgba(0, 119, 190, .12);
+}
+
+.public-home-scope main > section:first-child .grid > div:hover {
+  transform: translateY(-4px);
+  border-color: rgba(0, 119, 190, .32) !important;
+  box-shadow: 0 18px 42px rgba(16, 24, 40, .09) !important;
+}
+
+/* Passos */
+.public-home-scope main > section:nth-of-type(2) .grid > div > div:first-child {
+  background: #0077BE !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 8px 20px rgba(0, 119, 190, .24) !important;
+}
+
+.public-home-scope main > section:nth-of-type(2) .grid > div > div:nth-child(2) {
+  background: #FFFFFF !important;
+  color: #0077BE !important;
+  border: 1px solid #D8E0E8;
+  box-shadow: 0 10px 24px rgba(16, 24, 40, .055);
+}
+
+/* Formas de pagamento */
+.public-home-scope main > section:nth-of-type(3) .grid > div {
+  position: relative;
+  overflow: hidden;
+  border-color: #D8E0E8 !important;
+  background: #FFFFFF !important;
+  box-shadow: 0 10px 26px rgba(16, 24, 40, .055) !important;
+}
+
+.public-home-scope main > section:nth-of-type(3) .grid > div::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  background: #DAA520;
+}
+
+.public-home-scope main > section:nth-of-type(3) .grid > div > div:first-child {
+  background: #FFF8E6 !important;
+  color: #8A6815 !important;
+}
+
+/* Chamada WhatsApp */
+.public-home-scope main > section:nth-of-type(4) > div {
+  background: linear-gradient(135deg, #04111E 0%, #005F99 64%, #087E66 100%) !important;
+  border: 1px solid rgba(0, 119, 190, .24);
+  box-shadow: 0 24px 60px rgba(4, 17, 30, .18) !important;
+}
+
+.public-home-scope main > section:nth-of-type(4) h2,
+.public-home-scope main > section:nth-of-type(4) p {
+  color: #FFFFFF !important;
+}
+
+/* Rodapé */
+.public-home-scope footer,
+html.dark .public-home-scope footer {
+  background: #04111E !important;
+  color: #FFFFFF !important;
+}
+
+.public-home-scope footer .border-emerald-600\/65 {
+  border-color: rgba(0, 119, 190, .65) !important;
+}
+
+.public-home-scope footer [class*="text-emerald-300"] {
+  color: #DAA520 !important;
+}
+
+@media (max-width: 1023px) {
+  .public-home-scope main > section:first-child {
+    padding-top: 2.5rem !important;
+  }
+}
+
+@media (max-width: 639px) {
+  .public-home-scope header h1 {
+    font-size: 2.35rem !important;
+    line-height: 1.08 !important;
+  }
+
+  .public-home-scope main > section:first-child .grid > div,
+  .public-home-scope main > section:nth-of-type(3) .grid > div {
+    border-radius: 1.25rem !important;
+  }
+}
