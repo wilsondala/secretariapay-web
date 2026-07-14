@@ -10,6 +10,32 @@
   background-color: #005F99 !important;
 }
 
+/* A regra genérica da topbar deixa ações brancas no modo claro.
+   Reaplicamos a ação financeira do WhatsApp após essa regra para manter
+   texto, ícone e fundo visíveis nos dois temas. */
+.app-shell .topbar-action-success {
+  background-color: #0077BE !important;
+  border-color: #0077BE !important;
+  color: #FFFFFF !important;
+}
+
+.app-shell .topbar-action-success:hover {
+  background-color: #005F99 !important;
+  border-color: #005F99 !important;
+  color: #FFFFFF !important;
+}
+
+html.dark .app-shell .topbar-action-success {
+  background-color: #0B1F33 !important;
+  border-color: #315772 !important;
+  color: #F8FAFC !important;
+}
+
+html.dark .app-shell .topbar-action-success:hover {
+  background-color: #102840 !important;
+  border-color: #3E6E8F !important;
+}
+
 .app-shell [class*="bg-[#3157D5]"] {
   background-color: #0077BE !important;
 }
