@@ -29,7 +29,7 @@ const secured = (path, element) => <RoleRoute path={path}>{element}</RoleRoute>;
 export default function App() {
   return (
     <Routes>
-      <Route path="/" element={<PublicHomePage />} />
+      <Route path="/" element={<div className="public-home-scope"><PublicHomePage /></div>} />
       <Route path="/guias/:guideCode" element={<PublicGuidePage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/apresentacao" element={<PublicDemoCarouselPage />} />
