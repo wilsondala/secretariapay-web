@@ -77,9 +77,9 @@ html.dark .app-shell .topbar-action-success:hover {
 .app-shell .card,
 .app-shell .card-premium,
 .app-shell .premium-card {
-  background: rgba(255, 255, 255, .97) !important;
-  border-color: #D9DEE7 !important;
-  box-shadow: 0 10px 28px rgba(16, 24, 40, .055) !important;
+  background: #FFFFFF !important;
+  border-color: #D7DFE8 !important;
+  box-shadow: 0 12px 30px rgba(16, 24, 40, .06) !important;
 }
 
 html.dark .app-shell .card,
@@ -93,7 +93,7 @@ html.dark .app-shell .premium-card {
 .app-shell .input,
 .app-shell .input-premium {
   background-color: #FFFFFF !important;
-  border-color: #C9D1DC !important;
+  border-color: #CBD5E1 !important;
   color: #101828 !important;
 }
 
@@ -115,11 +115,11 @@ html.dark .app-shell textarea {
 
 .app-shell thead,
 .app-shell .bg-slate-50 {
-  background-color: #F7F8FA !important;
+  background-color: #F8FAFC !important;
 }
 
 .app-shell .bg-slate-100 {
-  background-color: #EEF1F4 !important;
+  background-color: #EEF2F6 !important;
 }
 
 html.dark .app-shell thead,
@@ -129,11 +129,58 @@ html.dark .app-shell .bg-slate-100 {
 }
 
 .app-shell [class*="border-dashed"] {
-  border-color: #AEB9C8 !important;
-  background-color: rgba(255, 255, 255, .42) !important;
+  border-color: #C7D2DE !important;
+  background-color: #FBFCFD !important;
 }
 
 html.dark .app-shell [class*="border-dashed"] {
   border-color: #315772 !important;
   background-color: rgba(11, 31, 51, .62) !important;
+}
+
+/* No modo claro, os cartões de indicadores usam fundo neutro e a cor
+   aparece somente como assinatura visual. Isso reduz a competição entre
+   os KPIs e preserva a leitura financeira. */
+html:not(.dark) .app-shell .panel-page > div > section.grid > div.rounded-2xl.border {
+  position: relative;
+  overflow: hidden;
+  background: #FFFFFF !important;
+  border-color: #D8E0E8 !important;
+  box-shadow: 0 8px 22px rgba(16, 24, 40, .045) !important;
+}
+
+html:not(.dark) .app-shell .panel-page > div > section.grid > div.rounded-2xl.border::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  background: #0077BE;
+}
+
+html:not(.dark) .app-shell .panel-page > div > section.grid > div.bg-emerald-50::before {
+  background: #16A36A;
+}
+
+html:not(.dark) .app-shell .panel-page > div > section.grid > div.bg-red-50::before {
+  background: #D64545;
+}
+
+html:not(.dark) .app-shell .panel-page > div > section.grid > div.bg-amber-50::before {
+  background: #DAA520;
+}
+
+html:not(.dark) .app-shell .panel-page > div > section.grid > div.bg-violet-50::before {
+  background: #6D5BD0;
+}
+
+html:not(.dark) .app-shell .panel-page > div > section.grid > div.bg-slate-50::before {
+  background: #27435A;
+}
+
+html:not(.dark) .app-shell .text-slate-500 {
+  color: #526174 !important;
+}
+
+html:not(.dark) .app-shell .text-slate-400 {
+  color: #758397 !important;
 }
