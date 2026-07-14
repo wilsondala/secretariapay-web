@@ -1,0 +1,71 @@
+/* Shell, navegação e cabeçalhos institucionais. */
+.sidebar-surface {
+  background: #FFFFFF !important;
+  border-color: #D9DEE7 !important;
+  color: #101828 !important;
+  box-shadow: 18px 0 46px rgba(16, 24, 40, .055) !important;
+}
+
+html.dark .sidebar-surface {
+  background: #04111E !important;
+  border-color: #17314A !important;
+  color: #F8FAFC !important;
+  box-shadow: 18px 0 50px rgba(0, 0, 0, .26) !important;
+}
+
+.app-shell > div.relative > header {
+  background: rgba(255, 255, 255, .94) !important;
+  border-color: #D9DEE7 !important;
+  box-shadow: 0 8px 28px rgba(16, 24, 40, .055) !important;
+}
+
+html.dark .app-shell > div.relative > header {
+  background: rgba(5, 20, 33, .96) !important;
+  border-color: #17314A !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, .24) !important;
+}
+
+.app-shell .premium-hero {
+  border-color: rgba(0, 119, 190, .22) !important;
+  background: linear-gradient(135deg, #0077BE 0%, #005F99 52%, #12344D 100%) !important;
+  box-shadow: 0 18px 42px rgba(0, 77, 122, .16) !important;
+}
+
+html.dark .app-shell .premium-hero {
+  border-color: #1D3A52 !important;
+  background: linear-gradient(135deg, #063B5D 0%, #082A43 54%, #071827 100%) !important;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, .24) !important;
+}
+
+.app-shell .topbar-action,
+.app-shell .topbar-icon,
+.app-shell .btn-secondary {
+  background-color: #FFFFFF !important;
+  border-color: #D3DAE4 !important;
+}
+
+.app-shell .btn-secondary {
+  color: #00649F !important;
+}
+
+.app-shell .topbar-action:hover,
+.app-shell .topbar-icon:hover,
+.app-shell .btn-secondary:hover {
+  background-color: #F1F5F8 !important;
+  border-color: #AFC6D6 !important;
+}
+
+html.dark .app-shell .topbar-action,
+html.dark .app-shell .topbar-icon,
+html.dark .app-shell .btn-secondary {
+  background-color: #0B1F33 !important;
+  border-color: #23435D !important;
+  color: #DCE7F1 !important;
+}
+
+html.dark .app-shell .topbar-action:hover,
+html.dark .app-shell .topbar-icon:hover,
+html.dark .app-shell .btn-secondary:hover {
+  background-color: #102840 !important;
+  border-color: #315772 !important;
+}
