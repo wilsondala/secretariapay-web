@@ -1,0 +1,113 @@
+/* Componentes globais do painel: azul #0077BE e dourado #DAA520. */
+.app-shell .btn-primary,
+.app-shell .topbar-action-primary {
+  background-color: #0077BE !important;
+  border-color: #0077BE !important;
+}
+
+.app-shell .btn-primary:hover,
+.app-shell .topbar-action-primary:hover {
+  background-color: #005F99 !important;
+}
+
+.app-shell [class*="bg-[#3157D5]"] {
+  background-color: #0077BE !important;
+}
+
+.app-shell [class*="text-[#3157D5]"] {
+  color: #0077BE !important;
+}
+
+.app-shell [class*="text-[#F4B400]"],
+.app-shell .text-imetro-gold {
+  color: #DAA520 !important;
+}
+
+.app-shell [class*="bg-[#F4B400]"],
+.app-shell .btn-gold {
+  background-color: #DAA520 !important;
+  border-color: #DAA520 !important;
+  color: #0A0D12 !important;
+}
+
+.app-shell .text-blue-500,
+.app-shell .text-blue-600,
+.app-shell .text-blue-700,
+.app-shell .text-blue-800 {
+  color: #0077BE !important;
+}
+
+.app-shell .bg-blue-50,
+.app-shell .bg-blue-100 {
+  background-color: rgba(0, 119, 190, .10) !important;
+}
+
+.app-shell .border-blue-100,
+.app-shell .border-blue-200,
+.app-shell .border-blue-500 {
+  border-color: rgba(0, 119, 190, .30) !important;
+}
+
+.app-shell .card,
+.app-shell .card-premium,
+.app-shell .premium-card {
+  background: rgba(255, 255, 255, .97) !important;
+  border-color: #D9DEE7 !important;
+  box-shadow: 0 10px 28px rgba(16, 24, 40, .055) !important;
+}
+
+html.dark .app-shell .card,
+html.dark .app-shell .card-premium,
+html.dark .app-shell .premium-card {
+  background: #0B1F33 !important;
+  border-color: #1D3A52 !important;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, .22) !important;
+}
+
+.app-shell .input,
+.app-shell .input-premium {
+  background-color: #FFFFFF !important;
+  border-color: #C9D1DC !important;
+  color: #101828 !important;
+}
+
+.app-shell .input:focus,
+.app-shell .input-premium:focus {
+  border-color: #0077BE !important;
+  --tw-ring-color: rgba(0, 119, 190, .18) !important;
+}
+
+html.dark .app-shell .input,
+html.dark .app-shell .input-premium,
+html.dark .app-shell input,
+html.dark .app-shell select,
+html.dark .app-shell textarea {
+  background-color: #071827 !important;
+  border-color: #23435D !important;
+  color: #F8FAFC !important;
+}
+
+.app-shell thead,
+.app-shell .bg-slate-50 {
+  background-color: #F7F8FA !important;
+}
+
+.app-shell .bg-slate-100 {
+  background-color: #EEF1F4 !important;
+}
+
+html.dark .app-shell thead,
+html.dark .app-shell .bg-slate-50,
+html.dark .app-shell .bg-slate-100 {
+  background-color: #071827 !important;
+}
+
+.app-shell [class*="border-dashed"] {
+  border-color: #AEB9C8 !important;
+  background-color: rgba(255, 255, 255, .42) !important;
+}
+
+html.dark .app-shell [class*="border-dashed"] {
+  border-color: #315772 !important;
+  background-color: rgba(11, 31, 51, .62) !important;
+}
