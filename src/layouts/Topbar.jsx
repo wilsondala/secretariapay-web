@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { AlertTriangle, Bell, CheckCircle2, FileText, LogOut, Menu, Moon, PanelLeftClose, PanelLeftOpen, RefreshCw, Send, ShieldCheck, Sun } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import useAuth from '../shared/auth/useAuth.js';
+import { canAccessRoute } from '../shared/auth/permissions.js';
 import { env } from '../config/env.js';
 import { loadTopbarAlerts } from '../services/alertService.js';
 
@@ -11,12 +12,18 @@ const pageMap = {
   '/charges': { section: 'Gestão financeira', title: 'Cobranças', description: 'Propinas e guias' },
   '/proofs': { section: 'Gestão financeira', title: 'Comprovativos', description: 'Validação DCR' },
   '/receipts': { section: 'Gestão financeira', title: 'Recibos', description: 'Documentos emitidos' },
+  '/academic-services': { section: 'Gestão financeira', title: 'Serviços e preços', description: 'Tabela institucional' },
+  '/academic-service-orders': { section: 'Gestão académica', title: 'Pedidos de serviços', description: 'Pagamento, emissão e entrega' },
+  '/academic-documents': { section: 'Gestão académica', title: 'Documentos académicos', description: 'Declarações e assinatura' },
+  '/academic-catalog': { section: 'Gestão académica', title: 'Cursos e turmas', description: 'Estrutura académica' },
   '/whatsapp': { section: 'Automação e canais', title: 'WhatsApp', description: 'Atendimento e avisos' },
   '/operations': { section: 'Automação e canais', title: 'Operações', description: 'Automação institucional' },
   '/imports': { section: 'Automação e canais', title: 'Importações', description: 'Carga de dados' },
   '/reports': { section: 'Automação e canais', title: 'Relatórios', description: 'Gestão executiva' },
   '/settings': { section: 'Configurações', title: 'Configurações', description: 'Regras e ambiente' },
 };
+
+const EMPTY_ALERTS = { count: 0, recentMessages: 0, hasRecentMessages: false, items: [], lastUpdatedAt: null };
 
 function formatBadge(value) {
   const count = Number(value || 0);
@@ -44,11 +51,15 @@ export default function Topbar({ onMenuClick, collapsed, onToggleSidebar, theme 
   const page = pageMap[location.pathname] || { section: 'Painel administrativo', title: 'SecretáriaPay', description: 'Navegação institucional' };
   const fixedClass = collapsed ? 'lg:left-[84px]' : 'lg:left-[252px]';
   const isDark = theme === 'dark';
+  const canViewReports = canAccessRoute(user, '/reports');
+  const canViewWhatsapp = canAccessRoute(user, '/whatsapp');
+  const canViewOperationalAlerts = canViewWhatsapp || canAccessRoute(user, '/operations');
   const [alertsOpen, setAlertsOpen] = useState(false);
   const [alertsLoading, setAlertsLoading] = useState(false);
-  const [alerts, setAlerts] = useState({ count: 0, recentMessages: 0, hasRecentMessages: false, items: [], lastUpdatedAt: null });
+  const [alerts, setAlerts] = useState(EMPTY_ALERTS);
 
   async function refreshAlerts() {
+    if (!canViewOperationalAlerts) return;
     setAlertsLoading(true);
     try {
       setAlerts(await loadTopbarAlerts());
@@ -60,6 +71,12 @@ export default function Topbar({ onMenuClick, collapsed, onToggleSidebar, theme 
   }
 
   useEffect(() => {
+    if (!canViewOperationalAlerts) {
+      setAlertsOpen(false);
+      setAlerts(EMPTY_ALERTS);
+      return undefined;
+    }
+
     refreshAlerts();
     const interval = window.setInterval(refreshAlerts, 60000);
     const onFocus = () => refreshAlerts();
@@ -68,7 +85,7 @@ export default function Topbar({ onMenuClick, collapsed, onToggleSidebar, theme 
       window.clearInterval(interval);
       window.removeEventListener('focus', onFocus);
     };
-  }, []);
+  }, [canViewOperationalAlerts]);
 
   const handleLogout = () => {
     logout();
@@ -77,7 +94,7 @@ export default function Topbar({ onMenuClick, collapsed, onToggleSidebar, theme 
 
   const openAlertPath = (path) => {
     setAlertsOpen(false);
-    if (path) navigate(path);
+    if (path && canAccessRoute(user, path)) navigate(path);
   };
 
   return (
@@ -91,40 +108,42 @@ export default function Topbar({ onMenuClick, collapsed, onToggleSidebar, theme 
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
             <p className="truncate text-[14px] font-extrabold text-[#0F172A] dark:text-white">{env.dcrName}</p>
-            <span className="hidden rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-1 text-[9px] font-bold uppercase tracking-wide text-emerald-700 dark:text-emerald-300 sm:inline-flex">WhatsApp conectado</span>
+            {canViewWhatsapp ? <span className="hidden rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-1 text-[9px] font-bold uppercase tracking-wide text-emerald-700 dark:text-emerald-300 sm:inline-flex">WhatsApp conectado</span> : null}
           </div>
           <p className="mt-0.5 hidden truncate text-[11px] font-medium text-slate-500 dark:text-slate-400 sm:block">{page.section} / {page.title} — {page.description}</p>
         </div>
 
         <div className="hidden items-center gap-2 xl:flex">
           <button className="topbar-action topbar-action-primary" onClick={() => window.location.reload()}><RefreshCw size={15} />Atualizar</button>
-          <button className="topbar-action" onClick={() => navigate('/reports')}><FileText size={15} />Relatórios</button>
-          <button className="topbar-action topbar-action-success" onClick={() => navigate('/whatsapp')}><Send size={15} />WhatsApp financeiro</button>
+          {canViewReports ? <button className="topbar-action" onClick={() => navigate('/reports')}><FileText size={15} />Relatórios</button> : null}
+          {canViewWhatsapp ? <button className="topbar-action topbar-action-success" onClick={() => navigate('/whatsapp')}><Send size={15} />WhatsApp financeiro</button> : null}
         </div>
 
         <button type="button" onClick={onToggleTheme} className="topbar-icon" aria-label={isDark ? 'Ativar modo claro' : 'Ativar modo escuro'} title={isDark ? 'Modo claro' : 'Modo escuro'}>{isDark ? <Sun size={18} /> : <Moon size={18} />}</button>
 
-        <div className="relative">
-          <button type="button" onClick={() => setAlertsOpen((value) => !value)} className="topbar-icon relative" aria-label="Alertas do sistema" title="Alertas reais do sistema">
-            <Bell size={18} />
-            {alerts.count > 0 ? <span className="absolute right-0.5 top-0.5 flex h-4 min-w-[1rem] items-center justify-center rounded-full bg-red-500 px-1 text-[9px] font-extrabold text-white ring-2 ring-white dark:ring-[#081321]">{formatBadge(alerts.count)}</span> : alerts.hasRecentMessages ? <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-[#081321]" /> : null}
-          </button>
+        {canViewOperationalAlerts ? (
+          <div className="relative">
+            <button type="button" onClick={() => setAlertsOpen((value) => !value)} className="topbar-icon relative" aria-label="Alertas do sistema" title="Alertas reais do sistema">
+              <Bell size={18} />
+              {alerts.count > 0 ? <span className="absolute right-0.5 top-0.5 flex h-4 min-w-[1rem] items-center justify-center rounded-full bg-red-500 px-1 text-[9px] font-extrabold text-white ring-2 ring-white dark:ring-[#081321]">{formatBadge(alerts.count)}</span> : alerts.hasRecentMessages ? <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-[#081321]" /> : null}
+            </button>
 
-          {alertsOpen ? (
-            <div className="absolute right-0 top-[calc(100%+12px)] z-[70] w-[min(380px,calc(100vw-1.5rem))] overflow-hidden rounded-2xl border border-[#E5EAF2] bg-white shadow-[0_22px_70px_rgba(15,23,42,.16)] dark:border-white/[.08] dark:bg-[#0D1B2E]">
-              <div className="flex items-start justify-between gap-3 border-b border-[#E5EAF2] px-4 py-3 dark:border-white/[.08]">
-                <div><p className="text-sm font-extrabold text-slate-900 dark:text-white">Alertas do sistema</p><p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">Atualizado {formatTime(alerts.lastUpdatedAt) || 'agora'}</p></div>
-                <button type="button" onClick={refreshAlerts} className="rounded-lg border border-[#E5EAF2] px-2.5 py-1.5 text-xs font-bold text-[#3157D5] hover:bg-slate-50 dark:border-white/[.08] dark:text-[#9BB4FF] dark:hover:bg-white/[.06]">{alertsLoading ? '...' : 'Atualizar'}</button>
+            {alertsOpen ? (
+              <div className="absolute right-0 top-[calc(100%+12px)] z-[70] w-[min(380px,calc(100vw-1.5rem))] overflow-hidden rounded-2xl border border-[#E5EAF2] bg-white shadow-[0_22px_70px_rgba(15,23,42,.16)] dark:border-white/[.08] dark:bg-[#0D1B2E]">
+                <div className="flex items-start justify-between gap-3 border-b border-[#E5EAF2] px-4 py-3 dark:border-white/[.08]">
+                  <div><p className="text-sm font-extrabold text-slate-900 dark:text-white">Alertas do sistema</p><p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">Atualizado {formatTime(alerts.lastUpdatedAt) || 'agora'}</p></div>
+                  <button type="button" onClick={refreshAlerts} className="rounded-lg border border-[#E5EAF2] px-2.5 py-1.5 text-xs font-bold text-[#3157D5] hover:bg-slate-50 dark:border-white/[.08] dark:text-[#9BB4FF] dark:hover:bg-white/[.06]">{alertsLoading ? '...' : 'Atualizar'}</button>
+                </div>
+                <div className="max-h-[360px] overflow-y-auto p-3">
+                  {alerts.items.length ? alerts.items.slice(0, 8).map((item, index) => {
+                    const Icon = item.type === 'critical' || item.type === 'warning' ? AlertTriangle : CheckCircle2;
+                    return <button type="button" key={`${item.title}-${index}`} onClick={() => openAlertPath(item.path)} className="mb-2 flex w-full items-start gap-3 rounded-xl border border-transparent p-3 text-left transition hover:border-[#E5EAF2] hover:bg-slate-50 dark:hover:border-white/[.08] dark:hover:bg-white/[.05]"><span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border ${alertToneClasses(item.type)}`}><Icon size={16} /></span><span className="min-w-0 flex-1"><span className="block text-sm font-bold text-slate-900 dark:text-white">{item.title}</span><span className="mt-1 block text-xs leading-5 text-slate-500 dark:text-slate-400">{item.description}</span></span></button>;
+                  }) : <div className="rounded-xl border border-emerald-500/15 bg-emerald-500/10 p-4 text-sm font-semibold text-emerald-700 dark:text-emerald-300">Nenhum alerta crítico no momento.</div>}
+                </div>
               </div>
-              <div className="max-h-[360px] overflow-y-auto p-3">
-                {alerts.items.length ? alerts.items.slice(0, 8).map((item, index) => {
-                  const Icon = item.type === 'critical' || item.type === 'warning' ? AlertTriangle : CheckCircle2;
-                  return <button type="button" key={`${item.title}-${index}`} onClick={() => openAlertPath(item.path)} className="mb-2 flex w-full items-start gap-3 rounded-xl border border-transparent p-3 text-left transition hover:border-[#E5EAF2] hover:bg-slate-50 dark:hover:border-white/[.08] dark:hover:bg-white/[.05]"><span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border ${alertToneClasses(item.type)}`}><Icon size={16} /></span><span className="min-w-0 flex-1"><span className="block text-sm font-bold text-slate-900 dark:text-white">{item.title}</span><span className="mt-1 block text-xs leading-5 text-slate-500 dark:text-slate-400">{item.description}</span></span></button>;
-                }) : <div className="rounded-xl border border-emerald-500/15 bg-emerald-500/10 p-4 text-sm font-semibold text-emerald-700 dark:text-emerald-300">Nenhum alerta crítico no momento.</div>}
-              </div>
-            </div>
-          ) : null}
-        </div>
+            ) : null}
+          </div>
+        ) : null}
 
         <div className="hidden min-w-0 items-center gap-2.5 rounded-xl border border-[#E5EAF2] bg-white px-2.5 py-1.5 dark:border-white/[.08] dark:bg-white/[.04] sm:flex">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#3157D5] to-[#183A9D] text-[10px] font-extrabold text-white">AD</div>
