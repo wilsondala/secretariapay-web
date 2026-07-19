@@ -37,4 +37,5 @@ export const submitAcademicServiceOrderSignature = (id) => postAction(id, 'submi
 export const signAcademicServiceOrder = (id) => postAction(id, 'sign');
 export const markAcademicServiceOrderReadyForPickup = (id, payload) => postAction(id, 'ready-for-pickup', payload);
 export const sendAcademicServiceOrderPickupWhatsapp = (id) => postAction(id, 'send-pickup-whatsapp');
+export const sendAcademicServiceOrderPickupEmail = (id) => postAction(id, 'send-pickup-email');
 export const deliverAcademicServiceOrder = (id, payload) => postAction(id, 'deliver', payload);
