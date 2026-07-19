@@ -3,7 +3,7 @@ import { AlertTriangle, Bell, CheckCircle2, FileText, LogOut, Menu, Moon, PanelL
 import { useLocation, useNavigate } from 'react-router-dom';
 import useAuth from '../shared/auth/useAuth.js';
 import { canAccessRoute } from '../shared/auth/permissions.js';
-import { env } from '../config/env.js';
+import { getRolePresentation } from '../shared/auth/rolePresentation.js';
 import { loadTopbarAlerts } from '../services/alertService.js';
 
 const pageMap = {
@@ -49,6 +49,7 @@ export default function Topbar({ onMenuClick, collapsed, onToggleSidebar, theme 
   const navigate = useNavigate();
   const location = useLocation();
   const page = pageMap[location.pathname] || { section: 'Painel administrativo', title: 'SecretáriaPay', description: 'Navegação institucional' };
+  const rolePresentation = getRolePresentation(user);
   const fixedClass = collapsed ? 'lg:left-[84px]' : 'lg:left-[252px]';
   const isDark = theme === 'dark';
   const canViewReports = canAccessRoute(user, '/reports');
@@ -107,7 +108,7 @@ export default function Topbar({ onMenuClick, collapsed, onToggleSidebar, theme 
 
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <p className="truncate text-[14px] font-extrabold text-[#0F172A] dark:text-white">{env.dcrName}</p>
+            <p className="truncate text-[14px] font-extrabold text-[#0F172A] dark:text-white">{rolePresentation.title}</p>
             {canViewWhatsapp ? <span className="hidden rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-1 text-[9px] font-bold uppercase tracking-wide text-emerald-700 dark:text-emerald-300 sm:inline-flex">WhatsApp conectado</span> : null}
           </div>
           <p className="mt-0.5 hidden truncate text-[11px] font-medium text-slate-500 dark:text-slate-400 sm:block">{page.section} / {page.title} — {page.description}</p>
@@ -146,8 +147,8 @@ export default function Topbar({ onMenuClick, collapsed, onToggleSidebar, theme 
         ) : null}
 
         <div className="hidden min-w-0 items-center gap-2.5 rounded-xl border border-[#E5EAF2] bg-white px-2.5 py-1.5 dark:border-white/[.08] dark:bg-white/[.04] sm:flex">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#3157D5] to-[#183A9D] text-[10px] font-extrabold text-white">AD</div>
-          <div className="hidden text-left 2xl:block"><p className="max-w-[150px] truncate text-xs font-bold text-slate-800 dark:text-white">{user?.email || 'admin@imetro.ao'}</p><p className="mt-0.5 flex items-center gap-1 text-[9px] font-bold uppercase tracking-wide text-slate-400"><ShieldCheck size={10} /> {user?.role || 'ADMIN'}</p></div>
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#3157D5] to-[#183A9D] text-[10px] font-extrabold text-white">{rolePresentation.initials}</div>
+          <div className="hidden text-left 2xl:block"><p className="max-w-[150px] truncate text-xs font-bold text-slate-800 dark:text-white">{user?.email || 'utilizador@imetro.ao'}</p><p className="mt-0.5 flex items-center gap-1 text-[9px] font-bold uppercase tracking-wide text-slate-400"><ShieldCheck size={10} /> {user?.role || 'PERFIL'}</p></div>
         </div>
 
         <button type="button" onClick={handleLogout} className="topbar-icon text-red-500 hover:bg-red-50 dark:text-red-300 dark:hover:bg-red-500/10" title="Sair do painel"><LogOut size={17} /></button>
