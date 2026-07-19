@@ -4,6 +4,7 @@ import {
   BookOpen,
   CalendarDays,
   ChevronRight,
+  ClipboardList,
   FileCheck2,
   FileSignature,
   FileText,
@@ -41,6 +42,7 @@ const groups = [
   {
     label: 'Gestão académica',
     items: [
+      ['Pedidos de serviços', '/academic-service-orders', ClipboardList, 'Pagamento, emissão e entrega'],
       ['Documentos académicos', '/academic-documents', FileSignature, 'Declarações e assinatura'],
       ['Cursos e turmas', '/academic-catalog', BookOpen, 'Estrutura académica'],
     ],
