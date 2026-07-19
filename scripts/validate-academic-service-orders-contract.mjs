@@ -56,20 +56,21 @@ const sequence = [
 ];
 requireOrdered(page.slice(page.indexOf('const STATUS_SEQUENCE'), page.indexOf('const STATUS_INFO')), sequence, 'Sequência institucional');
 
-const requiredEndpoints = [
-  '/api/v1/academic-service-orders',
-  '/archive',
-  '/request-payment',
-  '/generate-document',
-  '/ready-for-print',
-  '/print',
-  '/submit-signature',
-  '/sign',
-  '/ready-for-pickup',
-  '/send-pickup-whatsapp',
-  '/deliver',
+requireText(service, "const BASE_URL = '/api/v1/academic-service-orders'", 'Base da API');
+requireText(service, '`${BASE_URL}/archive`', 'Endpoint de arquivo');
+requireText(service, '`${BASE_URL}/${id}/request-payment`', 'Endpoint de cobrança');
+
+const requiredActions = [
+  'generate-document',
+  'ready-for-print',
+  'print',
+  'submit-signature',
+  'sign',
+  'ready-for-pickup',
+  'send-pickup-whatsapp',
+  'deliver',
 ];
-for (const endpoint of requiredEndpoints) requireText(service, endpoint, 'Contrato da API');
+for (const action of requiredActions) requireText(service, `postAction(id, '${action}'`, 'Contrato da API');
 
 requireText(page, "selected.status === 'AGUARDANDO_PAGAMENTO'", 'Bloqueio antes do pagamento');
 requireText(page, "selected.status === 'PAGO' && canProcess", 'Entrada na fila da Secretaria');
