@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { pathToFileURL } from 'node:url';
 
 const root = process.cwd();
 const read = (path) => readFileSync(resolve(root, path), 'utf8');
@@ -24,22 +25,62 @@ function requireOrdered(source, values, label) {
 
 const app = read('src/App.jsx');
 const sidebar = read('src/layouts/Sidebar.jsx');
+const topbar = read('src/layouts/Topbar.jsx');
 const page = read('src/pages/AcademicServiceOrdersPage.jsx');
 const service = read('src/services/academicServiceOrdersService.js');
-const permissions = read('src/shared/auth/permissions.js');
+const permissionsSource = read('src/shared/auth/permissions.js');
+const permissionsModule = await import(pathToFileURL(resolve(root, 'src/shared/auth/permissions.js')).href);
+const { ROUTE_ROLES, ROLES } = permissionsModule;
 
 requireText(app, "path=\"/academic-service-orders\"", 'Rota protegida');
 requireText(app, '<AcademicServiceOrdersPage />', 'Componente da rota');
 requireText(sidebar, "['Pedidos de serviços', '/academic-service-orders'", 'Menu académico');
-requireText(permissions, "'/academic-service-orders'", 'Permissão da rota');
-requireText(permissions, 'createAcademicServiceOrders', 'Ação DCR');
-requireText(permissions, 'processAcademicServiceOrders', 'Ação Secretaria');
-requireText(permissions, 'signAcademicServiceOrders', 'Ação Direção');
+requireText(permissionsSource, "'/academic-service-orders'", 'Permissão da rota');
+requireText(permissionsSource, 'createAcademicServiceOrders', 'Ação DCR');
+requireText(permissionsSource, 'processAcademicServiceOrders', 'Ação Secretaria');
+requireText(permissionsSource, 'signAcademicServiceOrders', 'Ação Direção');
 
-requireText(permissions, 'ROLES.DCR_COORDENACAO', 'Perfil DCR coordenação');
-requireText(permissions, 'ROLES.DCR_OPERADOR', 'Perfil DCR operador');
-requireText(permissions, 'ROLES.SECRETARIA', 'Perfil Secretaria');
-requireText(permissions, 'ROLES.DIRECAO', 'Perfil Direção');
+requireText(permissionsSource, 'ROLES.DCR_COORDENACAO', 'Perfil DCR coordenação');
+requireText(permissionsSource, 'ROLES.DCR_OPERADOR', 'Perfil DCR operador');
+requireText(permissionsSource, 'ROLES.SECRETARIA', 'Perfil Secretaria');
+requireText(permissionsSource, 'ROLES.DIRECAO', 'Perfil Direção');
+requireText(topbar, "canAccessRoute(user, '/reports')", 'Topbar condicionado por perfil');
+requireText(topbar, "canAccessRoute(user, '/whatsapp')", 'WhatsApp condicionado por perfil');
+
+const dcrRoles = [ROLES.DCR_COORDENACAO, ROLES.DCR_OPERADOR];
+const dcrRequiredRoutes = [
+  '/dashboard',
+  '/students',
+  '/charges',
+  '/academic-services',
+  '/proofs',
+  '/receipts',
+  '/academic-service-orders',
+];
+const dcrForbiddenRoutes = [
+  '/academic-documents',
+  '/academic-catalog',
+  '/whatsapp',
+  '/operations',
+  '/imports',
+  '/reports',
+  '/admin-users',
+  '/settings',
+];
+
+for (const route of dcrRequiredRoutes) {
+  const allowed = ROUTE_ROLES[route] || [];
+  for (const role of dcrRoles) {
+    if (!allowed.includes(role)) failures.push(`Escopo DCR: ${role} deve aceder a ${route}`);
+  }
+}
+
+for (const route of dcrForbiddenRoutes) {
+  const allowed = ROUTE_ROLES[route] || [];
+  for (const role of dcrRoles) {
+    if (allowed.includes(role)) failures.push(`Escopo DCR: ${role} não deve aceder a ${route}`);
+  }
+}
 
 const sequence = [
   'SOLICITADO',
@@ -89,3 +130,4 @@ if (failures.length > 0) {
 console.log('Contrato do fluxo académico validado.');
 console.log(`Estados confirmados: ${sequence.join(' -> ')}`);
 console.log('Perfis confirmados: DCR, Secretaria e Direção.');
+console.log(`Escopo DCR confirmado: ${dcrRequiredRoutes.join(', ')}`);
