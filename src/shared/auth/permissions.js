@@ -22,6 +22,9 @@ const MANAGEMENT = [...ADMINS, ROLES.DIRECAO, ROLES.TIC];
 const FINANCE = [...MANAGEMENT, ROLES.FINANCEIRO, ROLES.TESOURARIA, ROLES.DCR_COORDENACAO, ROLES.DCR_OPERADOR];
 const ACADEMIC = [...MANAGEMENT, ROLES.SECRETARIA, ROLES.DCR_COORDENACAO];
 const READ_ONLY = [ROLES.AUDITORIA];
+const DCR_SERVICE_ORDERS = [...ADMINS, ROLES.DCR_COORDENACAO, ROLES.DCR_OPERADOR];
+const SECRETARIA_SERVICE_ORDERS = [...ADMINS, ROLES.SECRETARIA];
+const DIRECAO_SERVICE_ORDERS = [...ADMINS, ROLES.DIRECAO];
 
 export const ROUTE_ROLES = {
   '/dashboard': ALL,
@@ -30,6 +33,7 @@ export const ROUTE_ROLES = {
   '/proofs': [...FINANCE, ...READ_ONLY],
   '/receipts': [...FINANCE, ROLES.OPERADOR_ATENDIMENTO, ...READ_ONLY],
   '/academic-services': [...FINANCE, ROLES.SECRETARIA, ROLES.OPERADOR_ATENDIMENTO, ...READ_ONLY],
+  '/academic-service-orders': [...DCR_SERVICE_ORDERS, ...SECRETARIA_SERVICE_ORDERS, ...DIRECAO_SERVICE_ORDERS, ...READ_ONLY],
   '/academic-documents': [...ACADEMIC, ...READ_ONLY],
   '/academic-catalog': [...ACADEMIC, ...READ_ONLY],
   '/whatsapp': [...FINANCE, ROLES.OPERADOR_ATENDIMENTO, ...READ_ONLY],
@@ -45,6 +49,9 @@ export const ACTION_ROLES = {
   manageSettings: MANAGEMENT,
   manageAcademicCatalog: ACADEMIC,
   manageAcademicServices: [...ADMINS, ROLES.DIRECAO, ROLES.FINANCEIRO, ROLES.TESOURARIA, ROLES.DCR_COORDENACAO, ROLES.TIC],
+  createAcademicServiceOrders: DCR_SERVICE_ORDERS,
+  processAcademicServiceOrders: SECRETARIA_SERVICE_ORDERS,
+  signAcademicServiceOrders: DIRECAO_SERVICE_ORDERS,
   prepareAcademicDocuments: [...ADMINS, ROLES.DIRECAO, ROLES.SECRETARIA, ROLES.DCR_COORDENACAO, ROLES.TIC],
   signAcademicDocuments: [...ADMINS, ROLES.DIRECAO],
   sendAcademicDocuments: [...ADMINS, ROLES.DIRECAO, ROLES.SECRETARIA, ROLES.DCR_COORDENACAO, ROLES.TIC],
@@ -83,6 +90,6 @@ export function can(user, action) {
 }
 
 export function getDefaultRoute(user) {
-  const preferred = ['/dashboard', '/students', '/charges', '/academic-services', '/academic-documents', '/academic-catalog', '/whatsapp', '/reports'];
+  const preferred = ['/dashboard', '/students', '/charges', '/academic-services', '/academic-service-orders', '/academic-documents', '/academic-catalog', '/whatsapp', '/reports'];
   return preferred.find((path) => canAccessRoute(user, path)) || '/login';
 }
