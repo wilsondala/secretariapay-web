@@ -10,6 +10,7 @@ import {
   FileSignature,
   FileText,
   Loader2,
+  Mail,
   MapPin,
   MessageCircle,
   PackageCheck,
@@ -37,6 +38,7 @@ import {
   markAcademicServiceOrderReadyForPickup,
   markAcademicServiceOrderReadyForPrint,
   requestAcademicServiceOrderPayment,
+  sendAcademicServiceOrderPickupEmail,
   sendAcademicServiceOrderPickupWhatsapp,
   signAcademicServiceOrder,
   submitAcademicServiceOrderSignature,
@@ -66,7 +68,7 @@ const STATUS_INFO = {
   AGUARDANDO_ASSINATURA: { label: 'Aguardando assinatura', helper: 'Encaminhado à Direção', tone: 'orange', icon: FileSignature },
   ASSINADO: { label: 'Assinado', helper: 'Assinatura concluída', tone: 'cyan', icon: ShieldCheck },
   PRONTO_PARA_LEVANTAMENTO: { label: 'Pronto para levantamento', helper: 'Disponível fisicamente', tone: 'teal', icon: MapPin },
-  WHATSAPP_ENVIADO: { label: 'WhatsApp enviado', helper: 'Estudante notificado', tone: 'green', icon: MessageCircle },
+  WHATSAPP_ENVIADO: { label: 'Notificação enviada', helper: 'WhatsApp confirmado e e-mail complementar', tone: 'green', icon: MessageCircle },
   ENTREGUE: { label: 'Entregue', helper: 'Levantamento registado', tone: 'emerald', icon: PackageCheck },
 };
 
@@ -230,6 +232,26 @@ export default function AcademicServiceOrdersPage() {
     }
   }
 
+  async function sendPickupEmail() {
+    if (!selected?.id) return;
+    setBusy('email');
+    setError('');
+    setSuccess('');
+    try {
+      const result = await sendAcademicServiceOrderPickupEmail(selected.id);
+      if (result?.sent) {
+        setSuccess(`E-mail de levantamento enviado para ${result.recipient || 'o endereço cadastrado'}.`);
+      } else {
+        setError(result?.detail || `O e-mail não foi enviado. Estado do canal: ${result?.status || 'indisponível'}.`);
+      }
+      await load({ selectedId: selected.id });
+    } catch (requestError) {
+      setError(readError(requestError, 'Não foi possível enviar o e-mail de levantamento.'));
+    } finally {
+      setBusy('');
+    }
+  }
+
   async function previewDocument() {
     if (!selected?.documentRequestId) return;
     setBusy('preview');
@@ -253,7 +275,7 @@ export default function AcademicServiceOrdersPage() {
           <div>
             <div className="premium-pill"><ClipboardList size={14} /> Fluxo institucional de serviços</div>
             <h1 className="mt-4 text-2xl font-extrabold tracking-[-.04em] text-white sm:text-[32px]">Pedidos, documentos e levantamento</h1>
-            <p className="mt-3 max-w-4xl text-sm font-medium leading-6 text-white/85">Acompanhe o pedido desde a solicitação e pagamento até impressão, assinatura, notificação no WhatsApp e entrega física.</p>
+            <p className="mt-3 max-w-4xl text-sm font-medium leading-6 text-white/85">Acompanhe o pedido desde a solicitação e pagamento até impressão, assinatura, notificações por WhatsApp e e-mail e entrega física.</p>
           </div>
           <div className="flex flex-wrap gap-2">
             <button onClick={() => load()} disabled={loading || Boolean(busy)} className="btn-light">
@@ -365,9 +387,9 @@ export default function AcademicServiceOrdersPage() {
                   {selected.status === 'AGUARDANDO_ASSINATURA' && canSign ? <ActionButton icon={FileSignature} label="Assinar documento" onClick={() => runAction('sign', signAcademicServiceOrder, 'Documento assinado pela Direção.')} loading={busy === 'sign'} warning /> : null}
                   {selected.status === 'AGUARDANDO_ASSINATURA' && !canSign ? <ReadOnlyHint text="A assinatura é exclusiva da Direção e dos administradores autorizados." /> : null}
                   {selected.status === 'ASSINADO' && canProcess ? <><Field label="Local de levantamento"><input value={physicalLocation} onChange={(event) => setPhysicalLocation(event.target.value)} className="input-premium" /></Field><ActionButton icon={MapPin} label="Confirmar disponibilidade física" onClick={() => runAction('pickup', (id) => markAcademicServiceOrderReadyForPickup(id, { physicalLocation }), 'Documento assinado e disponível fisicamente para levantamento.')} loading={busy === 'pickup'} success /></> : null}
-                  {selected.status === 'PRONTO_PARA_LEVANTAMENTO' && canProcess ? <ActionButton icon={Send} label="Notificar estudante pelo WhatsApp" onClick={() => runAction('whatsapp', sendAcademicServiceOrderPickupWhatsapp, 'Estudante notificado pelo WhatsApp para levantamento.')} loading={busy === 'whatsapp'} success /> : null}
-                  {selected.status === 'WHATSAPP_ENVIADO' && canProcess ? <div className="space-y-3"><div className="grid gap-3 sm:grid-cols-2"><Field label="Nome de quem levantou"><input value={recipientName} onChange={(event) => setRecipientName(event.target.value)} className="input-premium" /></Field><Field label="Documento de identificação"><input value={recipientDocumentNumber} onChange={(event) => setRecipientDocumentNumber(event.target.value)} className="input-premium" /></Field></div><Field label="Observações da entrega"><textarea value={deliveryNotes} onChange={(event) => setDeliveryNotes(event.target.value)} rows={3} className="input-premium resize-y" /></Field><ActionButton icon={PackageCheck} label="Registar levantamento e entrega" onClick={() => runAction('deliver', (id) => deliverAcademicServiceOrder(id, { recipientName, recipientDocumentNumber, notes: deliveryNotes }), 'Entrega registada e documento arquivado.')} loading={busy === 'deliver'} success /></div> : null}
-                  {selected.status === 'ENTREGUE' ? <ReadOnlyHint text={`Entregue a ${selected.recipientName || '-'} em ${formatDateTime(selected.deliveredAt)}. Registo arquivado para auditoria.`} /> : null}
+                  {selected.status === 'PRONTO_PARA_LEVANTAMENTO' && canProcess ? <ActionButton icon={Send} label="Notificar estudante por WhatsApp e e-mail" onClick={() => runAction('whatsapp', sendAcademicServiceOrderPickupWhatsapp, 'WhatsApp confirmado e canal de e-mail complementar processado.')} loading={busy === 'whatsapp'} success /> : null}
+                  {selected.status === 'WHATSAPP_ENVIADO' && canProcess ? <div className="space-y-3"><ActionButton icon={Mail} label="Enviar ou reenviar e-mail de levantamento" onClick={sendPickupEmail} loading={busy === 'email'} /><div className="grid gap-3 sm:grid-cols-2"><Field label="Nome de quem levantou"><input value={recipientName} onChange={(event) => setRecipientName(event.target.value)} className="input-premium" /></Field><Field label="Documento de identificação"><input value={recipientDocumentNumber} onChange={(event) => setRecipientDocumentNumber(event.target.value)} className="input-premium" /></Field></div><Field label="Observações da entrega"><textarea value={deliveryNotes} onChange={(event) => setDeliveryNotes(event.target.value)} rows={3} className="input-premium resize-y" /></Field><ActionButton icon={PackageCheck} label="Registar levantamento e entrega" onClick={() => runAction('deliver', (id) => deliverAcademicServiceOrder(id, { recipientName, recipientDocumentNumber, notes: deliveryNotes }), 'Entrega registada e documento arquivado.')} loading={busy === 'deliver'} success /></div> : null}
+                  {selected.status === 'ENTREGUE' ? <><ReadOnlyHint text={`Entregue a ${selected.recipientName || '-'} em ${formatDateTime(selected.deliveredAt)}. Registo arquivado para auditoria.`} />{canProcess ? <ActionButton icon={Mail} label="Reenviar e-mail de levantamento" onClick={sendPickupEmail} loading={busy === 'email'} /> : null}</> : null}
                   {selected.documentRequestId ? <ActionButton icon={FileText} label="Pré-visualizar documento PDF" onClick={previewDocument} loading={busy === 'preview'} /> : null}
                 </div>
               </div>
