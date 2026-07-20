@@ -28,6 +28,7 @@ const sidebar = read('src/layouts/Sidebar.jsx');
 const topbar = read('src/layouts/Topbar.jsx');
 const page = read('src/pages/AcademicServiceOrdersPage.jsx');
 const service = read('src/services/academicServiceOrdersService.js');
+const chargesService = read('src/services/chargesService.js');
 const permissionsSource = read('src/shared/auth/permissions.js');
 const permissionsModule = await import(pathToFileURL(resolve(root, 'src/shared/auth/permissions.js')).href);
 const { ROUTE_ROLES, ROLES } = permissionsModule;
@@ -115,6 +116,10 @@ const requiredActions = [
 for (const action of requiredActions) requireText(service, `postAction(id, '${action}'`, 'Contrato da API');
 
 requireText(page, "selected.status === 'AGUARDANDO_PAGAMENTO'", 'Bloqueio antes do pagamento');
+requireText(page, "can(user, 'manageCharges')", 'Permissão de confirmação financeira');
+requireText(page, 'confirmChargePayment(selected.chargeId)', 'Confirmação da cobrança vinculada ao pedido');
+requireText(page, 'label="Confirmar pagamento"', 'Botão de confirmação para a DCR');
+requireText(chargesService, '`${CHARGES_ENDPOINT}/${id}/confirm-payment`', 'Endpoint de confirmação financeira');
 requireText(page, "selected.status === 'PAGO' && canProcess", 'Entrada na fila da Secretaria');
 requireText(page, "selected.status === 'AGUARDANDO_ASSINATURA' && canSign", 'Assinatura da Direção');
 requireText(page, "selected.status === 'PRONTO_PARA_LEVANTAMENTO' && canProcess", 'WhatsApp após disponibilidade física');
