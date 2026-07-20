@@ -28,6 +28,7 @@ import { can } from '../shared/auth/permissions.js';
 import { listStudents } from '../services/studentsService.js';
 import { listAcademicServices } from '../services/academicServicesService.js';
 import { downloadAcademicDocumentPdf } from '../services/academicDocumentsService.js';
+import { confirmChargePayment } from '../services/chargesService.js';
 import {
   createAcademicServiceOrder,
   deliverAcademicServiceOrder,
@@ -106,6 +107,7 @@ function datePlusDays(days) {
 export default function AcademicServiceOrdersPage() {
   const { user } = useAuth();
   const canCreate = can(user, 'createAcademicServiceOrders');
+  const canManageCharges = can(user, 'manageCharges');
   const canProcess = can(user, 'processAcademicServiceOrders');
   const canSign = can(user, 'signAcademicServiceOrders');
 
@@ -227,6 +229,23 @@ export default function AcademicServiceOrdersPage() {
       await load({ selectedId: updated.id });
     } catch (requestError) {
       setError(readError(requestError, 'Não foi possível concluir a operação.'));
+    } finally {
+      setBusy('');
+    }
+  }
+
+  async function confirmOrderPayment() {
+    if (!selected?.id || !selected?.chargeId || !canManageCharges) return;
+    const selectedId = selected.id;
+    setBusy('confirm-payment');
+    setError('');
+    setSuccess('');
+    try {
+      await confirmChargePayment(selected.chargeId);
+      setSuccess('Pagamento confirmado. O pedido foi liberado para a fila operacional da Secretaria.');
+      await load({ selectedId });
+    } catch (requestError) {
+      setError(readError(requestError, 'Não foi possível confirmar o pagamento desta cobrança.'));
     } finally {
       setBusy('');
     }
@@ -379,7 +398,8 @@ export default function AcademicServiceOrdersPage() {
                 <p className="mt-1 text-xs font-semibold text-slate-500 dark:text-slate-400">A ação disponível respeita o perfil e o estado atual.</p>
                 <div className="mt-4 space-y-3">
                   {selected.status === 'SOLICITADO' && canCreate ? <><Field label="Vencimento da cobrança"><input type="date" value={dueDate} onChange={(event) => setDueDate(event.target.value)} className="input-premium" /></Field><ActionButton icon={Banknote} label="Emitir cobrança e aguardar pagamento" onClick={() => runAction('payment', (id) => requestAcademicServiceOrderPayment(id, dueDate), 'Cobrança emitida. O pedido aguarda pagamento confirmado.')} loading={busy === 'payment'} primary /></> : null}
-                  {selected.status === 'AGUARDANDO_PAGAMENTO' ? <ReadOnlyHint text="A DCR deve confirmar o pagamento na cobrança ou aprovar o comprovativo. Só depois o pedido aparecerá na fila operacional da Secretaria." /> : null}
+                  {selected.status === 'AGUARDANDO_PAGAMENTO' && canManageCharges && selected.chargeId ? <ActionButton icon={BadgeCheck} label="Confirmar pagamento" onClick={confirmOrderPayment} loading={busy === 'confirm-payment'} success /> : null}
+                  {selected.status === 'AGUARDANDO_PAGAMENTO' && (!canManageCharges || !selected.chargeId) ? <ReadOnlyHint text="A DCR deve confirmar o pagamento na cobrança ou aprovar o comprovativo. Só depois o pedido aparecerá na fila operacional da Secretaria." /> : null}
                   {selected.status === 'PAGO' && canProcess ? <ActionButton icon={FileOutput} label="Gerar documento" onClick={() => runAction('generate', generateAcademicServiceOrderDocument, 'Documento gerado e associado ao pedido.')} loading={busy === 'generate'} primary /> : null}
                   {selected.status === 'DOCUMENTO_GERADO' && canProcess ? <ActionButton icon={FileText} label="Colocar na fila de impressão" onClick={() => runAction('ready-print', markAcademicServiceOrderReadyForPrint, 'Documento pronto para impressão.')} loading={busy === 'ready-print'} primary /> : null}
                   {selected.status === 'PRONTO_PARA_IMPRESSAO' && canProcess ? <ActionButton icon={Printer} label="Registar impressão" onClick={() => runAction('print', markAcademicServiceOrderPrinted, 'Impressão registada pela Secretaria.')} loading={busy === 'print'} primary /> : null}
