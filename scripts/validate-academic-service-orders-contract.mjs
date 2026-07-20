@@ -109,6 +109,7 @@ const requiredActions = [
   'sign',
   'ready-for-pickup',
   'send-pickup-whatsapp',
+  'send-pickup-email',
   'deliver',
 ];
 for (const action of requiredActions) requireText(service, `postAction(id, '${action}'`, 'Contrato da API');
@@ -118,6 +119,8 @@ requireText(page, "selected.status === 'PAGO' && canProcess", 'Entrada na fila d
 requireText(page, "selected.status === 'AGUARDANDO_ASSINATURA' && canSign", 'Assinatura da Direção');
 requireText(page, "selected.status === 'PRONTO_PARA_LEVANTAMENTO' && canProcess", 'WhatsApp após disponibilidade física');
 requireText(page, "selected.status === 'WHATSAPP_ENVIADO' && canProcess", 'Registo de entrega após WhatsApp');
+requireText(page, 'sendPickupEmail', 'Ação visível de e-mail complementar');
+requireText(service, 'showPickupEmailFeedback', 'Retorno imediato do canal de e-mail');
 requireText(page, 'recipientDocumentNumber', 'Identificação no levantamento');
 requireText(page, 'Arquivo de documentos', 'Arquivo documental');
 
