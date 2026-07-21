@@ -27,5 +27,8 @@ jobs:
       - name: Install dependencies
         run: npm ci --no-audit --no-fund
 
+      - name: Validate academic service order contract
+        run: npm run validate:academic-service-orders
+
       - name: Build production bundle
         run: npm run build
