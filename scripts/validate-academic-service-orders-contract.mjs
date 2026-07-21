@@ -123,6 +123,9 @@ requireText(chargesService, '`${CHARGES_ENDPOINT}/${id}/confirm-payment`', 'Endp
 requireText(page, "selected.status === 'PAGO' && canProcess", 'Entrada na fila da Secretaria');
 requireText(page, "selected.status === 'AGUARDANDO_ASSINATURA' && canSign", 'Assinatura da Direção');
 requireText(page, "selected.status === 'PRONTO_PARA_LEVANTAMENTO' && canProcess", 'WhatsApp após disponibilidade física');
+requireText(page, "selected.status === 'ASSINADO' && !canProcess", 'Orientação ao DCR e à Direção após assinatura');
+requireText(page, 'A próxima ação pertence à Secretaria', 'Responsabilidade explícita da Secretaria');
+requireText(page, 'label="Enviar aviso por WhatsApp + e-mail"', 'Ação multicanal de levantamento');
 requireText(page, "selected.status === 'WHATSAPP_ENVIADO' && canProcess", 'Registo de entrega após WhatsApp');
 requireText(page, 'sendPickupEmail', 'Ação visível de e-mail complementar');
 requireText(service, 'showPickupEmailFeedback', 'Retorno imediato do canal de e-mail');
