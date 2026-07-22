@@ -28,6 +28,18 @@ const PRESENTATIONS = {
     support: 'Suporte da Secretaria',
     initials: 'SA',
   },
+  ADMISSOES: {
+    title: 'Admissões e Inscrições',
+    unit: 'IMETRO · Admissões',
+    support: 'Suporte de Admissões',
+    initials: 'AD',
+  },
+  MARKETING: {
+    title: 'Captação e Marketing',
+    unit: 'IMETRO · Captação',
+    support: 'Suporte de Captação',
+    initials: 'MK',
+  },
   DIRECAO: {
     title: 'Direção Institucional',
     unit: 'IMETRO · Direção',
