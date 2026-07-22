@@ -370,7 +370,7 @@ export default function OfficialAdmissionsPage() {
 
         <div className="space-y-3 p-4 lg:hidden">
           {filtered.map((item) => (
-            <button key={item.id} onClick={() => setSelected(item)} className="w-full rounded-2xl border border-slate-200 bg-white p-4 text-left dark:border-white/10 dark:bg-white/[.03]">
+            <article key={item.id} className="w-full rounded-2xl border border-slate-200 bg-white p-4 text-left dark:border-white/10 dark:bg-white/[.03]">
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
                   <p className="truncate text-[10px] font-extrabold uppercase tracking-[.08em] text-[#3157D5]">{item.applicationCode}</p>
@@ -385,7 +385,12 @@ export default function OfficialAdmissionsPage() {
                 <CompactInfo label="Financeiro" value={INVOICE_STATUS_LABELS[item.invoice?.status] || 'Não emitida'} />
                 <CompactInfo label="Valor" value={item.invoice ? money(item.invoice.amount, item.invoice.currency) : '-'} />
               </div>
-            </button>
+              <div className="mt-4 flex justify-end border-t border-slate-200 pt-3 dark:border-white/10">
+                <button type="button" onClick={() => setSelected(item)} className="inline-flex min-h-10 items-center justify-center rounded-xl border border-[#3157D5]/30 bg-[#3157D5]/10 px-4 py-2 text-xs font-extrabold text-[#79A2FF] transition hover:bg-[#3157D5]/20">
+                  Abrir detalhes
+                </button>
+              </div>
+            </article>
           ))}
         </div>
 
@@ -480,7 +485,19 @@ function Status({ status }) {
 }
 
 function Metric({ label, value, icon: Icon }) {
-  return <article className="premium-card p-4"><div className="flex items-center justify-between gap-3"><div className="min-w-0"><p className="text-xs font-extrabold uppercase tracking-[.1em] text-slate-400">{label}</p><p className="mt-2 break-words text-2xl font-extrabold text-imetro-navy dark:text-white">{value}</p></div><div className="shrink-0 rounded-2xl bg-[#3157D5]/10 p-3 text-[#3157D5]"><Icon size={21} /></div></div></article>;
+  return (
+    <article className="premium-card p-4">
+      <div className="flex items-center justify-between gap-3">
+        <div className="min-w-0">
+          <p className="text-xs font-extrabold uppercase tracking-[.1em] text-slate-400">{label}</p>
+          <p className="mt-2 break-words text-2xl font-extrabold text-imetro-navy dark:text-white">{value}</p>
+        </div>
+        <div className="shrink-0 rounded-xl bg-[#0A8BD9] p-2.5 text-white shadow-sm ring-1 ring-white/10">
+          <Icon size={20} strokeWidth={2.4} aria-hidden="true" />
+        </div>
+      </div>
+    </article>
+  );
 }
 
 function Info({ label, value }) {
