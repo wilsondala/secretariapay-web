@@ -17,6 +17,7 @@ import {
   Sparkles,
   Tags,
   UserCog,
+  UserPlus,
   Users,
   Workflow,
   X,
@@ -43,6 +44,7 @@ const groups = [
   {
     label: 'Gestão académica',
     items: [
+      ['Admissões e inscrições', '/admissions', UserPlus, 'Leads, fichas e pagamentos'],
       ['Pedidos de serviços', '/academic-service-orders', ClipboardList, 'Pagamento, emissão e entrega'],
       ['Documentos académicos', '/academic-documents', FileSignature, 'Declarações e assinatura'],
       ['Cursos e turmas', '/academic-catalog', BookOpen, 'Estrutura académica'],
