@@ -18,6 +18,7 @@ import AcademicServiceOrdersPage from './pages/AcademicServiceOrdersPage.jsx';
 import AcademicDocumentsPage from './pages/AcademicDocumentsPage.jsx';
 import AdmissionsPage from './pages/AdmissionsPage.jsx';
 import OfficialAdmissionsPage from './pages/OfficialAdmissionsPage.jsx';
+import EnrollmentsPage from './pages/EnrollmentsPage.jsx';
 import AdminUsersPage from './pages/AdminUsersPage.jsx';
 import SettingsPage from './pages/SettingsPage.jsx';
 import OperationsPage from './pages/OperationsOfficialPage.jsx';
@@ -46,6 +47,7 @@ export default function App() {
           <Route path="/receipts" element={secured('/receipts', <ReceiptsPage />)} />
           <Route path="/admissions" element={secured('/admissions', <OfficialAdmissionsPage />)} />
           <Route path="/admissions-pilot" element={secured('/admissions', <AdmissionsPage />)} />
+          <Route path="/enrollments" element={secured('/enrollments', <EnrollmentsPage />)} />
           <Route path="/academic-services" element={secured('/academic-services', <AcademicServicesPage />)} />
           <Route path="/academic-service-orders" element={secured('/academic-service-orders', <AcademicServiceOrdersPage />)} />
           <Route path="/academic-documents" element={secured('/academic-documents', <AcademicDocumentsPage />)} />
