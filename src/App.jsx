@@ -4,6 +4,7 @@ import RoleRoute from './shared/routes/RoleRoute.jsx';
 import AppLayout from './layouts/AppLayout.jsx';
 import PublicHomePage from './pages/PublicHomePage.jsx';
 import PublicGuidePage from './pages/PublicGuidePage.jsx';
+import PublicAdmissionsPage from './pages/PublicAdmissionsPage.jsx';
 import LoginPage from './pages/LoginPage.jsx';
 import DashboardPage from './pages/DashboardPage.jsx';
 import StudentsPage from './pages/StudentsSeparatedFinancePage.jsx';
@@ -34,6 +35,7 @@ export default function App() {
   return (
     <Routes>
       <Route path="/" element={<div className="public-home-scope"><PublicHomePage /></div>} />
+      <Route path="/inscricoes" element={<PublicAdmissionsPage />} />
       <Route path="/guias/:guideCode" element={<PublicGuidePage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/apresentacao" element={<PublicDemoCarouselPage />} />
