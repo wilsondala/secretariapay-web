@@ -1,0 +1,32 @@
+/* Ajustes responsivos do painel de matrículas e rematrículas. */
+
+/*
+ * O tema institucional converte qualquer utilitário contendo
+ * bg-[#3157D5] para azul sólido. Nos cartões mobile, o botão usa
+ * bg-[#3157D5]/10 e text-[#3157D5], fazendo fundo e texto receberem
+ * a mesma cor. Reaplicamos contraste explícito para manter o rótulo
+ * "Abrir detalhes" legível nos modos claro e escuro.
+ */
+.app-shell button[class*="bg-[#3157D5]/10"] {
+  background-color: #0077BE !important;
+  border-color: #1689C8 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 8px 20px rgba(0, 119, 190, .18);
+}
+
+.app-shell button[class*="bg-[#3157D5]/10"]:hover {
+  background-color: #005F99 !important;
+  border-color: #1689C8 !important;
+  color: #FFFFFF !important;
+}
+
+.app-shell button[class*="bg-[#3157D5]/10"]:focus-visible {
+  outline: 3px solid rgba(126, 160, 255, .45);
+  outline-offset: 2px;
+}
+
+@media (max-width: 639px) {
+  .app-shell button[class*="bg-[#3157D5]/10"] {
+    min-width: 8.5rem;
+  }
+}
