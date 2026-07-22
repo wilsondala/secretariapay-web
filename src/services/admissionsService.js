@@ -1,6 +1,12 @@
 import api from './api.js';
 
 const BASE_URL = '/api/v1/admissions';
+const PUBLIC_BASE_URL = '/api/v1/public/admissions';
+
+export async function getOfficialAdmissionsCatalog(institutionId) {
+  const { data } = await api.get(`${PUBLIC_BASE_URL}/catalog`, { params: { institutionId } });
+  return data;
+}
 
 export async function listAdmissionLeads({ institutionId, status = '' }) {
   const params = { institutionId };
@@ -47,6 +53,11 @@ export async function submitAdmissionApplication(applicationId) {
 
 export async function updateAdmissionApplicationStatus(applicationId, payload) {
   const { data } = await api.patch(`${BASE_URL}/applications/${applicationId}/status`, payload);
+  return data;
+}
+
+export async function reviewAdmissionDocuments(applicationId, payload) {
+  const { data } = await api.patch(`${BASE_URL}/applications/${applicationId}/documents`, payload);
   return data;
 }
 
