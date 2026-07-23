@@ -5,13 +5,12 @@ import {
   ArrowRight,
   CalendarDays,
   CheckCircle2,
-  ClipboardList,
   Clock3,
   GraduationCap,
   Loader2,
   MessageCircle,
   School,
-  ShieldCheck,
+  Search,
   WalletCards,
   XCircle,
 } from 'lucide-react';
@@ -53,15 +52,15 @@ function campaignState(catalog) {
   if (!catalog.publicFormEnabled) {
     return {
       tone: 'amber',
-      label: 'Formulário em validação',
-      description: 'A inscrição pública ainda não foi ativada pela instituição.',
+      label: 'Inscrições indisponíveis',
+      description: 'Aguarde a abertura oficial do formulário de candidatura.',
     };
   }
   if (catalog.registrationOpen) {
     return {
       tone: 'green',
       label: 'Inscrições abertas',
-      description: 'A campanha oficial está disponível para novos candidatos.',
+      description: 'Submeta a sua candidatura online dentro do período indicado.',
     };
   }
   const today = new Date();
@@ -76,7 +75,7 @@ function campaignState(catalog) {
   return {
     tone: 'slate',
     label: 'Período encerrado',
-    description: `A campanha terminou em ${formatDate(catalog.registrationEnd)}.`,
+    description: `As inscrições terminaram em ${formatDate(catalog.registrationEnd)}.`,
   };
 }
 
@@ -106,6 +105,7 @@ export default function PublicAdmissionsPage() {
   }
 
   useEffect(() => {
+    document.title = `Inscrições 2026/2027 — ${env.institutionShortName}`;
     load();
   }, []);
 
@@ -135,14 +135,17 @@ export default function PublicAdmissionsPage() {
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(17,148,221,.24),transparent_38%),radial-gradient(circle_at_bottom_left,rgba(244,180,0,.18),transparent_32%)]" />
         <div className="relative mx-auto max-w-7xl px-5 pb-16 pt-6 sm:px-7 lg:px-8 lg:pb-20">
           <nav className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <Link to="/" className="inline-flex items-center gap-3 text-white" aria-label="SecretariaPay Académico — página inicial">
+            <Link to="/" className="inline-flex items-center gap-3 text-white" aria-label={`${env.institutionShortName} — página inicial`}>
               <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#1194DD] font-black shadow-lg">SP</span>
               <span>
-                <strong className="block text-base font-black">SecretáriaPay Académico</strong>
-                <small className="text-xs font-semibold text-white/65">{env.institutionShortName} · Admissões 2026/2027</small>
+                <strong className="block text-base font-black">{env.institutionShortName}</strong>
+                <small className="block max-w-sm text-xs font-semibold text-white/65">{env.institutionName}</small>
               </span>
             </Link>
             <div className="flex flex-wrap items-center gap-2">
+              <Link to="/inscricoes/consultar" className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-4 py-2 text-sm font-extrabold text-white transition hover:bg-white/10">
+                <Search size={17} /> Consultar candidatura
+              </Link>
               <Link to="/" className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-4 py-2 text-sm font-extrabold text-white transition hover:bg-white/10">
                 <ArrowLeft size={17} /> Página inicial
               </Link>
@@ -165,13 +168,13 @@ export default function PublicAdmissionsPage() {
           <section className="mt-12 grid gap-8 lg:grid-cols-[1.15fr_.85fr] lg:items-end">
             <div>
               <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-xs font-extrabold uppercase tracking-[.13em] text-white/85">
-                <GraduationCap size={16} className="text-[#F4B400]" /> Campanha oficial IMETRO
+                <GraduationCap size={16} className="text-[#F4B400]" /> {env.institutionShortName} · Ano letivo
               </div>
               <h1 className="mt-5 max-w-4xl text-4xl font-black leading-tight tracking-[-.045em] sm:text-5xl lg:text-6xl">
                 Inscrições <span className="text-[#F4B400]">2026/2027</span>
               </h1>
               <p className="mt-5 max-w-3xl text-base font-medium leading-8 text-white/75 sm:text-lg">
-                Consulte os cursos e turnos da campanha oficial. O preenchimento da ficha e as etapas financeiras serão ativados progressivamente após validação institucional.
+                Escolha o curso, preencha a ficha e acompanhe a sua candidatura online.
               </p>
             </div>
 
@@ -194,25 +197,23 @@ export default function PublicAdmissionsPage() {
       <main className="mx-auto max-w-7xl space-y-8 px-5 py-8 sm:px-7 lg:px-8 lg:py-12">
         {error ? (
           <section className="flex flex-col items-start justify-between gap-4 rounded-3xl border border-red-200 bg-red-50 p-5 text-red-700 sm:flex-row sm:items-center">
-            <div className="flex items-start gap-3"><XCircle className="mt-0.5 shrink-0" size={20} /><div><p className="font-black">Falha ao carregar a campanha</p><p className="mt-1 text-sm font-semibold">{error}</p></div></div>
+            <div className="flex items-start gap-3"><XCircle className="mt-0.5 shrink-0" size={20} /><div><p className="font-black">Não foi possível carregar as inscrições</p><p className="mt-1 text-sm font-semibold">{error}</p></div></div>
             <button type="button" onClick={load} className="rounded-xl border border-red-200 bg-white px-4 py-2 text-sm font-extrabold">Tentar novamente</button>
           </section>
         ) : null}
 
         <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          <SummaryCard icon={CalendarDays} label="Ano académico" value={catalog?.academicYear || '-'} helper={catalog ? `${formatDate(catalog.registrationStart)} a ${formatDate(catalog.registrationEnd)}` : 'A carregar'} />
-          <SummaryCard icon={WalletCards} label="Taxa de inscrição" value={catalog ? money(catalog.registrationFee, catalog.currency) : '-'} helper="Valor configurado na campanha" />
-          <SummaryCard icon={School} label="Cursos disponíveis" value={loading ? '...' : String(courses.length)} helper="Catálogo oficial ativo" />
-          <SummaryCard icon={ShieldCheck} label="Validação" value="Institucional" helper="Ativação progressiva por etapas" />
+          <SummaryCard icon={CalendarDays} label="Ano académico" value={catalog?.academicYear || '-'} helper="Campanha oficial" />
+          <SummaryCard icon={Clock3} label="Período" value={catalog ? `${formatDate(catalog.registrationStart)} a ${formatDate(catalog.registrationEnd)}` : '-'} helper="Prazo das inscrições" />
+          <SummaryCard icon={WalletCards} label="Taxa de inscrição" value={catalog ? money(catalog.registrationFee, catalog.currency) : '-'} helper="Valor oficial" />
+          <SummaryCard icon={School} label="Cursos disponíveis" value={loading ? '...' : String(courses.length)} helper="Cursos ativos" />
         </section>
 
         <section className="rounded-[2rem] border border-slate-200 bg-white p-5 shadow-[0_20px_70px_rgba(7,26,53,.08)] sm:p-7">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <p className="text-xs font-extrabold uppercase tracking-[.13em] text-[#1194DD]">Catálogo da campanha</p>
-              <h2 className="mt-2 text-2xl font-black tracking-[-.03em] sm:text-3xl">Cursos e turnos disponíveis</h2>
-              <p className="mt-2 max-w-3xl text-sm font-medium leading-6 text-slate-500">As opções abaixo são carregadas diretamente do catálogo oficial configurado para 2026/2027.</p>
-            </div>
+          <div>
+            <p className="text-xs font-extrabold uppercase tracking-[.13em] text-[#1194DD]">Oferta formativa</p>
+            <h2 className="mt-2 text-2xl font-black tracking-[-.03em] sm:text-3xl">Cursos e turnos disponíveis</h2>
+            <p className="mt-2 text-sm font-medium leading-6 text-slate-500">Selecione o curso e o turno pretendido.</p>
           </div>
 
           {loading ? (
@@ -226,23 +227,26 @@ export default function PublicAdmissionsPage() {
           ) : null}
 
           {!loading && !error && courses.length === 0 ? (
-            <div className="mt-6 rounded-2xl border border-dashed border-slate-300 p-8 text-center text-sm font-semibold text-slate-500">Nenhum curso foi disponibilizado para esta campanha.</div>
+            <div className="mt-6 rounded-2xl border border-dashed border-slate-300 p-8 text-center text-sm font-semibold text-slate-500">Nenhum curso está disponível neste momento.</div>
           ) : null}
         </section>
 
         <section className="grid gap-5 rounded-[2rem] bg-[#071A35] p-6 text-white shadow-[0_28px_80px_rgba(7,26,53,.18)] lg:grid-cols-[1fr_auto] lg:items-center lg:p-8">
           <div>
-            <p className="text-xs font-extrabold uppercase tracking-[.13em] text-[#F4B400]">Próxima etapa do piloto</p>
-            <h2 className="mt-2 text-2xl font-black tracking-[-.03em] sm:text-3xl">Ficha pública de inscrição</h2>
-            <p className="mt-3 max-w-3xl text-sm font-medium leading-6 text-white/70">A ficha recolherá somente os dados necessários já suportados pelo processo oficial. Campos, documentos e regras ainda não aprovados continuarão identificados como provisórios.</p>
+            <p className="text-xs font-extrabold uppercase tracking-[.13em] text-[#F4B400]">Candidatura online</p>
+            <h2 className="mt-2 text-2xl font-black tracking-[-.03em] sm:text-3xl">Faça a sua inscrição</h2>
+            <p className="mt-3 max-w-3xl text-sm font-medium leading-6 text-white/70">Preencha a ficha com os seus dados e guarde o código recebido.</p>
           </div>
           <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">
             <button type="button" onClick={openForm} disabled={!canStart} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-[#F4B400] px-6 py-3 text-sm font-black text-[#071A35] shadow-lg transition enabled:hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-45">
-              {canStart ? 'Iniciar inscrição' : 'Aguardar abertura'} <ArrowRight size={18} />
+              {canStart ? 'Iniciar inscrição' : 'Inscrições indisponíveis'} <ArrowRight size={18} />
             </button>
+            <Link to="/inscricoes/consultar" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl border border-white/20 bg-white/10 px-5 py-2.5 text-xs font-extrabold text-white transition hover:bg-white/15">
+              <Search size={17} /> Consultar candidatura
+            </Link>
             {!canStart && localPreviewEnabled ? (
-              <button type="button" onClick={openForm} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl border border-white/20 bg-white/10 px-5 py-2.5 text-xs font-extrabold text-white transition hover:bg-white/15">
-                <ClipboardList size={17} /> Pré-visualizar ficha local
+              <button type="button" onClick={openForm} className="inline-flex min-h-11 items-center justify-center rounded-2xl border border-white/15 px-5 py-2.5 text-xs font-extrabold text-white/80">
+                Pré-visualizar localmente
               </button>
             ) : null}
           </div>
@@ -287,7 +291,6 @@ function CourseCard({ course }) {
         <span className="rounded-full bg-white px-3 py-1 text-[10px] font-extrabold uppercase tracking-wide text-slate-500 shadow-sm">{course.courseCode}</span>
       </div>
       <h3 className="mt-4 text-base font-black leading-6 text-[#071A35]">{course.courseName}</h3>
-      <p className="mt-1 text-xs font-semibold text-slate-400">Departamento {course.departmentCode || '-'}</p>
       <div className="mt-4 flex flex-wrap gap-2">
         {(course.shifts || []).map((shift) => (
           <span key={shift.code} className="rounded-full border border-[#1194DD]/20 bg-[#1194DD]/8 px-3 py-1.5 text-xs font-extrabold text-[#0874B4]">{shift.label}</span>
