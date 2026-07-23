@@ -30,3 +30,27 @@
   color: #047857 !important;
   opacity: 1 !important;
 }
+
+/* Mantém o estado do comprovativo legível mesmo com o dark mode administrativo ativo. */
+.public-admissions-scope #pagamento-inscricao-publico .border-blue-200.bg-blue-50.text-blue-900 {
+  color: #1e3a8a !important;
+  background-color: #eff6ff !important;
+  border-color: #93c5fd !important;
+  box-shadow: 0 8px 24px rgba(30, 64, 175, 0.08) !important;
+  opacity: 1 !important;
+}
+
+.public-admissions-scope #pagamento-inscricao-publico .border-blue-200.bg-blue-50.text-blue-900 p {
+  color: #1e3a8a !important;
+  background: transparent !important;
+  opacity: 1 !important;
+}
+
+.public-admissions-scope #pagamento-inscricao-publico .border-blue-200.bg-blue-50.text-blue-900 p:first-child {
+  color: #172554 !important;
+}
+
+.public-admissions-scope #pagamento-inscricao-publico .border-blue-200.bg-blue-50.text-blue-900 svg {
+  color: #2563eb !important;
+  opacity: 1 !important;
+}
