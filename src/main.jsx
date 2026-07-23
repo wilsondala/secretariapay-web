@@ -13,6 +13,7 @@ import './styles/institutional-theme-shell.css';
 import './styles/institutional-theme-components.css';
 import './styles/enrollments-mobile-fixes.css';
 import './styles/admission-leads-fixes.css';
+import './styles/public-admissions-fixes.css';
 import './styles/institutional-theme-dark.css';
 import './styles/public-home-theme.css';
 ReactDOM.createRoot(document.getElementById('root')).render(<React.StrictMode><BrowserRouter><AuthProvider><App/></AuthProvider></BrowserRouter></React.StrictMode>);
