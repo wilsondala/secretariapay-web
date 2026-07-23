@@ -4,8 +4,6 @@ import {
   FileSearch,
   Loader2,
   Search,
-  ShieldCheck,
-  X,
 } from 'lucide-react';
 import { getPublicAdmissionPaymentStatus } from '../../services/admissionsService.js';
 import PublicAdmissionPaymentPanel from './PublicAdmissionPaymentPanel.jsx';
@@ -19,7 +17,7 @@ function readError(error) {
 
 const inputClass = 'min-h-12 w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-[#071A35] outline-none transition placeholder:text-slate-400 focus:border-[#1194DD] focus:ring-4 focus:ring-[#1194DD]/10';
 
-export default function PublicAdmissionLookup({ onClose }) {
+export default function PublicAdmissionLookup() {
   const [applicationCode, setApplicationCode] = useState('');
   const [documentNumber, setDocumentNumber] = useState('');
   const [application, setApplication] = useState(null);
@@ -62,29 +60,14 @@ export default function PublicAdmissionLookup({ onClose }) {
 
   return (
     <section id="consulta-candidatura" className="rounded-[2rem] border border-slate-300 bg-white p-5 shadow-[0_24px_70px_rgba(7,26,53,.12)] sm:p-7 lg:p-8">
-      <div className="flex flex-col gap-5 border-b border-slate-200 pb-6 md:flex-row md:items-start md:justify-between">
-        <div className="flex items-start gap-4">
-          <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#071A35] text-[#F4B400]">
-            <FileSearch size={29} />
-          </span>
-          <div>
-            <p className="text-xs font-extrabold uppercase tracking-[.13em] text-[#1194DD]">Acompanhamento público</p>
-            <h2 className="mt-2 text-2xl font-black tracking-[-.03em] text-[#071A35] sm:text-3xl">Consultar candidatura</h2>
-            <p className="mt-2 max-w-3xl text-sm font-medium leading-6 text-slate-600">
-              Use o código recebido após a submissão e o mesmo número de documento informado na ficha.
-            </p>
-          </div>
+      <div className="flex items-start gap-4 border-b border-slate-200 pb-6">
+        <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#071A35] text-[#F4B400]">
+          <FileSearch size={29} />
+        </span>
+        <div>
+          <p className="text-xs font-extrabold uppercase tracking-[.13em] text-[#1194DD]">Consulta online</p>
+          <h2 className="mt-2 text-2xl font-black tracking-[-.03em] text-[#071A35] sm:text-3xl">Dados da candidatura</h2>
         </div>
-        <button type="button" onClick={onClose} className="inline-flex h-11 w-11 items-center justify-center self-end rounded-xl border border-slate-200 text-slate-500 transition hover:bg-slate-50 md:self-start" aria-label="Fechar consulta">
-          <X size={20} />
-        </button>
-      </div>
-
-      <div className="public-lookup-security-notice mt-6 flex items-start gap-3 rounded-2xl border p-4">
-        <ShieldCheck className="mt-0.5 shrink-0" size={20} />
-        <p className="text-sm font-semibold leading-6">
-          A consulta exige dois dados coincidentes. Quando o piloto financeiro estiver desativado, os dados bancários permanecem ocultos.
-        </p>
       </div>
 
       <form onSubmit={submit} className="mt-6 grid gap-4 md:grid-cols-[1fr_1fr_auto] md:items-end">
