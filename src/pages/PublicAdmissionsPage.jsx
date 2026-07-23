@@ -5,6 +5,7 @@ import {
   ArrowRight,
   CalendarDays,
   CheckCircle2,
+  ClipboardList,
   Clock3,
   GraduationCap,
   Loader2,
@@ -16,6 +17,7 @@ import {
 } from 'lucide-react';
 import { env } from '../config/env.js';
 import { getOfficialAdmissionsCatalog } from '../services/admissionsService.js';
+import PublicAdmissionForm from '../components/public/PublicAdmissionForm.jsx';
 
 const whatsappNumber = import.meta.env.VITE_SECRETARIA_WHATSAPP || '244930123456';
 const whatsappText = encodeURIComponent('Olá, IMETRO. Preciso de informações sobre as inscrições 2026/2027.');
@@ -88,6 +90,7 @@ export default function PublicAdmissionsPage() {
   const [catalog, setCatalog] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [showForm, setShowForm] = useState(false);
 
   async function load() {
     setLoading(true);
@@ -116,6 +119,14 @@ export default function PublicAdmissionsPage() {
 
   const state = campaignState(catalog);
   const canStart = Boolean(catalog?.registrationOpen && catalog?.publicFormEnabled);
+  const localPreviewEnabled = import.meta.env.DEV && Boolean(catalog);
+
+  function openForm() {
+    setShowForm(true);
+    window.setTimeout(() => {
+      document.getElementById('ficha-inscricao')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 50);
+  }
 
   return (
     <div className="min-h-screen bg-[#F4F7FB] text-[#071A35]">
@@ -123,7 +134,7 @@ export default function PublicAdmissionsPage() {
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(17,148,221,.24),transparent_38%),radial-gradient(circle_at_bottom_left,rgba(244,180,0,.18),transparent_32%)]" />
         <div className="relative mx-auto max-w-7xl px-5 pb-16 pt-6 sm:px-7 lg:px-8 lg:pb-20">
           <nav className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <Link to="/" className="inline-flex items-center gap-3 text-white">
+            <Link to="/" className="inline-flex items-center gap-3 text-white" aria-label="SecretariaPay Académico — página inicial">
               <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#1194DD] font-black shadow-lg">SP</span>
               <span>
                 <strong className="block text-base font-black">SecretáriaPay Académico</strong>
@@ -214,10 +225,26 @@ export default function PublicAdmissionsPage() {
             <h2 className="mt-2 text-2xl font-black tracking-[-.03em] sm:text-3xl">Ficha pública de inscrição</h2>
             <p className="mt-3 max-w-3xl text-sm font-medium leading-6 text-white/70">A ficha recolherá somente os dados necessários já suportados pelo processo oficial. Campos, documentos e regras ainda não aprovados continuarão identificados como provisórios.</p>
           </div>
-          <button type="button" disabled={!canStart} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-[#F4B400] px-6 py-3 text-sm font-black text-[#071A35] shadow-lg transition enabled:hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-45">
-            {canStart ? 'Iniciar inscrição' : 'Aguardar abertura'} <ArrowRight size={18} />
-          </button>
+          <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">
+            <button type="button" onClick={openForm} disabled={!canStart} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-[#F4B400] px-6 py-3 text-sm font-black text-[#071A35] shadow-lg transition enabled:hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-45">
+              {canStart ? 'Iniciar inscrição' : 'Aguardar abertura'} <ArrowRight size={18} />
+            </button>
+            {!canStart && localPreviewEnabled ? (
+              <button type="button" onClick={openForm} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl border border-white/20 bg-white/10 px-5 py-2.5 text-xs font-extrabold text-white transition hover:bg-white/15">
+                <ClipboardList size={17} /> Pré-visualizar ficha local
+              </button>
+            ) : null}
+          </div>
         </section>
+
+        {showForm && catalog ? (
+          <PublicAdmissionForm
+            catalog={catalog}
+            courses={courses}
+            canSubmit={canStart}
+            onClose={() => setShowForm(false)}
+          />
+        ) : null}
       </main>
 
       <footer className="border-t border-slate-200 bg-white">
