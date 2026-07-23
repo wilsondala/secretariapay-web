@@ -4,6 +4,7 @@ import {
   BadgeCheck,
   Banknote,
   BookOpen,
+  CheckCircle2,
   Clock3,
   FileCheck2,
   FileSearch,
@@ -15,7 +16,15 @@ import {
   X,
 } from 'lucide-react';
 import { env } from '../config/env.js';
-import { getEnrollmentDashboard, listEnrollments } from '../services/enrollmentService.js';
+import {
+  approveEnrollmentPaymentProof,
+  confirmEnrollmentPayment,
+  getEnrollmentDashboard,
+  listEnrollments,
+  rejectEnrollmentPaymentProof,
+} from '../services/enrollmentService.js';
+import useAuth from '../shared/auth/useAuth.js';
+import { can } from '../shared/auth/permissions.js';
 
 const REQUEST_TYPE_LABELS = {
   ENROLLMENT: 'Matrícula',
@@ -89,15 +98,21 @@ function shiftLabel(value) {
 }
 
 export default function EnrollmentsPage() {
+  const { user } = useAuth();
+  const canManagePayments = can(user, 'manageEnrollmentPayments');
+
   const [dashboard, setDashboard] = useState(null);
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [busy, setBusy] = useState('');
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [query, setQuery] = useState('');
   const [typeFilter, setTypeFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [paymentFilter, setPaymentFilter] = useState('');
   const [selected, setSelected] = useState(null);
+  const [reviewNote, setReviewNote] = useState('Pagamento da matrícula confirmado pela DCR.');
 
   async function load(selectedId = null) {
     setLoading(true);
@@ -136,6 +151,41 @@ export default function EnrollmentsPage() {
   const completedTotal = Number(dashboard?.completedEnrollments || 0) + Number(dashboard?.completedReenrollments || 0);
   const underReviewTotal = Number(dashboard?.enrollmentPaymentUnderReview || 0) + Number(dashboard?.reenrollmentPaymentUnderReview || 0);
 
+  async function runPaymentAction(name, action, message) {
+    setBusy(name);
+    setError('');
+    setSuccess('');
+    try {
+      const updated = await action();
+      setSelected(updated);
+      setSuccess(message);
+      await load(updated.id);
+    } catch (requestError) {
+      setError(readError(requestError, 'Não foi possível concluir a validação financeira.'));
+    } finally {
+      setBusy('');
+    }
+  }
+
+  function reviewerPayload(overrides = {}) {
+    return {
+      reviewedBy: user?.fullName || user?.name || user?.email || 'DCR',
+      reviewNote: reviewNote.trim() || 'Pagamento da matrícula confirmado pela DCR.',
+      paymentMethod: 'TRANSFERENCIA_BANCARIA',
+      paymentReference: selected?.invoice?.paymentReference || null,
+      provider: selected?.invoice?.provider || 'DCR_MANUAL',
+      externalTransactionId: null,
+      ...overrides,
+    };
+  }
+
+  const pendingProof = selected?.latestPaymentProof?.status === 'PENDING_REVIEW';
+  const canConfirmManually = Boolean(
+    selected?.invoice
+    && ['PENDING', 'UNDER_REVIEW'].includes(selected.invoice.status)
+    && (!selected.latestPaymentProof || selected.latestPaymentProof.status === 'REJECTED'),
+  );
+
   return (
     <div className="space-y-5">
       <section className="premium-hero">
@@ -147,14 +197,15 @@ export default function EnrollmentsPage() {
           </div>
           <div className="flex flex-wrap gap-2">
             <Link to="/admissions" className="btn-light">Ver inscrições</Link>
-            <button onClick={() => load(selected?.id)} disabled={loading} className="btn-light">
+            <button onClick={() => load(selected?.id)} disabled={loading || Boolean(busy)} className="btn-light">
               {loading ? <Loader2 className="animate-spin" size={17} /> : <RefreshCw size={17} />} Atualizar
             </button>
           </div>
         </div>
       </section>
 
-      {error ? <Notice>{error}</Notice> : null}
+      {error ? <Notice tone="red">{error}</Notice> : null}
+      {success ? <Notice tone="green">{success}</Notice> : null}
 
       <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
         <Metric label="Matrículas" value={dashboard?.totalEnrollments || 0} helper="Pedidos registados" icon={Users} />
@@ -310,6 +361,70 @@ export default function EnrollmentsPage() {
               <Info label="Analisado em" value={formatDateTime(selected.latestPaymentProof?.reviewedAt)} />
             </div>
           </div>
+
+          {pendingProof && canManagePayments ? (
+            <div className="premium-card mt-5 p-4">
+              <h3 className="font-extrabold text-imetro-navy dark:text-white">Validação do comprovativo pela DCR</h3>
+              {selected.latestPaymentProof?.fileUrl ? (
+                <a href={selected.latestPaymentProof.fileUrl} target="_blank" rel="noreferrer" className="mt-3 inline-flex items-center gap-2 text-sm font-extrabold text-[#3157D5] dark:text-[#79A2FF]">
+                  <FileSearch size={17} /> Abrir comprovativo
+                </a>
+              ) : null}
+              <Field label="Observação da análise">
+                <textarea rows={3} className="input-premium" value={reviewNote} onChange={(event) => setReviewNote(event.target.value)} />
+              </Field>
+              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                <button
+                  type="button"
+                  className="btn-secondary text-red-600"
+                  disabled={Boolean(busy)}
+                  onClick={() => runPaymentAction(
+                    'reject',
+                    () => rejectEnrollmentPaymentProof(selected.latestPaymentProof.id, reviewerPayload({ reviewNote: reviewNote.trim() || 'Comprovativo da matrícula rejeitado pela DCR.' })),
+                    'Comprovativo da matrícula rejeitado.',
+                  )}
+                >
+                  {busy === 'reject' ? <Loader2 className="animate-spin" size={17} /> : null} Rejeitar
+                </button>
+                <button
+                  type="button"
+                  className="btn-primary bg-emerald-600 hover:bg-emerald-700"
+                  disabled={Boolean(busy)}
+                  onClick={() => runPaymentAction(
+                    'approve',
+                    () => approveEnrollmentPaymentProof(selected.latestPaymentProof.id, reviewerPayload()),
+                    'Pagamento da matrícula aprovado. O estudante e o número de matrícula foram criados.',
+                  )}
+                >
+                  {busy === 'approve' ? <Loader2 className="animate-spin" size={17} /> : <CheckCircle2 size={17} />} Aprovar pagamento
+                </button>
+              </div>
+            </div>
+          ) : null}
+
+          {canConfirmManually && canManagePayments ? (
+            <div className="premium-card mt-5 p-4">
+              <h3 className="font-extrabold text-imetro-navy dark:text-white">Confirmação manual da DCR</h3>
+              <p className="mt-2 text-xs font-semibold leading-5 text-slate-500 dark:text-slate-400">
+                Utilize esta opção somente após confirmar o crédito por referência, conciliação bancária ou comprovativo recebido fora do portal.
+              </p>
+              <Field label="Observação da confirmação">
+                <textarea rows={3} className="input-premium" value={reviewNote} onChange={(event) => setReviewNote(event.target.value)} />
+              </Field>
+              <button
+                type="button"
+                className="btn-primary mt-4 w-full bg-emerald-600 hover:bg-emerald-700"
+                disabled={Boolean(busy)}
+                onClick={() => runPaymentAction(
+                  'confirm',
+                  () => confirmEnrollmentPayment(selected.invoice.id, reviewerPayload({ paymentMethod: 'REFERENCIA_OU_CONCILIACAO' })),
+                  'Pagamento da matrícula confirmado manualmente. O estudante e o número de matrícula foram criados.',
+                )}
+              >
+                {busy === 'confirm' ? <Loader2 className="animate-spin" size={17} /> : <CheckCircle2 size={17} />} Confirmar pagamento manualmente
+              </button>
+            </div>
+          ) : null}
         </Drawer>
       ) : null}
     </div>
@@ -362,8 +477,15 @@ function CompactInfo({ label, value }) {
   return <div className="rounded-xl bg-slate-50 p-2.5 dark:bg-white/[.04]"><p className="text-[9px] font-extrabold uppercase tracking-[.1em] text-slate-400">{label}</p><p className="mt-1 truncate text-xs font-extrabold text-slate-700 dark:text-slate-200">{value ?? '-'}</p></div>;
 }
 
-function Notice({ children }) {
-  return <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm font-bold text-red-700 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-200">{children}</div>;
+function Field({ label, children }) {
+  return <label className="mt-4 block"><span className="mb-1.5 block text-xs font-extrabold text-slate-600 dark:text-slate-300">{label}</span>{children}</label>;
+}
+
+function Notice({ tone, children }) {
+  const style = tone === 'green'
+    ? 'border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-200'
+    : 'border-red-200 bg-red-50 text-red-700 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-200';
+  return <div className={`rounded-2xl border p-4 text-sm font-bold ${style}`}>{children}</div>;
 }
 
 function Drawer({ title, subtitle, onClose, children }) {
