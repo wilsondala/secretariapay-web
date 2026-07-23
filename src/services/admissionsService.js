@@ -97,6 +97,19 @@ export async function getAdmissionApplication(applicationId) {
   return data;
 }
 
+export async function getAdmissionEnrollmentDocuments(applicationId) {
+  const { data } = await api.get(`${BASE_URL}/applications/${applicationId}/enrollment-documents`);
+  return data;
+}
+
+export async function reviewAdmissionEnrollmentDocuments(applicationId, payload) {
+  const { data } = await api.put(
+    `${BASE_URL}/applications/${applicationId}/enrollment-documents`,
+    payload,
+  );
+  return data;
+}
+
 export async function submitAdmissionApplication(applicationId) {
   const { data } = await api.post(`${BASE_URL}/applications/${applicationId}/submit`);
   return data;
