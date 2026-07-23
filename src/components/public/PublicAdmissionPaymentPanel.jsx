@@ -1,22 +1,27 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   AlertCircle,
   Banknote,
   CheckCircle2,
   Clock3,
   Copy,
+  FileCheck2,
   FileDown,
   FileUp,
   Loader2,
   RefreshCw,
   ShieldCheck,
+  X,
 } from 'lucide-react';
 import {
   downloadPublicAdmissionPaymentGuide,
   getPublicAdmissionPaymentStatus,
   issuePublicAdmissionPayment,
-  submitPublicAdmissionPaymentProof,
+  uploadPublicAdmissionPaymentProof,
 } from '../../services/admissionsService.js';
+
+const MAX_PROOF_SIZE = 5 * 1024 * 1024;
+const ALLOWED_PROOF_TYPES = new Set(['application/pdf', 'image/jpeg', 'image/png']);
 
 function readError(error) {
   return error?.response?.data?.message
@@ -40,6 +45,12 @@ function formatDate(value) {
     month: '2-digit',
     year: 'numeric',
   }).format(new Date(`${value}T00:00:00`));
+}
+
+function formatFileSize(value) {
+  if (!value) return '0 KB';
+  if (value < 1024 * 1024) return `${Math.ceil(value / 1024)} KB`;
+  return `${(value / (1024 * 1024)).toFixed(2)} MB`;
 }
 
 function statusLabel(value) {
@@ -66,13 +77,14 @@ function guideIssuedStorageKey(invoiceCode) {
 }
 
 export default function PublicAdmissionPaymentPanel({ application, documentNumber }) {
+  const proofInputRef = useRef(null);
   const [payment, setPayment] = useState(null);
   const [loading, setLoading] = useState(true);
   const [working, setWorking] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
-  const [proofUrl, setProofUrl] = useState('');
+  const [proofFile, setProofFile] = useState(null);
   const [guideIssued, setGuideIssued] = useState(false);
 
   const applicationCode = application?.applicationCode;
@@ -146,24 +158,52 @@ export default function PublicAdmissionPaymentPanel({ application, documentNumbe
     }
   }
 
-  async function submitProof() {
-    if (!proofUrl.trim()) {
-      setError('Informe a ligação do comprovativo para o teste de homologação.');
+  function clearProofFile() {
+    setProofFile(null);
+    if (proofInputRef.current) proofInputRef.current.value = '';
+  }
+
+  function selectProof(event) {
+    const selected = event.target.files?.[0] || null;
+    setError('');
+    setMessage('');
+
+    if (!selected) {
+      clearProofFile();
       return;
     }
+    if (!ALLOWED_PROOF_TYPES.has(selected.type)) {
+      clearProofFile();
+      setError('Formato inválido. Selecione um comprovativo em PDF, JPG ou PNG.');
+      return;
+    }
+    if (selected.size > MAX_PROOF_SIZE) {
+      clearProofFile();
+      setError('O comprovativo não pode ultrapassar 5 MB.');
+      return;
+    }
+
+    setProofFile(selected);
+  }
+
+  async function submitProof() {
+    if (!proofFile) {
+      setError('Selecione o ficheiro do comprovativo antes de enviar.');
+      return;
+    }
+
     setWorking(true);
     setError('');
     setMessage('');
     try {
-      const response = await submitPublicAdmissionPaymentProof(applicationCode, {
+      const response = await uploadPublicAdmissionPaymentProof(
+        applicationCode,
         documentNumber,
-        fileUrl: proofUrl.trim(),
-        fileName: 'comprovativo-inscricao-homologacao.pdf',
-        mimeType: 'application/pdf',
-      });
+        proofFile,
+      );
       setPayment(response);
-      setProofUrl('');
-      setMessage('Comprovativo enviado para validação da DCR.');
+      clearProofFile();
+      setMessage('Comprovativo enviado com sucesso para validação da DCR.');
     } catch (requestError) {
       setError(readError(requestError));
     } finally {
@@ -367,28 +407,61 @@ export default function PublicAdmissionPaymentPanel({ application, documentNumbe
             <div>
               <p className="text-sm font-black text-[#071A35]">Enviar comprovativo depois do pagamento</p>
               <p className="mt-1 text-sm font-semibold leading-6 text-slate-500">
-                O comprovativo deve ser enviado até {formatDate(invoice.dueDate)}. Nesta fase de homologação, o envio técnico utiliza uma ligação de ficheiro.
+                Selecione um ficheiro PDF, JPG ou PNG de até 5 MB e envie-o até {formatDate(invoice.dueDate)}.
               </p>
             </div>
           </div>
-          {import.meta.env.DEV ? (
-            <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+
+          <div className="mt-5 grid gap-3 sm:grid-cols-[1fr_auto]">
+            <div>
               <input
-                value={proofUrl}
-                onChange={(event) => setProofUrl(event.target.value)}
-                className="min-h-12 flex-1 rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-[#071A35] outline-none focus:border-[#1194DD] focus:ring-4 focus:ring-[#1194DD]/10"
-                placeholder="https://.../comprovativo.pdf"
+                ref={proofInputRef}
+                id={`proof-file-${invoice.id}`}
+                type="file"
+                accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png"
+                onChange={selectProof}
+                className="sr-only"
               />
-              <button type="button" onClick={submitProof} disabled={working} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-[#1194DD] px-5 py-3 text-sm font-black text-white shadow-lg disabled:opacity-50">
-                {working ? <Loader2 className="animate-spin" size={18} /> : <FileUp size={18} />}
-                Enviar para DCR
-              </button>
+
+              {proofFile ? (
+                <div className="flex min-h-14 items-center justify-between gap-3 rounded-2xl border border-emerald-300 bg-emerald-50 px-4 py-3">
+                  <div className="flex min-w-0 items-center gap-3">
+                    <FileCheck2 className="shrink-0 text-emerald-700" size={21} />
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-black text-[#071A35]">{proofFile.name}</p>
+                      <p className="mt-0.5 text-xs font-bold text-slate-500">{formatFileSize(proofFile.size)}</p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={clearProofFile}
+                    disabled={working}
+                    className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-slate-500 hover:bg-white hover:text-red-600 disabled:opacity-50"
+                    aria-label="Remover comprovativo selecionado"
+                  >
+                    <X size={17} />
+                  </button>
+                </div>
+              ) : (
+                <label
+                  htmlFor={`proof-file-${invoice.id}`}
+                  className="flex min-h-14 cursor-pointer items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-sky-300 bg-sky-50 px-4 py-3 text-sm font-black text-[#075C9F] transition hover:border-[#1194DD] hover:bg-sky-100"
+                >
+                  <FileUp size={19} /> Selecionar comprovativo
+                </label>
+              )}
             </div>
-          ) : (
-            <p className="mt-4 rounded-2xl bg-slate-100 p-4 text-sm font-bold text-slate-600">
-              Envie o comprovativo pelo WhatsApp oficial {instructions.supportWhatsapp} e informe o código {invoice.invoiceCode}.
-            </p>
-          )}
+
+            <button
+              type="button"
+              onClick={submitProof}
+              disabled={working || !proofFile}
+              className="inline-flex min-h-14 items-center justify-center gap-2 rounded-2xl bg-[#1194DD] px-6 py-3 text-sm font-black text-white shadow-lg disabled:cursor-not-allowed disabled:opacity-45"
+            >
+              {working ? <Loader2 className="animate-spin" size={18} /> : <FileUp size={18} />}
+              {working ? 'A enviar...' : 'Enviar para DCR'}
+            </button>
+          </div>
         </div>
       ) : null}
     </section>
