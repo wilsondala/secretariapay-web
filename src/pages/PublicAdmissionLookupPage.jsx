@@ -3,7 +3,8 @@ import { ArrowLeft, MessageCircle } from 'lucide-react';
 import PublicAdmissionLookup from '../components/public/PublicAdmissionLookup.jsx';
 import { env } from '../config/env.js';
 
-const whatsappNumber = import.meta.env.VITE_SECRETARIA_WHATSAPP || '244930123456';
+const whatsappNumber = import.meta.env.VITE_SECRETARIA_WHATSAPP || '244991640259';
+const whatsappDisplay = '+244 991 640 259';
 const whatsappText = encodeURIComponent('Olá, IMETRO. Preciso de apoio para consultar a minha candidatura 2026/2027.');
 const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${whatsappText}`;
 
@@ -25,8 +26,18 @@ export default function PublicAdmissionLookupPage() {
               <Link to="/inscricoes" className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-4 py-2 text-sm font-extrabold text-white transition hover:bg-white/10">
                 <ArrowLeft size={17} /> Voltar às inscrições
               </Link>
-              <a href={whatsappUrl} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-emerald-500 px-4 py-2 text-sm font-extrabold text-white shadow-lg transition hover:bg-emerald-600">
-                <MessageCircle size={18} /> Falar com Admissões
+              <a
+                href={whatsappUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="public-whatsapp-cta inline-flex min-h-12 items-center gap-3 rounded-xl bg-emerald-500 px-4 py-2 text-white shadow-lg transition hover:bg-emerald-600"
+                aria-label={`Falar com Admissões pelo WhatsApp ${whatsappDisplay}`}
+              >
+                <MessageCircle size={20} />
+                <span className="text-left leading-tight">
+                  <strong className="block text-sm font-extrabold">WhatsApp oficial</strong>
+                  <small className="block text-[11px] font-bold text-white/85">{whatsappDisplay}</small>
+                </span>
               </a>
             </div>
           </nav>
