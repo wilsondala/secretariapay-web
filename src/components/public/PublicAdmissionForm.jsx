@@ -7,9 +7,7 @@ import {
   Copy,
   FileCheck2,
   Loader2,
-  PartyPopper,
   Send,
-  ShieldCheck,
   X,
 } from 'lucide-react';
 import { createPublicAdmissionApplication } from '../../services/admissionsService.js';
@@ -30,21 +28,6 @@ const INITIAL_FORM = {
   desiredShift: '',
   termsAccepted: false,
 };
-
-const CONFETTI = [
-  ['8%', '-.1s', '3.4s', '-18deg', '#F4B400'],
-  ['15%', '.35s', '3.1s', '22deg', '#1194DD'],
-  ['23%', '.05s', '3.7s', '46deg', '#10B981'],
-  ['31%', '.55s', '3.3s', '-34deg', '#F97316'],
-  ['39%', '.2s', '3.8s', '65deg', '#F4B400'],
-  ['48%', '.75s', '3.2s', '-50deg', '#1194DD'],
-  ['57%', '.15s', '3.6s', '30deg', '#10B981'],
-  ['66%', '.5s', '3.4s', '-12deg', '#F97316'],
-  ['74%', '.05s', '3.9s', '52deg', '#F4B400'],
-  ['82%', '.65s', '3.1s', '-42deg', '#1194DD'],
-  ['90%', '.25s', '3.5s', '18deg', '#10B981'],
-  ['96%', '.8s', '3.2s', '-28deg', '#F97316'],
-];
 
 function readError(error) {
   return error?.response?.data?.message
@@ -116,7 +99,7 @@ export default function PublicAdmissionForm({ catalog, courses, canSubmit, onClo
     setError('');
 
     if (!canSubmit) {
-      setError('A candidatura pública só poderá ser enviada durante o período oficial de inscrições.');
+      setError('A candidatura pública só pode ser enviada durante o período oficial de inscrições.');
       return;
     }
     if (!form.termsAccepted) {
@@ -175,110 +158,66 @@ export default function PublicAdmissionForm({ catalog, courses, canSubmit, onClo
     return (
       <section
         id="ficha-inscricao"
-        className="admission-success-shell relative overflow-hidden rounded-[2rem] border border-emerald-200 bg-white p-5 shadow-[0_24px_70px_rgba(7,26,53,.14)] sm:p-8"
+        className="admission-success-shell rounded-[2rem] border border-emerald-200 bg-white p-5 shadow-[0_24px_70px_rgba(7,26,53,.14)] sm:p-8"
       >
-        <div className="admission-success-glow" aria-hidden="true" />
-        <div className="admission-confetti" aria-hidden="true">
-          {CONFETTI.map(([left, delay, duration, rotation, color], index) => (
-            <span
-              key={`${left}-${index}`}
-              style={{
-                '--confetti-left': left,
-                '--confetti-delay': delay,
-                '--confetti-duration': duration,
-                '--confetti-rotation': rotation,
-                '--confetti-color': color,
-              }}
-            />
-          ))}
+        <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
+          <div className="flex flex-col items-center gap-5 text-center sm:flex-row sm:items-start sm:text-left">
+            <span className="admission-success-check flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white shadow-[0_12px_35px_rgba(5,150,105,.35)]">
+              <CheckCircle2 size={38} strokeWidth={2.5} />
+            </span>
+            <div>
+              <p className="text-xs font-extrabold uppercase tracking-[.15em] text-emerald-700">Candidatura recebida</p>
+              <h2 className="mt-2 text-3xl font-black tracking-[-.04em] text-[#071A35] sm:text-4xl">Parabéns, {candidateFirstName}!</h2>
+              <p className="mt-3 max-w-2xl text-sm font-semibold leading-6 text-slate-600">
+                Guarde o código abaixo para consultar a candidatura e acompanhar o pagamento.
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="inline-flex h-11 w-11 items-center justify-center self-end rounded-xl border border-slate-200 bg-white text-slate-500 shadow-sm transition hover:bg-slate-50 md:self-start"
+            aria-label="Fechar ficha"
+          >
+            <X size={20} />
+          </button>
         </div>
 
-        <div className="relative z-10">
-          <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
-            <div className="flex flex-col items-center gap-5 text-center sm:flex-row sm:items-start sm:text-left">
-              <div className="admission-success-icon-wrap relative flex h-20 w-20 shrink-0 items-center justify-center">
-                <span className="admission-success-ring admission-success-ring-one" aria-hidden="true" />
-                <span className="admission-success-ring admission-success-ring-two" aria-hidden="true" />
-                <span className="admission-success-check flex h-16 w-16 items-center justify-center rounded-full bg-emerald-600 text-white shadow-[0_12px_35px_rgba(5,150,105,.35)]">
-                  <CheckCircle2 size={38} strokeWidth={2.5} />
-                </span>
-              </div>
-              <div>
-                <p className="text-xs font-extrabold uppercase tracking-[.15em] text-emerald-700">Candidatura recebida</p>
-                <h2 className="mt-2 text-3xl font-black tracking-[-.04em] text-[#071A35] sm:text-4xl">
-                  Parabéns, {candidateFirstName}!
-                </h2>
-                <p className="mt-3 max-w-2xl text-base font-extrabold leading-7 text-emerald-700">
-                  A sua inscrição foi realizada com sucesso.
-                </p>
-                <p className="mt-2 max-w-2xl text-sm font-semibold leading-6 text-slate-600">
-                  Guarde o código da candidatura. Ele será necessário para consultar o processo, emitir a guia e acompanhar a validação do pagamento.
-                </p>
-              </div>
-            </div>
+        <div className="admission-success-summary mt-7 grid gap-4 rounded-3xl bg-[#071A35] p-5 text-white sm:grid-cols-2 lg:grid-cols-4">
+          <Result label="Código" value={application.applicationCode} />
+          <Result label="Estado" value={application.status || 'SUBMITTED'} />
+          <Result label="Curso" value={application.desiredCourseName} />
+          <Result label="Turno" value={application.desiredShift} />
+        </div>
+
+        <div className="mt-6 flex flex-col gap-4 rounded-3xl border border-amber-200 bg-amber-50 p-5 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-sm font-black text-[#071A35]">Guia de pagamento da inscrição</p>
+            <p className="mt-1 text-sm font-semibold leading-6 text-slate-600">Emita a guia, efetue o pagamento e envie o comprovativo.</p>
+          </div>
+          <div className="flex flex-col gap-3 sm:flex-row">
             <button
               type="button"
-              onClick={onClose}
-              className="inline-flex h-11 w-11 items-center justify-center self-end rounded-xl border border-slate-200 bg-white/90 text-slate-500 shadow-sm transition hover:bg-slate-50 md:self-start"
-              aria-label="Fechar ficha"
+              onClick={copyApplicationCode}
+              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl border border-slate-300 bg-white px-5 py-3 text-sm font-black text-[#071A35] shadow-sm"
             >
-              <X size={20} />
+              {codeCopied ? <CheckCircle2 size={18} className="text-emerald-600" /> : <Copy size={18} />}
+              {codeCopied ? 'Código copiado' : 'Copiar código'}
+            </button>
+            <button
+              type="button"
+              onClick={goToPayment}
+              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-[#071A35] px-5 py-3 text-sm font-black text-white shadow-lg"
+            >
+              Emitir guia <ArrowDown size={18} />
             </button>
           </div>
-
-          <div className="admission-success-summary mt-7 grid gap-4 rounded-3xl bg-[#071A35] p-5 text-white sm:grid-cols-2 lg:grid-cols-4">
-            <Result label="Código" value={application.applicationCode} />
-            <Result label="Estado" value={application.status || 'SUBMITTED'} />
-            <Result label="Curso" value={application.desiredCourseName} />
-            <Result label="Turno" value={application.desiredShift} />
-          </div>
-
-          <div className="admission-next-step mt-6 rounded-3xl border border-amber-200 bg-gradient-to-br from-amber-50 via-white to-sky-50 p-5 sm:p-6">
-            <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
-              <div className="flex items-start gap-4">
-                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#F4B400] text-[#071A35] shadow-md">
-                  <PartyPopper size={25} />
-                </span>
-                <div>
-                  <p className="text-xs font-black uppercase tracking-[.14em] text-[#B77900]">Próximo passo</p>
-                  <h3 className="mt-1 text-xl font-black text-[#071A35] sm:text-2xl">Emita a sua guia de pagamento</h3>
-                  <p className="mt-2 max-w-2xl text-sm font-semibold leading-6 text-slate-600">
-                    Prepare a cobrança, descarregue a guia, efetue o pagamento dentro do prazo e envie o comprovativo para validação da DCR.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-3 sm:flex-row lg:shrink-0">
-                <button
-                  type="button"
-                  onClick={copyApplicationCode}
-                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl border border-slate-300 bg-white px-5 py-3 text-sm font-black text-[#071A35] shadow-sm transition hover:-translate-y-0.5 hover:border-[#1194DD]"
-                >
-                  {codeCopied ? <CheckCircle2 size={18} className="text-emerald-600" /> : <Copy size={18} />}
-                  {codeCopied ? 'Código copiado' : 'Copiar código'}
-                </button>
-                <button
-                  type="button"
-                  onClick={goToPayment}
-                  className="admission-next-step-button inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-[#071A35] px-5 py-3 text-sm font-black text-white shadow-lg transition hover:-translate-y-0.5"
-                >
-                  Continuar para a guia <ArrowDown size={18} />
-                </button>
-              </div>
-            </div>
-
-            <div className="mt-6 grid gap-3 md:grid-cols-3">
-              <NextStep number="1" title="Guarde o código" description="Use-o para voltar à consulta da candidatura." />
-              <NextStep number="2" title="Emita e pague a guia" description="Confirme os dados e respeite a data de vencimento." active />
-              <NextStep number="3" title="Envie o comprovativo" description="A DCR validará o pagamento e atualizará o estado." />
-            </div>
-          </div>
-
-          <PublicAdmissionPaymentPanel
-            application={application}
-            documentNumber={form.documentNumber.trim()}
-          />
         </div>
+
+        <PublicAdmissionPaymentPanel
+          application={application}
+          documentNumber={form.documentNumber.trim()}
+        />
       </section>
     );
   }
@@ -293,9 +232,7 @@ export default function PublicAdmissionForm({ catalog, courses, canSubmit, onClo
           <div>
             <p className="text-xs font-extrabold uppercase tracking-[.13em] text-[#1194DD]">Ficha oficial de candidatura</p>
             <h2 className="mt-2 text-2xl font-black tracking-[-.03em] text-[#071A35] sm:text-3xl">Inscrição {catalog.academicYear}</h2>
-            <p className="mt-2 max-w-3xl text-sm font-medium leading-6 text-slate-600">
-              Preencha somente os dados solicitados. Os campos não marcados como obrigatórios podem ser completados posteriormente pela equipa de admissões.
-            </p>
+            <p className="mt-2 text-sm font-medium leading-6 text-slate-600">Preencha os dados abaixo para submeter a candidatura.</p>
           </div>
         </div>
         <button type="button" onClick={onClose} className="inline-flex h-11 w-11 items-center justify-center self-end rounded-xl border border-slate-200 text-slate-500 transition hover:bg-slate-50 md:self-start" aria-label="Fechar ficha">
@@ -304,31 +241,14 @@ export default function PublicAdmissionForm({ catalog, courses, canSubmit, onClo
       </div>
 
       {import.meta.env.DEV ? (
-        <div className="mt-6 flex flex-col gap-4 rounded-2xl border border-sky-200 bg-sky-50 p-4 text-sky-900 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-start gap-3">
-            <FileCheck2 className="mt-0.5 shrink-0" size={20} />
-            <div>
-              <p className="text-sm font-black">Preenchimento rápido para homologação local</p>
-              <p className="mt-1 text-sm font-semibold leading-6">Gera dados fictícios e um documento único. O formulário não é enviado automaticamente.</p>
-            </div>
-          </div>
+        <div className="mt-6 flex justify-end">
           <button
             type="button"
             onClick={fillTestForm}
-            className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-xl bg-[#071A35] px-4 py-2 text-sm font-black text-white shadow-md transition hover:-translate-y-0.5"
+            className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-sky-200 bg-sky-50 px-4 py-2 text-xs font-black text-sky-800"
           >
-            <FileCheck2 size={17} /> Preencher dados de teste
+            <FileCheck2 size={16} /> Preencher dados de teste
           </button>
-        </div>
-      ) : null}
-
-      {!canSubmit ? (
-        <div className="mt-6 flex items-start gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-amber-800">
-          <ShieldCheck className="mt-0.5 shrink-0" size={20} />
-          <div>
-            <p className="text-sm font-black">Pré-visualização local</p>
-            <p className="mt-1 text-sm font-semibold leading-6">O formulário pode ser revisto, mas o envio permanece bloqueado até a abertura oficial da campanha.</p>
-          </div>
         </div>
       ) : null}
 
@@ -411,7 +331,7 @@ export default function PublicAdmissionForm({ catalog, courses, canSubmit, onClo
         </label>
 
         <div className="flex flex-col-reverse gap-3 border-t border-slate-200 pt-6 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-xs font-semibold leading-5 text-slate-500">Campos com * são obrigatórios. Nenhum pagamento é solicitado nesta ficha.</p>
+          <p className="text-xs font-semibold leading-5 text-slate-500">Campos com * são obrigatórios.</p>
           <button type="submit" disabled={!canSubmit || submitting} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-[#F4B400] px-6 py-3 text-sm font-black text-[#071A35] shadow-lg transition enabled:hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-45">
             {submitting ? <Loader2 className="animate-spin" size={19} /> : <Send size={19} />}
             {submitting ? 'A enviar...' : canSubmit ? 'Submeter candidatura' : 'Envio indisponível'}
@@ -445,22 +365,6 @@ function Result({ label, value }) {
     <div>
       <p className="text-[10px] font-extrabold uppercase tracking-[.12em] text-white/50">{label}</p>
       <p className="mt-1 break-words text-sm font-black text-white">{value || '-'}</p>
-    </div>
-  );
-}
-
-function NextStep({ number, title, description, active = false }) {
-  return (
-    <div className={`admission-next-step-item rounded-2xl border p-4 ${active ? 'border-[#F4B400] bg-white shadow-md' : 'border-slate-200 bg-white/70'}`}>
-      <div className="flex items-start gap-3">
-        <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-black ${active ? 'bg-[#F4B400] text-[#071A35]' : 'bg-[#071A35] text-white'}`}>
-          {number}
-        </span>
-        <div>
-          <p className="text-sm font-black text-[#071A35]">{title}</p>
-          <p className="mt-1 text-xs font-semibold leading-5 text-slate-600">{description}</p>
-        </div>
-      </div>
     </div>
   );
 }
