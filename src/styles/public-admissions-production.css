@@ -3,17 +3,6 @@
   display: none !important;
 }
 
-.public-admissions-scope #pagamento-inscricao-publico .public-payment-heading > div > div > p:first-child {
-  font-size: 0 !important;
-}
-
-.public-admissions-scope #pagamento-inscricao-publico .public-payment-heading > div > div > p:first-child::after {
-  content: 'Pagamento da inscrição';
-  font-size: 0.75rem;
-  line-height: 1rem;
-  letter-spacing: 0.12em;
-}
-
 .public-admissions-scope #pagamento-inscricao-publico,
 .public-admissions-scope #consulta-candidatura,
 .public-admissions-scope #ficha-inscricao {
