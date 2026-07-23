@@ -97,6 +97,93 @@
   color: #64748b !important;
 }
 
+/* Ficha pública: isolamento total do tema escuro administrativo. */
+.public-admissions-scope #ficha-inscricao {
+  color-scheme: light;
+  background: linear-gradient(145deg, #ffffff 0%, #eef4fa 100%) !important;
+  border-color: #b9c9da !important;
+  color: #071a35 !important;
+  box-shadow: 0 28px 70px rgba(7, 26, 53, 0.16) !important;
+}
+
+.public-admissions-scope #ficha-inscricao > div:first-child {
+  border-color: #d5dfeb !important;
+}
+
+.public-admissions-scope #ficha-inscricao h2,
+.public-admissions-scope #ficha-inscricao legend,
+.public-admissions-scope #ficha-inscricao form,
+.public-admissions-scope #ficha-inscricao fieldset,
+.public-admissions-scope #ficha-inscricao label,
+.public-admissions-scope #ficha-inscricao label > span {
+  color: #071a35 !important;
+}
+
+.public-admissions-scope #ficha-inscricao > div:first-child p:last-child,
+.public-admissions-scope #ficha-inscricao form > div:last-child > p {
+  color: #52657b !important;
+}
+
+.public-admissions-scope #ficha-inscricao strong {
+  color: #dc2626 !important;
+}
+
+.public-admissions-scope #ficha-inscricao input:not([type='checkbox']),
+.public-admissions-scope #ficha-inscricao select {
+  color-scheme: light !important;
+  background: #ffffff !important;
+  border-color: #9fb2c7 !important;
+  color: #071a35 !important;
+  box-shadow: inset 0 1px 2px rgba(7, 26, 53, 0.04);
+}
+
+.public-admissions-scope #ficha-inscricao input:not([type='checkbox'])::placeholder {
+  color: #71849a !important;
+  opacity: 1;
+}
+
+.public-admissions-scope #ficha-inscricao input:not([type='checkbox']):focus,
+.public-admissions-scope #ficha-inscricao select:focus {
+  border-color: #1194dd !important;
+  box-shadow: 0 0 0 4px rgba(17, 148, 221, 0.12) !important;
+}
+
+.public-admissions-scope #ficha-inscricao select:disabled {
+  background: #e8eef5 !important;
+  color: #71849a !important;
+}
+
+.public-admissions-scope #ficha-inscricao select option {
+  color-scheme: light !important;
+  background: #ffffff !important;
+  color: #071a35 !important;
+}
+
+.public-admissions-scope #ficha-inscricao label.flex.cursor-pointer {
+  background: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+}
+
+.public-admissions-scope #ficha-inscricao label.flex.cursor-pointer > span {
+  color: #52657b !important;
+}
+
+.public-admissions-scope #ficha-inscricao .bg-amber-50 {
+  background: #fff8db !important;
+  border-color: #e8c84c !important;
+  color: #7a5700 !important;
+}
+
+.public-admissions-scope #ficha-inscricao button[aria-label='Fechar ficha'] {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #52657b !important;
+}
+
+.public-admissions-scope #ficha-inscricao form > div:last-child {
+  border-color: #d5dfeb !important;
+}
+
 @media (max-width: 640px) {
   .public-admissions-scope header nav > a:first-child {
     width: 270px;
@@ -105,5 +192,9 @@
 
   .public-admissions-scope main > section.grid > article {
     box-shadow: 0 12px 28px rgba(7, 26, 53, 0.1) !important;
+  }
+
+  .public-admissions-scope #ficha-inscricao {
+    border-radius: 1.5rem !important;
   }
 }
