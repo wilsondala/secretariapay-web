@@ -46,6 +46,18 @@ export async function submitPublicAdmissionPaymentProof(applicationCode, payload
   return data;
 }
 
+export async function uploadPublicAdmissionPaymentProof(applicationCode, documentNumber, file) {
+  const formData = new FormData();
+  formData.append('documentNumber', documentNumber);
+  formData.append('file', file);
+
+  const { data } = await api.post(
+    `${PUBLIC_BASE_URL}/applications/${encodeURIComponent(applicationCode)}/payment-proof/upload`,
+    formData,
+  );
+  return data;
+}
+
 export async function listAdmissionLeads({ institutionId, status = '' }) {
   const params = { institutionId };
   if (status) params.status = status;
