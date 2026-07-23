@@ -86,6 +86,31 @@ export default function PublicAdmissionForm({ catalog, courses, canSubmit, onClo
     });
   }
 
+  function fillTestForm() {
+    const testCourse = courses.find((course) => /arquitectura/i.test(course.courseName || '')) || courses[0];
+    const testShift = testCourse?.shifts?.find((shift) => ['MANHA', 'MANHÃ'].includes(String(shift.code || '').toUpperCase()))
+      || testCourse?.shifts?.[0];
+    const suffix = Date.now().toString().slice(-6);
+    const phoneSuffix = suffix.slice(-3);
+
+    setError('');
+    setForm({
+      fullName: `Candidato Teste ${suffix}`,
+      documentType: 'BI',
+      documentNumber: `TESTE-PORTAL-${suffix}`,
+      birthDate: '2002-05-18',
+      phone: `+244 923 100 ${phoneSuffix}`,
+      whatsapp: `+244 923 200 ${phoneSuffix}`,
+      email: `candidato.teste.${suffix}@example.com`,
+      previousSchool: 'Complexo Escolar de Teste',
+      province: 'Luanda',
+      municipality: 'Talatona',
+      desiredCourseId: testCourse?.courseId || '',
+      desiredShift: testShift?.code || '',
+      termsAccepted: true,
+    });
+  }
+
   async function submit(event) {
     event.preventDefault();
     setError('');
@@ -277,6 +302,25 @@ export default function PublicAdmissionForm({ catalog, courses, canSubmit, onClo
           <X size={20} />
         </button>
       </div>
+
+      {import.meta.env.DEV ? (
+        <div className="mt-6 flex flex-col gap-4 rounded-2xl border border-sky-200 bg-sky-50 p-4 text-sky-900 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-start gap-3">
+            <FileCheck2 className="mt-0.5 shrink-0" size={20} />
+            <div>
+              <p className="text-sm font-black">Preenchimento rápido para homologação local</p>
+              <p className="mt-1 text-sm font-semibold leading-6">Gera dados fictícios e um documento único. O formulário não é enviado automaticamente.</p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={fillTestForm}
+            className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-xl bg-[#071A35] px-4 py-2 text-sm font-black text-white shadow-md transition hover:-translate-y-0.5"
+          >
+            <FileCheck2 size={17} /> Preencher dados de teste
+          </button>
+        </div>
+      ) : null}
 
       {!canSubmit ? (
         <div className="mt-6 flex items-start gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-amber-800">
