@@ -1,0 +1,42 @@
+/* Ajustes de contraste do portal público de inscrições.
+   A área pública deve permanecer legível mesmo quando o painel administrativo
+   deixou a preferência global de tema escuro ativa no navegador. */
+
+.public-admissions-scope main > section.grid > article {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+}
+
+.public-admissions-scope main > section.grid > article p:nth-of-type(2) {
+  color: #071a35 !important;
+}
+
+.public-admissions-scope main > section.grid > article p:nth-of-type(3) {
+  color: #64748b !important;
+}
+
+.public-admissions-scope main > section.border.border-slate-200 {
+  background: #ffffff !important;
+  border-color: #e2e8f0 !important;
+}
+
+.public-admissions-scope main > section.border.border-slate-200 h2 {
+  color: #071a35 !important;
+}
+
+.public-admissions-scope main > section.border.border-slate-200 > div:first-child p:last-child {
+  color: #64748b !important;
+}
+
+.public-admissions-scope main > section.border.border-slate-200 article {
+  background: #f8fafd !important;
+  border-color: #e2e8f0 !important;
+}
+
+.public-admissions-scope main > section.border.border-slate-200 article h3 {
+  color: #071a35 !important;
+}
+
+.public-admissions-scope main > section.border.border-slate-200 article p {
+  color: #94a3b8 !important;
+}
