@@ -42,18 +42,6 @@ function formatDate(value) {
   }).format(new Date(`${value}T00:00:00`));
 }
 
-function deadlineLabel(value) {
-  if (!value) return '';
-  const dueDate = new Date(`${value}T00:00:00`);
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const days = Math.round((dueDate.getTime() - today.getTime()) / 86400000);
-  if (days < 0) return 'Prazo encerrado';
-  if (days === 0) return 'Vence hoje';
-  if (days === 1) return 'Resta 1 dia para pagar';
-  return `Restam ${days} dias para pagar`;
-}
-
 function statusLabel(value) {
   const labels = {
     SUBMITTED: 'Submetida',
@@ -73,6 +61,10 @@ function statusLabel(value) {
   return labels[String(value || '').toUpperCase()] || value || '-';
 }
 
+function guideIssuedStorageKey(invoiceCode) {
+  return `secretariapay:admission-guide-issued:${invoiceCode}`;
+}
+
 export default function PublicAdmissionPaymentPanel({ application, documentNumber }) {
   const [payment, setPayment] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -81,6 +73,7 @@ export default function PublicAdmissionPaymentPanel({ application, documentNumbe
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
   const [proofUrl, setProofUrl] = useState('');
+  const [guideIssued, setGuideIssued] = useState(false);
 
   const applicationCode = application?.applicationCode;
 
@@ -101,6 +94,15 @@ export default function PublicAdmissionPaymentPanel({ application, documentNumbe
     load();
   }, [applicationCode, documentNumber]);
 
+  useEffect(() => {
+    const invoiceCode = payment?.invoice?.invoiceCode;
+    if (!invoiceCode) {
+      setGuideIssued(false);
+      return;
+    }
+    setGuideIssued(window.sessionStorage.getItem(guideIssuedStorageKey(invoiceCode)) === 'true');
+  }, [payment?.invoice?.invoiceCode]);
+
   async function issuePayment() {
     setWorking(true);
     setError('');
@@ -108,7 +110,8 @@ export default function PublicAdmissionPaymentPanel({ application, documentNumbe
     try {
       const response = await issuePublicAdmissionPayment(applicationCode, documentNumber);
       setPayment(response);
-      setMessage('Cobrança preparada. Emita a guia, pague e envie o comprovativo dentro do prazo.');
+      setGuideIssued(false);
+      setMessage('Cobrança preparada. Emita a guia para consultar a validade e continuar o pagamento.');
     } catch (requestError) {
       setError(readError(requestError));
     } finally {
@@ -130,7 +133,12 @@ export default function PublicAdmissionPaymentPanel({ application, documentNumbe
       link.click();
       link.remove();
       window.URL.revokeObjectURL(url);
-      setMessage('Guia de pagamento emitida com sucesso.');
+
+      const invoiceCode = payment?.invoice?.invoiceCode;
+      if (invoiceCode) {
+        window.sessionStorage.setItem(guideIssuedStorageKey(invoiceCode), 'true');
+      }
+      setGuideIssued(true);
     } catch (requestError) {
       setError(readError(requestError));
     } finally {
@@ -286,27 +294,32 @@ export default function PublicAdmissionPaymentPanel({ application, documentNumbe
           <div className="public-payment-summary-grid grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <InfoCard label="Cobrança" value={invoice.invoiceCode} />
             <InfoCard label="Valor" value={formatMoney(invoice.amount, invoice.currency)} featured />
-            <InfoCard label="Vencimento" value={formatDate(invoice.dueDate)} helper={!proof ? deadlineLabel(invoice.dueDate) : ''} />
+            <InfoCard
+              label="Vencimento"
+              value={formatDate(invoice.dueDate)}
+              helper={guideIssued && !proof ? 'Validade: 72 horas (3 dias)' : ''}
+            />
             <InfoCard label="Estado" value={statusLabel(invoice.status)} />
           </div>
 
-          {!expired && !proof ? (
-            <div className="flex flex-col gap-4 rounded-3xl border border-blue-200 bg-blue-50 p-5 text-blue-950 sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex items-start gap-3">
-                <Clock3 className="mt-0.5 shrink-0 text-blue-700" size={21} />
-                <div>
-                  <p className="text-sm font-black">{deadlineLabel(invoice.dueDate)}</p>
-                  <p className="mt-1 text-sm font-semibold leading-6 text-blue-800">
-                    Emita a guia, efetue o pagamento e envie o comprovativo até {formatDate(invoice.dueDate)}.
-                  </p>
-                </div>
+          {!expired && !proof && canDownloadGuide ? (
+            <div className="flex justify-end">
+              <button type="button" onClick={downloadGuide} disabled={downloading} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-[#071A35] px-5 py-3 text-sm font-black text-white shadow-lg disabled:opacity-50">
+                {downloading ? <Loader2 className="animate-spin" size={18} /> : <FileDown size={18} />}
+                {downloading ? 'A emitir...' : guideIssued ? 'Emitir guia novamente' : 'Emitir guia de pagamento'}
+              </button>
+            </div>
+          ) : null}
+
+          {!expired && !proof && guideIssued ? (
+            <div className="flex items-start gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-emerald-900">
+              <Clock3 className="mt-0.5 shrink-0 text-emerald-700" size={21} />
+              <div>
+                <p className="text-sm font-black">Guia de pagamento emitida com sucesso</p>
+                <p className="mt-1 text-sm font-semibold leading-6 text-emerald-800">
+                  A guia tem validade de 72 horas (3 dias) e deve ser paga até {formatDate(invoice.dueDate)}. Depois do pagamento, envie o comprovativo para validação da DCR.
+                </p>
               </div>
-              {canDownloadGuide ? (
-                <button type="button" onClick={downloadGuide} disabled={downloading} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-[#071A35] px-5 py-3 text-sm font-black text-white shadow-lg disabled:opacity-50">
-                  {downloading ? <Loader2 className="animate-spin" size={18} /> : <FileDown size={18} />}
-                  {downloading ? 'A emitir...' : 'Emitir guia de pagamento'}
-                </button>
-              ) : null}
             </div>
           ) : null}
 
@@ -345,7 +358,7 @@ export default function PublicAdmissionPaymentPanel({ application, documentNumbe
         </div>
       ) : null}
 
-      {canSubmitProof && instructions.enabled ? (
+      {canSubmitProof && instructions.enabled && guideIssued ? (
         <div className="public-payment-proof-card rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
           <div className="flex items-start gap-3">
             <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-sky-50 text-[#1194DD]">
