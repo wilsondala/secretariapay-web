@@ -59,6 +59,18 @@ const PROOF_STATUS_LABELS = {
   REJECTED: 'Rejeitado',
 };
 
+const PAYMENT_METHOD_LABELS = {
+  REFERENCIA_OU_CONCILIACAO: 'Referência ou conciliação bancária',
+  REFERENCIA_BANCARIA: 'Referência bancária',
+  TRANSFERENCIA_BANCARIA: 'Transferência bancária',
+  TRANSFERENCIA_MESMO_BANCO: 'Transferência no mesmo banco',
+  MULTICAIXA_EXPRESS: 'Multicaixa Express',
+  DEPOSITO: 'Depósito bancário',
+  DEPOSITO_BANCARIO: 'Depósito bancário',
+  CASH: 'Numerário',
+  DINHEIRO: 'Numerário',
+};
+
 const SHIFT_LABELS = {
   MANHA: 'Manhã',
   TARDE: 'Tarde',
@@ -95,6 +107,14 @@ function readError(error, fallback) {
 
 function shiftLabel(value) {
   return SHIFT_LABELS[value] || value || '-';
+}
+
+function paymentMethodLabel(value) {
+  if (!value) return '-';
+  if (PAYMENT_METHOD_LABELS[value]) return PAYMENT_METHOD_LABELS[value];
+
+  const normalized = String(value).trim().toLowerCase().replaceAll('_', ' ');
+  return normalized ? normalized.charAt(0).toUpperCase() + normalized.slice(1) : '-';
 }
 
 export default function EnrollmentsPage() {
@@ -347,7 +367,7 @@ export default function EnrollmentsPage() {
               <Info label="Valor" value={selected.invoice ? money(selected.invoice.amount, selected.invoice.currency) : '-'} />
               <Info label="Estado" value={PAYMENT_STATUS_LABELS[selected.invoice?.status] || '-'} />
               <Info label="Referência" value={selected.invoice?.paymentReference || '-'} />
-              <Info label="Método" value={selected.invoice?.paymentMethod || '-'} />
+              <Info label="Método" value={paymentMethodLabel(selected.invoice?.paymentMethod)} />
               <Info label="Pago em" value={formatDateTime(selected.invoice?.paidAt)} />
             </div>
           </div>
