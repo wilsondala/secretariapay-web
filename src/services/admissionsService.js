@@ -54,6 +54,7 @@ export async function uploadPublicAdmissionPaymentProof(applicationCode, documen
   const { data } = await api.post(
     `${PUBLIC_BASE_URL}/applications/${encodeURIComponent(applicationCode)}/payment-proof/upload`,
     formData,
+    { headers: { 'Content-Type': 'multipart/form-data' } },
   );
   return data;
 }
