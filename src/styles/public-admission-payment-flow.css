@@ -7,9 +7,203 @@
   text-decoration: none;
 }
 
+.public-admissions-scope .admission-success-shell {
+  background:
+    radial-gradient(circle at 14% 8%, rgba(16, 185, 129, 0.13), transparent 28%),
+    radial-gradient(circle at 88% 12%, rgba(244, 180, 0, 0.14), transparent 30%),
+    #ffffff;
+}
+
+.public-admissions-scope .admission-success-glow {
+  position: absolute;
+  inset: -35% auto auto 50%;
+  width: 34rem;
+  height: 18rem;
+  transform: translateX(-50%);
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.16), rgba(17, 148, 221, 0.05) 42%, transparent 72%);
+  pointer-events: none;
+  animation: admission-success-glow 1.4s ease-out both;
+}
+
+.public-admissions-scope .admission-confetti {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.public-admissions-scope .admission-confetti span {
+  position: absolute;
+  top: -1.25rem;
+  left: var(--confetti-left);
+  width: 0.48rem;
+  height: 0.9rem;
+  border-radius: 0.12rem;
+  background: var(--confetti-color);
+  opacity: 0;
+  transform: rotate(var(--confetti-rotation));
+  animation: admission-confetti-fall var(--confetti-duration) cubic-bezier(.18, .72, .28, 1) var(--confetti-delay) both;
+}
+
+.public-admissions-scope .admission-confetti span:nth-child(3n) {
+  width: 0.58rem;
+  height: 0.58rem;
+  border-radius: 9999px;
+}
+
+.public-admissions-scope .admission-confetti span:nth-child(4n) {
+  width: 0.25rem;
+  height: 1.05rem;
+}
+
+.public-admissions-scope .admission-success-check {
+  position: relative;
+  z-index: 2;
+  animation: admission-success-pop 720ms cubic-bezier(.2, 1.45, .45, 1) 120ms both;
+}
+
+.public-admissions-scope .admission-success-ring {
+  position: absolute;
+  inset: 0.35rem;
+  border: 2px solid rgba(5, 150, 105, 0.48);
+  border-radius: 9999px;
+  opacity: 0;
+  animation: admission-success-ring 1.35s ease-out 360ms both;
+}
+
+.public-admissions-scope .admission-success-ring-two {
+  animation-delay: 620ms;
+}
+
+.public-admissions-scope .admission-success-summary {
+  animation: admission-success-rise 680ms ease-out 420ms both;
+}
+
+.public-admissions-scope .admission-next-step {
+  animation: admission-success-rise 680ms ease-out 620ms both;
+}
+
+.public-admissions-scope .admission-next-step-item {
+  opacity: 0;
+  animation: admission-success-rise 560ms ease-out 780ms both;
+}
+
+.public-admissions-scope .admission-next-step-item:nth-child(2) {
+  animation-delay: 900ms;
+}
+
+.public-admissions-scope .admission-next-step-item:nth-child(3) {
+  animation-delay: 1020ms;
+}
+
+.public-admissions-scope .admission-next-step-button {
+  position: relative;
+  overflow: hidden;
+}
+
+.public-admissions-scope .admission-next-step-button::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-115%);
+  background: linear-gradient(105deg, transparent 28%, rgba(255,255,255,.22) 48%, transparent 68%);
+  animation: admission-button-shine 2.6s ease-in-out 1.4s 2;
+}
+
+@keyframes admission-success-pop {
+  0% {
+    opacity: 0;
+    transform: scale(.35) rotate(-14deg);
+  }
+  62% {
+    opacity: 1;
+    transform: scale(1.12) rotate(3deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+}
+
+@keyframes admission-success-ring {
+  0% {
+    opacity: .7;
+    transform: scale(.68);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.42);
+  }
+}
+
+@keyframes admission-success-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(1.15rem);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes admission-success-glow {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) scale(.62);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+  }
+}
+
+@keyframes admission-confetti-fall {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, -1rem, 0) rotate(var(--confetti-rotation));
+  }
+  12% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(1.5rem, 24rem, 0) rotate(760deg);
+  }
+}
+
+@keyframes admission-button-shine {
+  0%, 24% {
+    transform: translateX(-115%);
+  }
+  58%, 100% {
+    transform: translateX(115%);
+  }
+}
+
 @media (max-width: 640px) {
   .public-admissions-scope #pagamento-inscricao-publico .public-payment-bank,
   .public-admissions-scope #pagamento-inscricao-publico .public-payment-proof-card {
     border-radius: 1.25rem !important;
+  }
+
+  .public-admissions-scope .admission-confetti span {
+    animation-duration: 2.8s;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .public-admissions-scope .admission-success-glow,
+  .public-admissions-scope .admission-confetti span,
+  .public-admissions-scope .admission-success-check,
+  .public-admissions-scope .admission-success-ring,
+  .public-admissions-scope .admission-success-summary,
+  .public-admissions-scope .admission-next-step,
+  .public-admissions-scope .admission-next-step-item,
+  .public-admissions-scope .admission-next-step-button::after {
+    animation: none !important;
+    opacity: 1;
+    transform: none;
   }
 }
