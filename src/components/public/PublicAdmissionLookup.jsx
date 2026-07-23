@@ -80,7 +80,7 @@ export default function PublicAdmissionLookup({ onClose }) {
         </button>
       </div>
 
-      <div className="mt-6 flex items-start gap-3 rounded-2xl border border-blue-200 bg-blue-50 p-4 text-blue-900">
+      <div className="public-lookup-security-notice mt-6 flex items-start gap-3 rounded-2xl border p-4">
         <ShieldCheck className="mt-0.5 shrink-0" size={20} />
         <p className="text-sm font-semibold leading-6">
           A consulta exige dois dados coincidentes. Quando o piloto financeiro estiver desativado, os dados bancários permanecem ocultos.
