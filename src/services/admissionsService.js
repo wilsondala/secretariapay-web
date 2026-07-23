@@ -29,6 +29,15 @@ export async function issuePublicAdmissionPayment(applicationCode, documentNumbe
   return data;
 }
 
+export async function downloadPublicAdmissionPaymentGuide(applicationCode, documentNumber) {
+  const response = await api.post(
+    `${PUBLIC_BASE_URL}/applications/${encodeURIComponent(applicationCode)}/payment-guide`,
+    { documentNumber },
+    { responseType: 'blob' },
+  );
+  return response.data;
+}
+
 export async function submitPublicAdmissionPaymentProof(applicationCode, payload) {
   const { data } = await api.post(
     `${PUBLIC_BASE_URL}/applications/${encodeURIComponent(applicationCode)}/payment-proof`,
