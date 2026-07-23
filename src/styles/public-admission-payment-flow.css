@@ -1,0 +1,15 @@
+.public-admissions-scope #pagamento-inscricao-publico .public-payment-summary-card p:nth-child(3) {
+  color: #1d4ed8 !important;
+  background: transparent !important;
+}
+
+.public-admissions-scope #pagamento-inscricao-publico button {
+  text-decoration: none;
+}
+
+@media (max-width: 640px) {
+  .public-admissions-scope #pagamento-inscricao-publico .public-payment-bank,
+  .public-admissions-scope #pagamento-inscricao-publico .public-payment-proof-card {
+    border-radius: 1.25rem !important;
+  }
+}
