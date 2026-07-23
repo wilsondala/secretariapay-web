@@ -110,6 +110,36 @@ export async function reviewAdmissionEnrollmentDocuments(applicationId, payload)
   return data;
 }
 
+export async function listAdmissionEnrollmentDocumentFiles(applicationId) {
+  const { data } = await api.get(
+    `${BASE_URL}/applications/${applicationId}/enrollment-document-files`,
+  );
+  return Array.isArray(data) ? data : [];
+}
+
+export async function uploadAdmissionEnrollmentDocumentFile(applicationId, documentType, file) {
+  const formData = new FormData();
+  formData.append('file', file);
+  const { data } = await api.post(
+    `${BASE_URL}/applications/${applicationId}/enrollment-document-files/${documentType}`,
+    formData,
+    { headers: { 'Content-Type': 'multipart/form-data' } },
+  );
+  return data;
+}
+
+export async function deleteAdmissionEnrollmentDocumentFile(fileId) {
+  await api.delete(`${BASE_URL}/enrollment-document-files/${fileId}`);
+}
+
+export async function downloadAdmissionEnrollmentDocumentFile(fileId) {
+  const response = await api.get(
+    `${BASE_URL}/enrollment-document-files/${fileId}/content`,
+    { responseType: 'blob' },
+  );
+  return response.data;
+}
+
 export async function submitAdmissionApplication(applicationId) {
   const { data } = await api.post(`${BASE_URL}/applications/${applicationId}/submit`);
   return data;
