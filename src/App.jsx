@@ -35,7 +35,7 @@ export default function App() {
   return (
     <Routes>
       <Route path="/" element={<div className="public-home-scope"><PublicHomePage /></div>} />
-      <Route path="/inscricoes" element={<PublicAdmissionsPage />} />
+      <Route path="/inscricoes" element={<div className="public-admissions-scope"><PublicAdmissionsPage /></div>} />
       <Route path="/guias/:guideCode" element={<PublicGuidePage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/apresentacao" element={<PublicDemoCarouselPage />} />
