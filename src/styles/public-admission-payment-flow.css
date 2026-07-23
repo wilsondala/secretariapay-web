@@ -84,6 +84,100 @@
   animation: admission-success-rise 680ms ease-out 620ms both;
 }
 
+/*
+ * O portal público deve permanecer claro mesmo quando o painel administrativo
+ * estiver em dark mode. Estes seletores isolam o bloco de orientação do tema
+ * global e garantem contraste institucional em títulos, textos e ações.
+ */
+.public-admissions-scope .admission-success-shell .admission-next-step {
+  color: #071a35 !important;
+  border-color: #efc84a !important;
+  background: linear-gradient(135deg, #fff8df 0%, #ffffff 52%, #eef8ff 100%) !important;
+  box-shadow: 0 18px 42px rgba(7, 26, 53, 0.10) !important;
+}
+
+.public-admissions-scope .admission-success-shell .admission-next-step h3 {
+  color: #071a35 !important;
+}
+
+.public-admissions-scope .admission-success-shell .admission-next-step p {
+  color: #475569 !important;
+}
+
+.public-admissions-scope .admission-success-shell .admission-next-step > div:first-child > div:first-child p:first-child {
+  color: #9a6700 !important;
+}
+
+.public-admissions-scope .admission-success-shell .admission-next-step > div:first-child > div:first-child > span {
+  color: #071a35 !important;
+  background: #f4b400 !important;
+  box-shadow: 0 8px 20px rgba(180, 125, 0, 0.20) !important;
+}
+
+.public-admissions-scope .admission-success-shell .admission-next-step > div:first-child > div:last-child button:not(.admission-next-step-button) {
+  color: #071a35 !important;
+  border-color: #9fb2ca !important;
+  background: #ffffff !important;
+  box-shadow: 0 5px 14px rgba(7, 26, 53, 0.08) !important;
+}
+
+.public-admissions-scope .admission-success-shell .admission-next-step > div:first-child > div:last-child button:not(.admission-next-step-button):hover {
+  color: #005aa7 !important;
+  border-color: #1194dd !important;
+  background: #f8fbff !important;
+}
+
+.public-admissions-scope .admission-success-shell .admission-next-step > div:first-child > div:last-child button:not(.admission-next-step-button) svg {
+  color: currentColor !important;
+}
+
+.public-admissions-scope .admission-success-shell .admission-next-step .admission-next-step-button {
+  color: #ffffff !important;
+  border-color: #071a35 !important;
+  background: #071a35 !important;
+  box-shadow: 0 10px 24px rgba(7, 26, 53, 0.22) !important;
+}
+
+.public-admissions-scope .admission-success-shell .admission-next-step .admission-next-step-button:hover {
+  color: #ffffff !important;
+  background: #0a3065 !important;
+}
+
+.public-admissions-scope .admission-success-shell .admission-next-step .admission-next-step-button svg {
+  color: #ffffff !important;
+}
+
+.public-admissions-scope .admission-success-shell .admission-next-step-item {
+  color: #071a35 !important;
+  border-color: #d5e0ed !important;
+  background: rgba(255, 255, 255, 0.94) !important;
+  box-shadow: 0 7px 18px rgba(7, 26, 53, 0.06) !important;
+}
+
+.public-admissions-scope .admission-success-shell .admission-next-step-item:nth-child(2) {
+  border-color: #f4b400 !important;
+  background: #ffffff !important;
+  box-shadow: 0 10px 24px rgba(180, 125, 0, 0.14) !important;
+}
+
+.public-admissions-scope .admission-success-shell .admission-next-step-item > div > span {
+  color: #ffffff !important;
+  background: #071a35 !important;
+}
+
+.public-admissions-scope .admission-success-shell .admission-next-step-item:nth-child(2) > div > span {
+  color: #071a35 !important;
+  background: #f4b400 !important;
+}
+
+.public-admissions-scope .admission-success-shell .admission-next-step-item p:first-child {
+  color: #071a35 !important;
+}
+
+.public-admissions-scope .admission-success-shell .admission-next-step-item p:last-child {
+  color: #475569 !important;
+}
+
 .public-admissions-scope .admission-next-step-item {
   opacity: 0;
   animation: admission-success-rise 560ms ease-out 780ms both;
@@ -190,6 +284,14 @@
 
   .public-admissions-scope .admission-confetti span {
     animation-duration: 2.8s;
+  }
+
+  .public-admissions-scope .admission-success-shell .admission-next-step > div:first-child > div:last-child {
+    width: 100%;
+  }
+
+  .public-admissions-scope .admission-success-shell .admission-next-step > div:first-child > div:last-child button {
+    width: 100%;
   }
 }
 
