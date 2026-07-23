@@ -30,7 +30,10 @@ const EMPTY_FORM = {
   studiedAbroad: false,
   educationEquivalenceCopy: false,
   secondaryEducationCompleted: false,
+  originalsPresented: false,
+  originalsVerified: false,
   notes: '',
+  originalsVerificationNotes: '',
 };
 
 const DOCUMENT_TYPES = {
@@ -102,7 +105,10 @@ function mapResponseToForm(checklist) {
     studiedAbroad: Boolean(checklist.studiedAbroad),
     educationEquivalenceCopy: Boolean(checklist.educationEquivalenceCopy),
     secondaryEducationCompleted: Boolean(checklist.secondaryEducationCompleted),
+    originalsPresented: Boolean(checklist.originalsPresented),
+    originalsVerified: Boolean(checklist.originalsVerified),
     notes: checklist.notes || '',
+    originalsVerificationNotes: checklist.originalsVerificationNotes || '',
   };
 }
 
@@ -146,13 +152,16 @@ export default function AdmissionEnrollmentDocumentsPanel({
     && certificateFiles.length >= 1
     && identityFiles.length >= 1
     && (!form.studiedAbroad || equivalenceFiles.length >= 1);
-  const completePreview = form.twoPassportPhotos
+  const digitalReviewComplete = form.twoPassportPhotos
     && form.authenticatedCertificateCopy
     && form.identityDocumentCopy
     && form.secondaryEducationCompleted
     && effectiveAgeEligible
     && equivalenceSatisfied
     && requiredFilesPresent;
+  const completePreview = digitalReviewComplete
+    && form.originalsPresented
+    && form.originalsVerified;
   const locked = Boolean(checklist?.enrollmentRequestId);
 
   async function loadFiles() {
@@ -213,6 +222,7 @@ export default function AdmissionEnrollmentDocumentsPanel({
     setForm((current) => {
       const next = { ...current, [name]: value };
       if (name === 'studiedAbroad' && !value) next.educationEquivalenceCopy = false;
+      if (name === 'originalsPresented' && !value) next.originalsVerified = false;
       return next;
     });
     setError('');
@@ -287,14 +297,21 @@ export default function AdmissionEnrollmentDocumentsPanel({
         studiedAbroad: form.studiedAbroad,
         educationEquivalenceCopy: form.educationEquivalenceCopy,
         secondaryEducationCompleted: form.secondaryEducationCompleted,
+        originalsPresented: form.originalsPresented,
+        originalsVerified: form.originalsVerified,
         reviewedBy: user?.fullName || user?.name || user?.email || 'Secretaria / Admissões',
         notes: form.notes.trim() || null,
+        originalsVerificationNotes: form.originalsVerificationNotes.trim() || null,
       });
       setChecklist(response);
       setForm(mapResponseToForm(response));
-      setSuccess(response.documentsComplete
-        ? 'Documentação aprovada. A cobrança da matrícula de 23.500,00 Kz foi criada automaticamente.'
-        : 'Checklist guardado. A candidatura permanece com documentação pendente.');
+      if (response.documentsComplete) {
+        setSuccess('Documentação e originais aprovados. A cobrança da matrícula de 23.500,00 Kz foi criada automaticamente.');
+      } else if (digitalReviewComplete && !response.originalsVerified) {
+        setSuccess('Análise digital guardada. Oriente o candidato a apresentar presencialmente os documentos originais.');
+      } else {
+        setSuccess('Checklist guardado. A candidatura permanece com documentação pendente.');
+      }
       await onApplicationChanged?.(application.id);
     } catch (requestError) {
       setError(readError(requestError, 'Não foi possível guardar o checklist documental.'));
@@ -321,7 +338,7 @@ export default function AdmissionEnrollmentDocumentsPanel({
               <h3 className="font-extrabold text-imetro-navy dark:text-white">Checklist oficial da matrícula</h3>
             </div>
             <p className="mt-2 text-sm font-semibold leading-6 text-slate-500 dark:text-slate-400">
-              Abra cada imagem ou PDF, confirme a legibilidade e somente depois marque o requisito como validado.
+              Abra cada imagem ou PDF, confirme a legibilidade e depois confronte as cópias com os documentos originais apresentados presencialmente.
             </p>
           </div>
           <span className={`inline-flex w-fit rounded-full px-3 py-1 text-xs font-extrabold ${
@@ -339,7 +356,7 @@ export default function AdmissionEnrollmentDocumentsPanel({
         {!canManage ? (
           <div className="mt-4 flex items-start gap-3 rounded-2xl border border-blue-200 bg-blue-50 p-3 text-sm font-semibold leading-6 text-blue-800 dark:border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-200">
             <ShieldCheck className="mt-0.5 shrink-0" size={18} />
-            A DCR pode abrir e conferir os anexos, mas a validação do checklist pertence à Secretaria/Admissões.
+            A DCR pode abrir e conferir os anexos, mas a validação das cópias e dos originais pertence à Secretaria/Admissões.
           </div>
         ) : null}
 
@@ -466,6 +483,37 @@ export default function AdmissionEnrollmentDocumentsPanel({
           ) : null}
         </div>
 
+        <div className="mt-5 rounded-2xl border border-amber-300 bg-amber-50 p-4 text-amber-900 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-100">
+          <div className="flex items-start gap-3">
+            <ShieldCheck className="mt-0.5 shrink-0" size={20} />
+            <div>
+              <p className="text-sm font-extrabold">Conferência presencial obrigatória</p>
+              <p className="mt-1 text-xs font-semibold leading-5">
+                Os anexos digitais servem para pré-análise. Antes de liberar a cobrança da matrícula, a Secretaria deve confrontar as cópias com o certificado original, o Bilhete de Identidade original e, quando aplicável, a equivalência original.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-3 grid gap-3">
+          <ChecklistItem
+            checked={form.originalsPresented}
+            disabled={!canManage || locked || !requiredFilesPresent}
+            onChange={(checked) => setField('originalsPresented', checked)}
+            title="Documentos originais apresentados presencialmente"
+            description="Confirmar que o candidato compareceu à Secretaria com os documentos originais exigidos."
+            warning={digitalReviewComplete && !form.originalsPresented}
+          />
+          <ChecklistItem
+            checked={form.originalsVerified}
+            disabled={!canManage || locked || !form.originalsPresented}
+            onChange={(checked) => setField('originalsVerified', checked)}
+            title="Autenticidade confrontada e confirmada"
+            description="Confirmar que nomes, números, fotografias, autenticações e demais dados correspondem às cópias digitais."
+            warning={form.originalsPresented && !form.originalsVerified}
+          />
+        </div>
+
         <label className="mt-4 block">
           <span className="mb-1.5 block text-xs font-extrabold text-slate-600 dark:text-slate-300">Observação da análise documental</span>
           <textarea
@@ -478,15 +526,34 @@ export default function AdmissionEnrollmentDocumentsPanel({
           />
         </label>
 
-        <div className="mt-4 grid gap-3 sm:grid-cols-3">
+        <label className="mt-4 block">
+          <span className="mb-1.5 block text-xs font-extrabold text-slate-600 dark:text-slate-300">Observação da conferência presencial</span>
+          <textarea
+            rows={3}
+            className="input-premium"
+            value={form.originalsVerificationNotes}
+            disabled={!canManage || locked}
+            onChange={(event) => setField('originalsVerificationNotes', event.target.value)}
+            placeholder="Registe documentos apresentados, divergências encontradas ou confirmação da autenticidade."
+          />
+        </label>
+
+        <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
           <SummaryItem label="Anexos obrigatórios" value={requiredFilesPresent ? 'Completos' : 'Incompletos'} positive={requiredFilesPresent} />
-          <SummaryItem label="Elegibilidade por idade" value={effectiveAgeEligible ? 'Elegível' : 'Não elegível'} positive={effectiveAgeEligible} />
+          <SummaryItem label="Análise digital" value={digitalReviewComplete ? 'Concluída' : 'Pendente'} positive={digitalReviewComplete} />
+          <SummaryItem label="Originais" value={form.originalsVerified ? 'Conferidos' : 'Aguardando conferência'} positive={form.originalsVerified} />
           <SummaryItem label="Resultado previsto" value={completePreview ? 'Aprovar e gerar matrícula' : 'Manter pendente'} positive={completePreview} />
         </div>
 
         {checklist?.reviewedAt ? (
           <p className="mt-4 text-xs font-semibold text-slate-500 dark:text-slate-400">
             Última análise: {formatDateTime(checklist.reviewedAt)} por {checklist.reviewedBy || 'utilizador institucional'}.
+          </p>
+        ) : null}
+
+        {checklist?.originalsVerifiedAt ? (
+          <p className="mt-2 text-xs font-semibold text-emerald-600 dark:text-emerald-300">
+            Originais conferidos em {formatDateTime(checklist.originalsVerifiedAt)} por {checklist.originalsVerifiedBy || 'Secretaria Académica'}.
           </p>
         ) : null}
 
@@ -518,7 +585,13 @@ export default function AdmissionEnrollmentDocumentsPanel({
             }`}
           >
             {saving ? <Loader2 className="animate-spin" size={18} /> : completePreview ? <FileCheck2 size={18} /> : <Save size={18} />}
-            {saving ? 'A guardar...' : completePreview ? 'Aprovar documentação e gerar matrícula' : 'Guardar checklist pendente'}
+            {saving
+              ? 'A guardar...'
+              : completePreview
+                ? 'Aprovar documentos, originais e gerar matrícula'
+                : digitalReviewComplete
+                  ? 'Guardar e aguardar conferência presencial'
+                  : 'Guardar checklist pendente'}
           </button>
         ) : null}
       </section>
