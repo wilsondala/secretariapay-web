@@ -19,4 +19,5 @@ import './styles/public-admission-payment-flow.css';
 import './styles/institutional-theme-dark.css';
 import './styles/public-home-theme.css';
 import './styles/public-admissions-success-contrast.css';
+import './styles/public-admissions-production.css';
 ReactDOM.createRoot(document.getElementById('root')).render(<React.StrictMode><BrowserRouter><AuthProvider><App/></AuthProvider></BrowserRouter></React.StrictMode>);
