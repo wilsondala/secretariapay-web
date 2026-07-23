@@ -13,6 +13,30 @@ export async function createPublicAdmissionApplication(payload) {
   return data;
 }
 
+export async function getPublicAdmissionPaymentStatus(applicationCode, documentNumber) {
+  const { data } = await api.post(
+    `${PUBLIC_BASE_URL}/applications/${encodeURIComponent(applicationCode)}/payment/status`,
+    { documentNumber },
+  );
+  return data;
+}
+
+export async function issuePublicAdmissionPayment(applicationCode, documentNumber) {
+  const { data } = await api.post(
+    `${PUBLIC_BASE_URL}/applications/${encodeURIComponent(applicationCode)}/payment`,
+    { documentNumber },
+  );
+  return data;
+}
+
+export async function submitPublicAdmissionPaymentProof(applicationCode, payload) {
+  const { data } = await api.post(
+    `${PUBLIC_BASE_URL}/applications/${encodeURIComponent(applicationCode)}/payment-proof`,
+    payload,
+  );
+  return data;
+}
+
 export async function listAdmissionLeads({ institutionId, status = '' }) {
   const params = { institutionId };
   if (status) params.status = status;
