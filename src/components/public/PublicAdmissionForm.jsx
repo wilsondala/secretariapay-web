@@ -10,6 +10,7 @@ import {
   X,
 } from 'lucide-react';
 import { createPublicAdmissionApplication } from '../../services/admissionsService.js';
+import PublicAdmissionPaymentPanel from './PublicAdmissionPaymentPanel.jsx';
 
 const INITIAL_FORM = {
   fullName: '',
@@ -128,6 +129,11 @@ export default function PublicAdmissionForm({ catalog, courses, canSubmit, onClo
           <Result label="Curso" value={application.desiredCourseName} />
           <Result label="Turno" value={application.desiredShift} />
         </div>
+
+        <PublicAdmissionPaymentPanel
+          application={application}
+          documentNumber={form.documentNumber.trim()}
+        />
       </section>
     );
   }
