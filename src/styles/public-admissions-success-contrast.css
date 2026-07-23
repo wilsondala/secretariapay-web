@@ -5,3 +5,28 @@
 .public-admissions-scope .admission-success-shell p.text-emerald-700 {
   color: #059669 !important;
 }
+
+/* Mantém as mensagens financeiras verdes legíveis após os temas globais. */
+.public-admissions-scope #pagamento-inscricao-publico .public-payment-success,
+.public-admissions-scope #pagamento-inscricao-publico .flex.items-start.gap-3.rounded-2xl.border.border-emerald-200.bg-emerald-50 {
+  color: #065f46 !important;
+  background-color: #ecfdf5 !important;
+  border-color: #6ee7b7 !important;
+}
+
+.public-admissions-scope #pagamento-inscricao-publico .public-payment-success p,
+.public-admissions-scope #pagamento-inscricao-publico .flex.items-start.gap-3.rounded-2xl.border.border-emerald-200.bg-emerald-50 p {
+  color: #065f46 !important;
+  background: transparent !important;
+  opacity: 1 !important;
+}
+
+.public-admissions-scope #pagamento-inscricao-publico .flex.items-start.gap-3.rounded-2xl.border.border-emerald-200.bg-emerald-50 p:first-child {
+  color: #064e3b !important;
+}
+
+.public-admissions-scope #pagamento-inscricao-publico .public-payment-success svg,
+.public-admissions-scope #pagamento-inscricao-publico .flex.items-start.gap-3.rounded-2xl.border.border-emerald-200.bg-emerald-50 svg {
+  color: #047857 !important;
+  opacity: 1 !important;
+}
