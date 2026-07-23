@@ -184,6 +184,158 @@
   border-color: #d5dfeb !important;
 }
 
+/* Consulta pública: não pode herdar o fundo escuro reservado ao catálogo. */
+html body #root .public-admissions-scope #consulta-candidatura {
+  color-scheme: light !important;
+  background: linear-gradient(145deg, #ffffff 0%, #edf4fa 100%) !important;
+  border-color: #b8c8d9 !important;
+  color: #071a35 !important;
+  box-shadow: 0 28px 70px rgba(7, 26, 53, 0.16) !important;
+}
+
+html body #root .public-admissions-scope #consulta-candidatura > div:first-child {
+  border-color: #d4dfeb !important;
+}
+
+html body #root .public-admissions-scope #consulta-candidatura h2 {
+  color: #071a35 !important;
+}
+
+html body #root .public-admissions-scope #consulta-candidatura > div:first-child p:first-of-type {
+  color: #1194dd !important;
+}
+
+html body #root .public-admissions-scope #consulta-candidatura > div:first-child p:last-of-type {
+  color: #52657b !important;
+}
+
+html body #root .public-admissions-scope #consulta-candidatura label,
+html body #root .public-admissions-scope #consulta-candidatura label > span {
+  color: #52657b !important;
+}
+
+html body #root .public-admissions-scope #consulta-candidatura input {
+  color-scheme: light !important;
+  background: #ffffff !important;
+  border-color: #9fb2c7 !important;
+  color: #071a35 !important;
+}
+
+html body #root .public-admissions-scope #consulta-candidatura input::placeholder {
+  color: #71849a !important;
+  opacity: 1 !important;
+}
+
+html body #root .public-admissions-scope #consulta-candidatura button[aria-label='Fechar consulta'] {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #52657b !important;
+}
+
+/* Painel financeiro público: cartões claros para leitura, banco escuro para destaque. */
+html body #root .public-admissions-scope #pagamento-inscricao-publico {
+  color-scheme: light !important;
+  background: linear-gradient(145deg, #ffffff 0%, #edf4fa 100%) !important;
+  border-color: #b7c7d8 !important;
+  color: #071a35 !important;
+  box-shadow: 0 24px 60px rgba(7, 26, 53, 0.14) !important;
+}
+
+html body #root .public-admissions-scope #pagamento-inscricao-publico .public-payment-heading h3 {
+  color: #071a35 !important;
+}
+
+html body #root .public-admissions-scope #pagamento-inscricao-publico .public-payment-heading p:last-child {
+  color: #52657b !important;
+}
+
+html body #root .public-admissions-scope #pagamento-inscricao-publico .public-payment-refresh {
+  background: #ffffff !important;
+  border-color: #c5d2df !important;
+  color: #071a35 !important;
+}
+
+html body #root .public-admissions-scope #pagamento-inscricao-publico .public-payment-environment {
+  background: #fff7d6 !important;
+  border-color: #d9ac18 !important;
+  color: #6f4d00 !important;
+}
+
+html body #root .public-admissions-scope #pagamento-inscricao-publico .public-payment-success {
+  background: #ecfdf5 !important;
+  border-color: #6ee7b7 !important;
+  color: #065f46 !important;
+}
+
+html body #root .public-admissions-scope #pagamento-inscricao-publico .public-payment-prepare,
+html body #root .public-admissions-scope #pagamento-inscricao-publico .public-payment-proof-card {
+  background: #ffffff !important;
+  border-color: #cbd7e4 !important;
+  color: #071a35 !important;
+}
+
+html body #root .public-admissions-scope #pagamento-inscricao-publico .public-payment-proof-card p:first-of-type {
+  color: #071a35 !important;
+}
+
+html body #root .public-admissions-scope #pagamento-inscricao-publico .public-payment-proof-card p:last-of-type {
+  color: #52657b !important;
+}
+
+html body #root .public-admissions-scope #pagamento-inscricao-publico .public-payment-proof-card input {
+  background: #ffffff !important;
+  border-color: #9fb2c7 !important;
+  color: #071a35 !important;
+}
+
+html body #root .public-admissions-scope #pagamento-inscricao-publico .public-payment-proof-card input::placeholder {
+  color: #71849a !important;
+  opacity: 1 !important;
+}
+
+html body #root .public-admissions-scope #pagamento-inscricao-publico .public-payment-summary-card {
+  background: linear-gradient(145deg, #ffffff 0%, #eaf2f9 100%) !important;
+  border-color: #bfd0e0 !important;
+  color: #071a35 !important;
+  box-shadow: 0 10px 24px rgba(7, 26, 53, 0.08) !important;
+}
+
+html body #root .public-admissions-scope #pagamento-inscricao-publico .public-payment-summary-card p:first-child {
+  color: #58708a !important;
+}
+
+html body #root .public-admissions-scope #pagamento-inscricao-publico .public-payment-summary-card p:last-child {
+  color: #071a35 !important;
+  background: transparent !important;
+}
+
+html body #root .public-admissions-scope #pagamento-inscricao-publico .public-payment-bank {
+  background: linear-gradient(145deg, #09213e 0%, #061a33 100%) !important;
+  border: 1px solid #1c3c5e !important;
+  color: #ffffff !important;
+}
+
+html body #root .public-admissions-scope #pagamento-inscricao-publico .public-payment-bank h4,
+html body #root .public-admissions-scope #pagamento-inscricao-publico .public-payment-bank p {
+  color: #ffffff !important;
+}
+
+html body #root .public-admissions-scope #pagamento-inscricao-publico .public-payment-copy-row,
+html body #root .public-admissions-scope #pagamento-inscricao-publico .public-payment-guidance {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border-color: rgba(255, 255, 255, 0.13) !important;
+}
+
+html body #root .public-admissions-scope #pagamento-inscricao-publico .public-payment-copy-row p:first-child,
+html body #root .public-admissions-scope #pagamento-inscricao-publico .public-payment-guidance p:first-child {
+  color: #a8bdd2 !important;
+}
+
+html body #root .public-admissions-scope #pagamento-inscricao-publico .public-payment-copy-row p:last-child,
+html body #root .public-admissions-scope #pagamento-inscricao-publico .public-payment-guidance p:last-child {
+  color: #ffffff !important;
+}
+
 @media (max-width: 640px) {
   .public-admissions-scope header nav > a:first-child {
     width: 270px;
@@ -194,7 +346,13 @@
     box-shadow: 0 12px 28px rgba(7, 26, 53, 0.1) !important;
   }
 
-  .public-admissions-scope #ficha-inscricao {
+  .public-admissions-scope #ficha-inscricao,
+  html body #root .public-admissions-scope #consulta-candidatura,
+  html body #root .public-admissions-scope #pagamento-inscricao-publico {
     border-radius: 1.5rem !important;
+  }
+
+  html body #root .public-admissions-scope #pagamento-inscricao-publico .public-payment-summary-grid {
+    grid-template-columns: 1fr !important;
   }
 }
