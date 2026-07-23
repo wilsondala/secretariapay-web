@@ -2,9 +2,30 @@
    A área pública deve permanecer legível mesmo quando o painel administrativo
    deixou a preferência global de tema escuro ativa no navegador. */
 
+.public-admissions-scope {
+  background: #e6edf5;
+}
+
+.public-admissions-scope main {
+  background:
+    radial-gradient(circle at 12% 8%, rgba(17, 148, 221, 0.08), transparent 28%),
+    linear-gradient(180deg, #e6edf5 0%, #eef3f8 100%);
+}
+
+/* Indicadores: menos branco puro, mais profundidade e separação visual. */
 .public-admissions-scope main > section.grid > article {
-  background: #ffffff !important;
-  border-color: #e2e8f0 !important;
+  background: linear-gradient(145deg, #f8fbff 0%, #dbe6f2 100%) !important;
+  border: 1px solid #c3d1e1 !important;
+  box-shadow: 0 16px 38px rgba(7, 26, 53, 0.12) !important;
+}
+
+.public-admissions-scope main > section.grid > article:nth-child(2),
+.public-admissions-scope main > section.grid > article:nth-child(4) {
+  background: linear-gradient(145deg, #f3f8fd 0%, #cfddec 100%) !important;
+}
+
+.public-admissions-scope main > section.grid > article p:first-child {
+  color: #64748b !important;
 }
 
 .public-admissions-scope main > section.grid > article p:nth-of-type(2) {
@@ -12,25 +33,44 @@
 }
 
 .public-admissions-scope main > section.grid > article p:nth-of-type(3) {
-  color: #64748b !important;
+  color: #52657b !important;
 }
 
-.public-admissions-scope main > section.border.border-slate-200 {
+.public-admissions-scope main > section.grid > article > div > span {
   background: #ffffff !important;
-  border-color: #e2e8f0 !important;
+  border: 1px solid rgba(17, 148, 221, 0.18);
+  box-shadow: 0 8px 20px rgba(17, 148, 221, 0.12);
+}
+
+/* Catálogo em bloco escuro, criando uma segunda camada visual clara. */
+.public-admissions-scope main > section.border.border-slate-200 {
+  background: linear-gradient(145deg, #172b43 0%, #0f2238 100%) !important;
+  border-color: #29435e !important;
+  box-shadow: 0 24px 60px rgba(7, 26, 53, 0.18) !important;
 }
 
 .public-admissions-scope main > section.border.border-slate-200 h2 {
-  color: #071a35 !important;
+  color: #ffffff !important;
+}
+
+.public-admissions-scope main > section.border.border-slate-200 > div:first-child p:first-child {
+  color: #38bdf8 !important;
 }
 
 .public-admissions-scope main > section.border.border-slate-200 > div:first-child p:last-child {
-  color: #64748b !important;
+  color: #b8c7d8 !important;
 }
 
+/* Cursos continuam claros para leitura, mas com borda e sombra mais fortes. */
 .public-admissions-scope main > section.border.border-slate-200 article {
-  background: #f8fafd !important;
-  border-color: #e2e8f0 !important;
+  background: linear-gradient(145deg, #ffffff 0%, #edf3f8 100%) !important;
+  border-color: #b9c9da !important;
+  box-shadow: 0 12px 28px rgba(3, 15, 30, 0.18) !important;
+}
+
+.public-admissions-scope main > section.border.border-slate-200 article:hover {
+  border-color: #1194dd !important;
+  box-shadow: 0 18px 36px rgba(17, 148, 221, 0.22) !important;
 }
 
 .public-admissions-scope main > section.border.border-slate-200 article h3 {
@@ -38,5 +78,11 @@
 }
 
 .public-admissions-scope main > section.border.border-slate-200 article p {
-  color: #94a3b8 !important;
+  color: #64748b !important;
+}
+
+@media (max-width: 640px) {
+  .public-admissions-scope main > section.grid > article {
+    box-shadow: 0 12px 28px rgba(7, 26, 53, 0.1) !important;
+  }
 }
