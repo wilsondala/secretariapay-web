@@ -5,12 +5,14 @@ import {
   CheckCircle2,
   Clock3,
   Copy,
+  FileDown,
   FileUp,
   Loader2,
   RefreshCw,
   ShieldCheck,
 } from 'lucide-react';
 import {
+  downloadPublicAdmissionPaymentGuide,
   getPublicAdmissionPaymentStatus,
   issuePublicAdmissionPayment,
   submitPublicAdmissionPaymentProof,
@@ -40,6 +42,18 @@ function formatDate(value) {
   }).format(new Date(`${value}T00:00:00`));
 }
 
+function deadlineLabel(value) {
+  if (!value) return '';
+  const dueDate = new Date(`${value}T00:00:00`);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const days = Math.round((dueDate.getTime() - today.getTime()) / 86400000);
+  if (days < 0) return 'Prazo encerrado';
+  if (days === 0) return 'Vence hoje';
+  if (days === 1) return 'Resta 1 dia para pagar';
+  return `Restam ${days} dias para pagar`;
+}
+
 function statusLabel(value) {
   const labels = {
     SUBMITTED: 'Submetida',
@@ -53,6 +67,8 @@ function statusLabel(value) {
     APPROVED: 'Aprovado',
     REJECTED: 'Rejeitado',
     PENDING_REVIEW: 'Pendente de validação DCR',
+    CANCELLED: 'Cancelada',
+    EXPIRED: 'Desistência por falta de pagamento',
   };
   return labels[String(value || '').toUpperCase()] || value || '-';
 }
@@ -61,6 +77,7 @@ export default function PublicAdmissionPaymentPanel({ application, documentNumbe
   const [payment, setPayment] = useState(null);
   const [loading, setLoading] = useState(true);
   const [working, setWorking] = useState(false);
+  const [downloading, setDownloading] = useState(false);
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
   const [proofUrl, setProofUrl] = useState('');
@@ -91,11 +108,33 @@ export default function PublicAdmissionPaymentPanel({ application, documentNumbe
     try {
       const response = await issuePublicAdmissionPayment(applicationCode, documentNumber);
       setPayment(response);
-      setMessage('Cobrança provisória preparada com o valor oficial da inscrição.');
+      setMessage('Cobrança preparada. Emita a guia, pague e envie o comprovativo dentro do prazo.');
     } catch (requestError) {
       setError(readError(requestError));
     } finally {
       setWorking(false);
+    }
+  }
+
+  async function downloadGuide() {
+    setDownloading(true);
+    setError('');
+    setMessage('');
+    try {
+      const blob = await downloadPublicAdmissionPaymentGuide(applicationCode, documentNumber);
+      const url = window.URL.createObjectURL(new Blob([blob], { type: 'application/pdf' }));
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `Guia_Inscricao_IMETRO_${applicationCode}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+      setMessage('Guia de pagamento emitida com sucesso.');
+    } catch (requestError) {
+      setError(readError(requestError));
+    } finally {
+      setDownloading(false);
     }
   }
 
@@ -149,6 +188,10 @@ export default function PublicAdmissionPaymentPanel({ application, documentNumbe
   const instructions = payment.paymentInstructions || {};
   const invoice = payment.invoice;
   const proof = payment.latestPaymentProof;
+  const expired = payment.applicationStatus === 'EXPIRED' || invoice?.status === 'EXPIRED';
+  const cancelled = invoice?.status === 'CANCELLED';
+  const canDownloadGuide = Boolean(invoice && !expired && !cancelled);
+  const canSubmitProof = Boolean(invoice && !proof && !expired && !cancelled && invoice.status === 'PENDING');
 
   return (
     <section
@@ -162,7 +205,7 @@ export default function PublicAdmissionPaymentPanel({ application, documentNumbe
           </span>
           <div>
             <p className="text-xs font-extrabold uppercase tracking-[.12em] text-[#1194DD]">Etapa financeira da inscrição</p>
-            <h3 className="mt-1 text-xl font-black text-[#071A35]">Cobrança e comprovativo</h3>
+            <h3 className="mt-1 text-xl font-black text-[#071A35]">Cobrança, guia e comprovativo</h3>
             <p className="mt-2 text-sm font-semibold leading-6 text-slate-600">
               Candidatura {payment.applicationCode} · {statusLabel(payment.applicationStatus)}
             </p>
@@ -171,7 +214,7 @@ export default function PublicAdmissionPaymentPanel({ application, documentNumbe
         <button
           type="button"
           onClick={load}
-          disabled={working}
+          disabled={working || downloading}
           className="public-payment-refresh inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-extrabold text-[#071A35] shadow-sm disabled:opacity-50"
         >
           <RefreshCw size={16} /> Atualizar
@@ -197,6 +240,18 @@ export default function PublicAdmissionPaymentPanel({ application, documentNumbe
         </div>
       ) : null}
 
+      {expired ? (
+        <div className="flex items-start gap-3 rounded-2xl border border-red-300 bg-red-50 p-4 text-red-800">
+          <AlertCircle className="mt-0.5 shrink-0" size={20} />
+          <div>
+            <p className="text-sm font-black">Candidatura marcada como desistência</p>
+            <p className="mt-1 text-sm font-semibold leading-6">
+              O prazo terminou sem pagamento ou comprovativo válido. A emissão da guia e o envio do comprovativo foram bloqueados.
+            </p>
+          </div>
+        </div>
+      ) : null}
+
       {error ? (
         <div className="flex items-start gap-3 rounded-2xl border border-red-200 bg-red-50 p-4 text-red-700">
           <AlertCircle className="mt-0.5 shrink-0" size={20} />
@@ -215,7 +270,9 @@ export default function PublicAdmissionPaymentPanel({ application, documentNumbe
         <div className="public-payment-prepare flex flex-col gap-4 rounded-3xl border border-slate-200 bg-white p-5 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-sm font-black text-[#071A35]">Taxa oficial de inscrição</p>
-            <p className="mt-1 text-sm font-semibold text-slate-500">A cobrança será criada com o valor definido na campanha 2026/2027.</p>
+            <p className="mt-1 text-sm font-semibold leading-6 text-slate-500">
+              Prepare a cobrança para gerar uma guia com prazo de pagamento configurado pela instituição.
+            </p>
           </div>
           <button type="button" onClick={issuePayment} disabled={working} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-[#F4B400] px-6 py-3 text-sm font-black text-[#071A35] shadow-lg disabled:cursor-not-allowed disabled:opacity-50">
             {working ? <Loader2 className="animate-spin" size={18} /> : <Banknote size={18} />}
@@ -229,9 +286,29 @@ export default function PublicAdmissionPaymentPanel({ application, documentNumbe
           <div className="public-payment-summary-grid grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <InfoCard label="Cobrança" value={invoice.invoiceCode} />
             <InfoCard label="Valor" value={formatMoney(invoice.amount, invoice.currency)} featured />
-            <InfoCard label="Vencimento" value={formatDate(invoice.dueDate)} />
+            <InfoCard label="Vencimento" value={formatDate(invoice.dueDate)} helper={!proof ? deadlineLabel(invoice.dueDate) : ''} />
             <InfoCard label="Estado" value={statusLabel(invoice.status)} />
           </div>
+
+          {!expired && !proof ? (
+            <div className="flex flex-col gap-4 rounded-3xl border border-blue-200 bg-blue-50 p-5 text-blue-950 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-start gap-3">
+                <Clock3 className="mt-0.5 shrink-0 text-blue-700" size={21} />
+                <div>
+                  <p className="text-sm font-black">{deadlineLabel(invoice.dueDate)}</p>
+                  <p className="mt-1 text-sm font-semibold leading-6 text-blue-800">
+                    Emita a guia, efetue o pagamento e envie o comprovativo até {formatDate(invoice.dueDate)}.
+                  </p>
+                </div>
+              </div>
+              {canDownloadGuide ? (
+                <button type="button" onClick={downloadGuide} disabled={downloading} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-[#071A35] px-5 py-3 text-sm font-black text-white shadow-lg disabled:opacity-50">
+                  {downloading ? <Loader2 className="animate-spin" size={18} /> : <FileDown size={18} />}
+                  {downloading ? 'A emitir...' : 'Emitir guia de pagamento'}
+                </button>
+              ) : null}
+            </div>
+          ) : null}
 
           <div className="public-payment-bank rounded-3xl bg-[#071A35] p-5 text-white shadow-[0_18px_45px_rgba(3,15,30,.22)] sm:p-6">
             <div className="flex items-center gap-3 border-b border-white/10 pb-4">
@@ -268,16 +345,16 @@ export default function PublicAdmissionPaymentPanel({ application, documentNumbe
         </div>
       ) : null}
 
-      {invoice && !proof && instructions.enabled ? (
+      {canSubmitProof && instructions.enabled ? (
         <div className="public-payment-proof-card rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
           <div className="flex items-start gap-3">
             <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-sky-50 text-[#1194DD]">
               <FileUp size={22} />
             </span>
             <div>
-              <p className="text-sm font-black text-[#071A35]">Enviar comprovativo</p>
+              <p className="text-sm font-black text-[#071A35]">Enviar comprovativo depois do pagamento</p>
               <p className="mt-1 text-sm font-semibold leading-6 text-slate-500">
-                Nesta fase, o envio técnico utiliza uma ligação de ficheiro em homologação. O upload direto será ligado ao armazenamento institucional no próximo bloco.
+                O comprovativo deve ser enviado até {formatDate(invoice.dueDate)}. Nesta fase de homologação, o envio técnico utiliza uma ligação de ficheiro.
               </p>
             </div>
           </div>
@@ -296,7 +373,7 @@ export default function PublicAdmissionPaymentPanel({ application, documentNumbe
             </div>
           ) : (
             <p className="mt-4 rounded-2xl bg-slate-100 p-4 text-sm font-bold text-slate-600">
-              Envie o comprovativo pelo WhatsApp institucional {instructions.supportWhatsapp} e informe o código {invoice.invoiceCode}.
+              Envie o comprovativo pelo WhatsApp oficial {instructions.supportWhatsapp} e informe o código {invoice.invoiceCode}.
             </p>
           )}
         </div>
@@ -305,11 +382,12 @@ export default function PublicAdmissionPaymentPanel({ application, documentNumbe
   );
 }
 
-function InfoCard({ label, value, featured = false }) {
+function InfoCard({ label, value, helper = '', featured = false }) {
   return (
     <div className={`public-payment-summary-card rounded-2xl border p-4 ${featured ? 'border-sky-200 bg-sky-50' : 'border-slate-200 bg-white'}`}>
       <p className="text-[10px] font-extrabold uppercase tracking-[.12em] text-slate-500">{label}</p>
       <p className={`mt-2 break-words font-black text-[#071A35] ${featured ? 'text-base' : 'text-sm'}`}>{value || '-'}</p>
+      {helper ? <p className="mt-2 text-xs font-extrabold text-blue-700">{helper}</p> : null}
     </div>
   );
 }
