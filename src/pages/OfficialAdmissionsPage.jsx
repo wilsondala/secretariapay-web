@@ -5,7 +5,6 @@ import {
   Banknote,
   CheckCircle2,
   Clock3,
-  FileCheck2,
   FileSearch,
   GraduationCap,
   Loader2,
@@ -15,6 +14,7 @@ import {
   X,
   XCircle,
 } from 'lucide-react';
+import AdmissionEnrollmentDocumentsPanel from '../components/admissions/AdmissionEnrollmentDocumentsPanel.jsx';
 import { env } from '../config/env.js';
 import {
   approveAdmissionPaymentProof,
@@ -25,7 +25,6 @@ import {
   issueAdmissionInvoice,
   listAdmissionApplications,
   rejectAdmissionPaymentProof,
-  reviewAdmissionDocuments,
 } from '../services/admissionsService.js';
 import useAuth from '../shared/auth/useAuth.js';
 import { can } from '../shared/auth/permissions.js';
@@ -164,7 +163,6 @@ export default function OfficialAdmissionsPage() {
   const [dueDate, setDueDate] = useState(datePlusDays(3));
   const [reference, setReference] = useState('');
   const [reviewNote, setReviewNote] = useState('Pagamento da inscrição confirmado pela DCR.');
-  const [documentsNote, setDocumentsNote] = useState('BI, certificado de habilitações e fotografias conferidos.');
 
   const courses = useMemo(
     () => (catalog?.departments || []).flatMap((department) =>
@@ -267,6 +265,11 @@ export default function OfficialAdmissionsPage() {
       ...overrides,
     };
   }
+
+  const showEnrollmentChecklist = Boolean(
+    selected?.invoice?.status === 'PAID'
+    || ['DOCUMENTATION_PENDING', 'CONFIRMED'].includes(selected?.status),
+  );
 
   return (
     <div className="space-y-5">
@@ -467,12 +470,13 @@ export default function OfficialAdmissionsPage() {
             <button className="btn-primary mt-5 bg-emerald-600" disabled={busy === 'confirm'} onClick={() => runAction('confirm', () => confirmAdmissionInvoicePayment(selected.invoice.id, reviewerPayload({ paymentMethod: 'REFERENCIA_OU_CONCILIACAO' })), 'Pagamento confirmado.')}>Confirmar pagamento</button>
           ) : null}
 
-          {selected.status === 'DOCUMENTATION_PENDING' && canManageApplications ? (
-            <div className="premium-card mt-5 p-4">
-              <h3 className="font-extrabold text-imetro-navy dark:text-white">Conferência documental</h3>
-              <Field label="Observação"><textarea rows={3} className="input-premium mt-3" value={documentsNote} onChange={(event) => setDocumentsNote(event.target.value)} /></Field>
-              <button className="btn-primary mt-4" disabled={busy === 'documents'} onClick={() => runAction('documents', () => reviewAdmissionDocuments(selected.id, { documentsComplete: true, reviewedBy: user?.fullName || user?.name || user?.email || 'Secretaria', notes: documentsNote }), 'Documentação validada e inscrição confirmada.')}>{busy === 'documents' ? <Loader2 className="animate-spin" size={17} /> : <FileCheck2 size={17} />} Confirmar documentação</button>
-            </div>
+          {showEnrollmentChecklist ? (
+            <AdmissionEnrollmentDocumentsPanel
+              application={selected}
+              user={user}
+              canManage={canManageApplications}
+              onApplicationChanged={load}
+            />
           ) : null}
         </Drawer>
       ) : null}
