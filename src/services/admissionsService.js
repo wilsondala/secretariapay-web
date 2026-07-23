@@ -8,6 +8,11 @@ export async function getOfficialAdmissionsCatalog(institutionId) {
   return data;
 }
 
+export async function createPublicAdmissionApplication(payload) {
+  const { data } = await api.post(`${PUBLIC_BASE_URL}/applications`, payload);
+  return data;
+}
+
 export async function listAdmissionLeads({ institutionId, status = '' }) {
   const params = { institutionId };
   if (status) params.status = status;
