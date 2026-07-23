@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import {
   AlertCircle,
   CheckCircle2,
+  Clock3,
   Eye,
   FileCheck2,
   FileImage,
@@ -42,6 +43,12 @@ const DOCUMENT_TYPES = {
   IDENTITY_DOCUMENT: 'IDENTITY_DOCUMENT',
   EDUCATION_EQUIVALENCE: 'EDUCATION_EQUIVALENCE',
 };
+
+const ORIGINAL_FIELDS = new Set([
+  'originalsPresented',
+  'originalsVerified',
+  'originalsVerificationNotes',
+]);
 
 function readError(error, fallback) {
   return error?.response?.data?.message
@@ -159,10 +166,10 @@ export default function AdmissionEnrollmentDocumentsPanel({
     && effectiveAgeEligible
     && equivalenceSatisfied
     && requiredFilesPresent;
-  const completePreview = digitalReviewComplete
-    && form.originalsPresented
-    && form.originalsVerified;
-  const locked = Boolean(checklist?.enrollmentRequestId);
+
+  const digitalLocked = Boolean(checklist?.enrollmentRequestId);
+  const originalsLocked = Boolean(checklist?.originalsVerified);
+  const canSave = canManage && (!digitalLocked || !originalsLocked);
 
   async function loadFiles() {
     const response = await listAdmissionEnrollmentDocumentFiles(application.id);
@@ -218,7 +225,9 @@ export default function AdmissionEnrollmentDocumentsPanel({
   }, [preview?.url]);
 
   function setField(name, value) {
-    if (locked) return;
+    if (digitalLocked && !ORIGINAL_FIELDS.has(name)) return;
+    if (originalsLocked && ORIGINAL_FIELDS.has(name)) return;
+
     setForm((current) => {
       const next = { ...current, [name]: value };
       if (name === 'studiedAbroad' && !value) next.educationEquivalenceCopy = false;
@@ -230,14 +239,14 @@ export default function AdmissionEnrollmentDocumentsPanel({
   }
 
   async function uploadFile(documentType, file) {
-    if (!file || !application?.id || !canManage || locked) return;
+    if (!file || !application?.id || !canManage || digitalLocked) return;
     setUploadingType(documentType);
     setError('');
     setSuccess('');
     try {
       await uploadAdmissionEnrollmentDocumentFile(application.id, documentType, file);
       await loadFiles();
-      setSuccess('Documento anexado. Abra a pré-visualização e confira a legibilidade antes de validar o checklist.');
+      setSuccess('Documento anexado. Abra a pré-visualização e confira a legibilidade antes de validar.');
     } catch (requestError) {
       setError(readError(requestError, 'Não foi possível anexar o documento.'));
     } finally {
@@ -246,7 +255,7 @@ export default function AdmissionEnrollmentDocumentsPanel({
   }
 
   async function removeFile(file) {
-    if (!file?.id || !canManage || locked) return;
+    if (!file?.id || !canManage || digitalLocked) return;
     setDeletingId(file.id);
     setError('');
     setSuccess('');
@@ -285,7 +294,7 @@ export default function AdmissionEnrollmentDocumentsPanel({
   }
 
   async function saveChecklist() {
-    if (!application?.id || !canManage || locked) return;
+    if (!application?.id || !canSave) return;
     setSaving(true);
     setError('');
     setSuccess('');
@@ -305,12 +314,16 @@ export default function AdmissionEnrollmentDocumentsPanel({
       });
       setChecklist(response);
       setForm(mapResponseToForm(response));
-      if (response.documentsComplete) {
-        setSuccess('Documentação e originais aprovados. A cobrança da matrícula de 23.500,00 Kz foi criada automaticamente.');
-      } else if (digitalReviewComplete && !response.originalsVerified) {
-        setSuccess('Análise digital guardada. Oriente o candidato a apresentar presencialmente os documentos originais.');
+
+      if (response.originalsVerified) {
+        setSuccess('Documentos originais confrontados e confirmados. A situação documental está regularizada.');
+      } else if (response.enrollmentRequestId) {
+        const deadline = response.originalsDueDate
+          ? ` Os originais deverão ser apresentados até ${formatDate(response.originalsDueDate)}.`
+          : '';
+        setSuccess(`Documentação digital aprovada. A cobrança da matrícula de 23.500,00 Kz foi criada automaticamente.${deadline}`);
       } else {
-        setSuccess('Checklist guardado. A candidatura permanece com documentação pendente.');
+        setSuccess('Checklist guardado. A candidatura permanece com documentação digital pendente.');
       }
       await onApplicationChanged?.(application.id);
     } catch (requestError) {
@@ -328,6 +341,14 @@ export default function AdmissionEnrollmentDocumentsPanel({
     );
   }
 
+  const originalsStatus = form.originalsVerified
+    ? 'Conferidos'
+    : checklist?.originalsBlockActive
+      ? 'Bloqueio ativo'
+      : checklist?.originalsDueDate
+        ? `Pendentes até ${formatDate(checklist.originalsDueDate)}`
+        : 'Pendentes';
+
   return (
     <>
       <section className="premium-card mt-5 p-4">
@@ -338,7 +359,7 @@ export default function AdmissionEnrollmentDocumentsPanel({
               <h3 className="font-extrabold text-imetro-navy dark:text-white">Checklist oficial da matrícula</h3>
             </div>
             <p className="mt-2 text-sm font-semibold leading-6 text-slate-500 dark:text-slate-400">
-              Abra cada imagem ou PDF, confirme a legibilidade e depois confronte as cópias com os documentos originais apresentados presencialmente.
+              Confira os anexos digitais. Quando todos estiverem completos e legíveis, o sistema gera a cobrança da matrícula. A conferência dos originais será acompanhada separadamente.
             </p>
           </div>
           <span className={`inline-flex w-fit rounded-full px-3 py-1 text-xs font-extrabold ${
@@ -346,7 +367,7 @@ export default function AdmissionEnrollmentDocumentsPanel({
               ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-200'
               : 'bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-200'
           }`}>
-            {checklist?.documentsComplete ? 'Documentação aprovada' : 'Documentação pendente'}
+            {checklist?.documentsComplete ? 'Documentação digital aprovada' : 'Documentação digital pendente'}
           </span>
         </div>
 
@@ -356,14 +377,14 @@ export default function AdmissionEnrollmentDocumentsPanel({
         {!canManage ? (
           <div className="mt-4 flex items-start gap-3 rounded-2xl border border-blue-200 bg-blue-50 p-3 text-sm font-semibold leading-6 text-blue-800 dark:border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-200">
             <ShieldCheck className="mt-0.5 shrink-0" size={18} />
-            A DCR pode abrir e conferir os anexos, mas a validação das cópias e dos originais pertence à Secretaria/Admissões.
+            A DCR pode abrir e acompanhar os anexos. A validação digital e a conferência posterior dos originais pertencem à Secretaria/Admissões.
           </div>
         ) : null}
 
         <div className="mt-4 grid gap-3">
           <ChecklistItem
             checked={form.twoPassportPhotos}
-            disabled={!canManage || locked}
+            disabled={!canManage || digitalLocked}
             onChange={(checked) => setField('twoPassportPhotos', checked)}
             title="2 fotografias do tipo passe"
             description="As duas fotografias devem estar anexadas e legíveis."
@@ -374,7 +395,7 @@ export default function AdmissionEnrollmentDocumentsPanel({
               requiredCount={2}
               documentType={DOCUMENT_TYPES.PASSPORT_PHOTO}
               canManage={canManage}
-              locked={locked}
+              locked={digitalLocked}
               uploading={uploadingType === DOCUMENT_TYPES.PASSPORT_PHOTO}
               deletingId={deletingId}
               previewLoadingId={previewLoadingId}
@@ -387,7 +408,7 @@ export default function AdmissionEnrollmentDocumentsPanel({
 
           <ChecklistItem
             checked={form.authenticatedCertificateCopy}
-            disabled={!canManage || locked}
+            disabled={!canManage || digitalLocked}
             onChange={(checked) => setField('authenticatedCertificateCopy', checked)}
             title="Fotocópia autenticada do certificado de habilitações"
             description="Confira autenticação, nome, escola e conclusão do ensino médio."
@@ -398,7 +419,7 @@ export default function AdmissionEnrollmentDocumentsPanel({
               requiredCount={1}
               documentType={DOCUMENT_TYPES.AUTHENTICATED_CERTIFICATE}
               canManage={canManage}
-              locked={locked}
+              locked={digitalLocked}
               uploading={uploadingType === DOCUMENT_TYPES.AUTHENTICATED_CERTIFICATE}
               deletingId={deletingId}
               previewLoadingId={previewLoadingId}
@@ -410,7 +431,7 @@ export default function AdmissionEnrollmentDocumentsPanel({
 
           <ChecklistItem
             checked={form.identityDocumentCopy}
-            disabled={!canManage || locked}
+            disabled={!canManage || digitalLocked}
             onChange={(checked) => setField('identityDocumentCopy', checked)}
             title="Fotocópia do Bilhete de Identidade"
             description="Compare nome, número, fotografia e validade com a candidatura."
@@ -421,7 +442,7 @@ export default function AdmissionEnrollmentDocumentsPanel({
               requiredCount={1}
               documentType={DOCUMENT_TYPES.IDENTITY_DOCUMENT}
               canManage={canManage}
-              locked={locked}
+              locked={digitalLocked}
               uploading={uploadingType === DOCUMENT_TYPES.IDENTITY_DOCUMENT}
               deletingId={deletingId}
               previewLoadingId={previewLoadingId}
@@ -433,7 +454,7 @@ export default function AdmissionEnrollmentDocumentsPanel({
 
           <ChecklistItem
             checked={form.secondaryEducationCompleted}
-            disabled={!canManage || locked}
+            disabled={!canManage || digitalLocked}
             onChange={(checked) => setField('secondaryEducationCompleted', checked)}
             title="Ensino médio concluído"
             description="Critério obrigatório comprovado pelo certificado anexado."
@@ -451,7 +472,7 @@ export default function AdmissionEnrollmentDocumentsPanel({
 
           <ChecklistItem
             checked={form.studiedAbroad}
-            disabled={!canManage || locked}
+            disabled={!canManage || digitalLocked}
             onChange={(checked) => setField('studiedAbroad', checked)}
             title="Candidato estudou no estrangeiro"
             description="Ativa a exigência da equivalência do Ministério da Educação."
@@ -460,7 +481,7 @@ export default function AdmissionEnrollmentDocumentsPanel({
           {form.studiedAbroad ? (
             <ChecklistItem
               checked={form.educationEquivalenceCopy}
-              disabled={!canManage || locked}
+              disabled={!canManage || digitalLocked}
               onChange={(checked) => setField('educationEquivalenceCopy', checked)}
               title="Cópia da equivalência do Ministério da Educação"
               description="Obrigatória para candidatos que estudaram no estrangeiro."
@@ -471,7 +492,7 @@ export default function AdmissionEnrollmentDocumentsPanel({
                 requiredCount={1}
                 documentType={DOCUMENT_TYPES.EDUCATION_EQUIVALENCE}
                 canManage={canManage}
-                locked={locked}
+                locked={digitalLocked}
                 uploading={uploadingType === DOCUMENT_TYPES.EDUCATION_EQUIVALENCE}
                 deletingId={deletingId}
                 previewLoadingId={previewLoadingId}
@@ -483,13 +504,25 @@ export default function AdmissionEnrollmentDocumentsPanel({
           ) : null}
         </div>
 
+        <label className="mt-4 block">
+          <span className="mb-1.5 block text-xs font-extrabold text-slate-600 dark:text-slate-300">Observação da análise digital</span>
+          <textarea
+            rows={3}
+            className="input-premium"
+            value={form.notes}
+            disabled={!canManage || digitalLocked}
+            onChange={(event) => setField('notes', event.target.value)}
+            placeholder="Registe pendências, documentos ilegíveis ou observações relevantes."
+          />
+        </label>
+
         <div className="mt-5 rounded-2xl border border-amber-300 bg-amber-50 p-4 text-amber-900 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-100">
           <div className="flex items-start gap-3">
-            <ShieldCheck className="mt-0.5 shrink-0" size={20} />
+            <Clock3 className="mt-0.5 shrink-0" size={20} />
             <div>
-              <p className="text-sm font-extrabold">Conferência presencial obrigatória</p>
+              <p className="text-sm font-extrabold">Originais obrigatórios após a matrícula</p>
               <p className="mt-1 text-xs font-semibold leading-5">
-                Os anexos digitais servem para pré-análise. Antes de liberar a cobrança da matrícula, a Secretaria deve confrontar as cópias com o certificado original, o Bilhete de Identidade original e, quando aplicável, a equivalência original.
+                A apresentação presencial dos originais não impede a emissão da guia nem a confirmação da matrícula nesta fase. O estudante deverá comparecer à Secretaria antes do prazo informado. A falta de regularização poderá gerar bloqueio temporário quando essa regra for ativada pela instituição.
               </p>
             </div>
           </div>
@@ -498,15 +531,14 @@ export default function AdmissionEnrollmentDocumentsPanel({
         <div className="mt-3 grid gap-3">
           <ChecklistItem
             checked={form.originalsPresented}
-            disabled={!canManage || locked || !requiredFilesPresent}
+            disabled={!canManage || originalsLocked || !requiredFilesPresent}
             onChange={(checked) => setField('originalsPresented', checked)}
             title="Documentos originais apresentados presencialmente"
-            description="Confirmar que o candidato compareceu à Secretaria com os documentos originais exigidos."
-            warning={digitalReviewComplete && !form.originalsPresented}
+            description="Confirmar o comparecimento do candidato ou estudante à Secretaria com os originais exigidos."
           />
           <ChecklistItem
             checked={form.originalsVerified}
-            disabled={!canManage || locked || !form.originalsPresented}
+            disabled={!canManage || originalsLocked || !form.originalsPresented}
             onChange={(checked) => setField('originalsVerified', checked)}
             title="Autenticidade confrontada e confirmada"
             description="Confirmar que nomes, números, fotografias, autenticações e demais dados correspondem às cópias digitais."
@@ -515,34 +547,22 @@ export default function AdmissionEnrollmentDocumentsPanel({
         </div>
 
         <label className="mt-4 block">
-          <span className="mb-1.5 block text-xs font-extrabold text-slate-600 dark:text-slate-300">Observação da análise documental</span>
-          <textarea
-            rows={3}
-            className="input-premium"
-            value={form.notes}
-            disabled={!canManage || locked}
-            onChange={(event) => setField('notes', event.target.value)}
-            placeholder="Registe pendências, documentos ilegíveis ou observações relevantes."
-          />
-        </label>
-
-        <label className="mt-4 block">
           <span className="mb-1.5 block text-xs font-extrabold text-slate-600 dark:text-slate-300">Observação da conferência presencial</span>
           <textarea
             rows={3}
             className="input-premium"
             value={form.originalsVerificationNotes}
-            disabled={!canManage || locked}
+            disabled={!canManage || originalsLocked}
             onChange={(event) => setField('originalsVerificationNotes', event.target.value)}
-            placeholder="Registe documentos apresentados, divergências encontradas ou confirmação da autenticidade."
+            placeholder="Registe os originais apresentados, divergências ou a confirmação da autenticidade."
           />
         </label>
 
         <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
           <SummaryItem label="Anexos obrigatórios" value={requiredFilesPresent ? 'Completos' : 'Incompletos'} positive={requiredFilesPresent} />
           <SummaryItem label="Análise digital" value={digitalReviewComplete ? 'Concluída' : 'Pendente'} positive={digitalReviewComplete} />
-          <SummaryItem label="Originais" value={form.originalsVerified ? 'Conferidos' : 'Aguardando conferência'} positive={form.originalsVerified} />
-          <SummaryItem label="Resultado previsto" value={completePreview ? 'Aprovar e gerar matrícula' : 'Manter pendente'} positive={completePreview} />
+          <SummaryItem label="Originais" value={originalsStatus} positive={form.originalsVerified} />
+          <SummaryItem label="Próxima ação" value={digitalLocked ? 'Aguardar pagamento / conferir originais' : digitalReviewComplete ? 'Gerar cobrança de matrícula' : 'Completar documentos'} positive={digitalReviewComplete} />
         </div>
 
         {checklist?.reviewedAt ? (
@@ -561,37 +581,44 @@ export default function AdmissionEnrollmentDocumentsPanel({
           <div className="mt-5 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 dark:border-emerald-500/20 dark:bg-emerald-500/10">
             <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-200">
               <GraduationCap size={19} />
-              <p className="font-extrabold">Processo de matrícula criado</p>
+              <p className="font-extrabold">Processo e cobrança da matrícula criados</p>
             </div>
             <div className="mt-3 grid gap-3 sm:grid-cols-2">
               <SummaryItem label="Pedido" value={checklist.enrollmentRequestCode || '-'} positive />
               <SummaryItem label="Estado" value={checklist.enrollmentStatus || '-'} positive />
               <SummaryItem label="Valor" value={money(checklist.enrollmentAmount, checklist.enrollmentCurrency)} positive />
-              <SummaryItem label="Vencimento" value={formatDate(checklist.enrollmentDueDate)} positive />
+              <SummaryItem label="Vencimento da guia" value={formatDate(checklist.enrollmentDueDate)} positive />
             </div>
             <p className="mt-3 text-xs font-bold text-emerald-700 dark:text-emerald-200">
-              O estudante definitivo ainda não foi criado. A criação ocorrerá somente após a DCR confirmar o pagamento da matrícula.
+              Depois da confirmação do pagamento pela DCR, o estudante e o número de matrícula serão criados automaticamente.
             </p>
+            {!form.originalsVerified ? (
+              <p className="mt-2 text-xs font-bold text-amber-700 dark:text-amber-200">
+                Originais ainda pendentes{checklist.originalsDueDate ? ` até ${formatDate(checklist.originalsDueDate)}` : ''}. O acompanhamento continua sem impedir esta cobrança.
+              </p>
+            ) : null}
           </div>
         ) : null}
 
-        {canManage && !locked ? (
+        {canSave ? (
           <button
             type="button"
             onClick={saveChecklist}
-            disabled={saving}
+            disabled={saving || (!digitalLocked && !digitalReviewComplete && false)}
             className={`mt-5 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-extrabold text-white shadow-lg disabled:cursor-not-allowed disabled:opacity-50 ${
-              completePreview ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-[#3157D5] hover:bg-[#2448bd]'
+              (!digitalLocked && digitalReviewComplete) || (digitalLocked && form.originalsVerified)
+                ? 'bg-emerald-600 hover:bg-emerald-700'
+                : 'bg-[#3157D5] hover:bg-[#2448bd]'
             }`}
           >
-            {saving ? <Loader2 className="animate-spin" size={18} /> : completePreview ? <FileCheck2 size={18} /> : <Save size={18} />}
+            {saving ? <Loader2 className="animate-spin" size={18} /> : !digitalLocked && digitalReviewComplete ? <FileCheck2 size={18} /> : <Save size={18} />}
             {saving
               ? 'A guardar...'
-              : completePreview
-                ? 'Aprovar documentos, originais e gerar matrícula'
-                : digitalReviewComplete
-                  ? 'Guardar e aguardar conferência presencial'
-                  : 'Guardar checklist pendente'}
+              : !digitalLocked
+                ? digitalReviewComplete
+                  ? 'Confirmar documentos digitais e gerar cobrança'
+                  : 'Guardar checklist pendente'
+                : 'Guardar conferência dos originais'}
           </button>
         ) : null}
       </section>
@@ -622,7 +649,9 @@ function DocumentAttachments({
         {files.map((file) => (
           <div key={file.id} className="flex flex-col gap-2 rounded-xl border border-slate-200 bg-white p-3 dark:border-white/10 dark:bg-[#071A35]/60 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex min-w-0 items-center gap-2">
-              {file.mimeType === 'application/pdf' ? <FileText className="shrink-0 text-red-500" size={18} /> : <FileImage className="shrink-0 text-[#1194DD]" size={18} />}
+              {file.mimeType === 'application/pdf'
+                ? <FileText className="shrink-0 text-red-500" size={18} />
+                : <FileImage className="shrink-0 text-[#1194DD]" size={18} />}
               <div className="min-w-0">
                 <p className="truncate text-xs font-extrabold text-slate-800 dark:text-white">{file.originalFileName}</p>
                 <p className="mt-0.5 text-[10px] font-semibold text-slate-400">{formatFileSize(file.fileSize)} · {formatDateTime(file.uploadedAt)}</p>
