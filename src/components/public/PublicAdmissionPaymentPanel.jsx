@@ -151,10 +151,13 @@ export default function PublicAdmissionPaymentPanel({ application, documentNumbe
   const proof = payment.latestPaymentProof;
 
   return (
-    <section className="mt-6 space-y-5 rounded-[2rem] border border-slate-200 bg-slate-50 p-5 sm:p-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+    <section
+      id="pagamento-inscricao-publico"
+      className="mt-6 space-y-5 rounded-[2rem] border border-slate-200 bg-white p-5 shadow-[0_20px_55px_rgba(7,26,53,.10)] sm:p-6"
+    >
+      <div className="public-payment-heading flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex items-start gap-3">
-          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#071A35] text-[#F4B400]">
+          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#071A35] text-[#F4B400] shadow-lg">
             <Banknote size={24} />
           </span>
           <div>
@@ -165,7 +168,12 @@ export default function PublicAdmissionPaymentPanel({ application, documentNumbe
             </p>
           </div>
         </div>
-        <button type="button" onClick={load} disabled={working} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-extrabold text-[#071A35] disabled:opacity-50">
+        <button
+          type="button"
+          onClick={load}
+          disabled={working}
+          className="public-payment-refresh inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-extrabold text-[#071A35] shadow-sm disabled:opacity-50"
+        >
           <RefreshCw size={16} /> Atualizar
         </button>
       </div>
@@ -183,7 +191,7 @@ export default function PublicAdmissionPaymentPanel({ application, documentNumbe
       ) : null}
 
       {instructions.enabled ? (
-        <div className="rounded-2xl border border-amber-300 bg-amber-50 p-4 text-amber-900">
+        <div className="public-payment-environment rounded-2xl border border-amber-300 bg-amber-50 p-4 text-amber-900">
           <p className="text-xs font-black uppercase tracking-[.12em]">{instructions.environmentLabel}</p>
           <p className="mt-2 text-sm font-semibold leading-6">{instructions.notice}</p>
         </div>
@@ -197,14 +205,14 @@ export default function PublicAdmissionPaymentPanel({ application, documentNumbe
       ) : null}
 
       {message ? (
-        <div className="flex items-start gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-emerald-800">
+        <div className="public-payment-success flex items-start gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-emerald-800">
           <CheckCircle2 className="mt-0.5 shrink-0" size={20} />
           <p className="text-sm font-semibold leading-6">{message}</p>
         </div>
       ) : null}
 
       {instructions.enabled && !invoice ? (
-        <div className="flex flex-col gap-4 rounded-3xl border border-slate-200 bg-white p-5 sm:flex-row sm:items-center sm:justify-between">
+        <div className="public-payment-prepare flex flex-col gap-4 rounded-3xl border border-slate-200 bg-white p-5 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-sm font-black text-[#071A35]">Taxa oficial de inscrição</p>
             <p className="mt-1 text-sm font-semibold text-slate-500">A cobrança será criada com o valor definido na campanha 2026/2027.</p>
@@ -218,19 +226,21 @@ export default function PublicAdmissionPaymentPanel({ application, documentNumbe
 
       {invoice ? (
         <>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="public-payment-summary-grid grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <InfoCard label="Cobrança" value={invoice.invoiceCode} />
-            <InfoCard label="Valor" value={formatMoney(invoice.amount, invoice.currency)} />
+            <InfoCard label="Valor" value={formatMoney(invoice.amount, invoice.currency)} featured />
             <InfoCard label="Vencimento" value={formatDate(invoice.dueDate)} />
             <InfoCard label="Estado" value={statusLabel(invoice.status)} />
           </div>
 
-          <div className="rounded-3xl bg-[#071A35] p-5 text-white">
+          <div className="public-payment-bank rounded-3xl bg-[#071A35] p-5 text-white shadow-[0_18px_45px_rgba(3,15,30,.22)] sm:p-6">
             <div className="flex items-center gap-3 border-b border-white/10 pb-4">
-              <Banknote className="text-[#F4B400]" size={22} />
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#F4B400]/12 text-[#F4B400]">
+                <Banknote size={22} />
+              </span>
               <div>
                 <p className="text-xs font-extrabold uppercase tracking-[.12em] text-white/55">Dados para pagamento</p>
-                <h4 className="mt-1 text-lg font-black">Transferência bancária / Multicaixa Express</h4>
+                <h4 className="mt-1 text-lg font-black text-white">Transferência bancária / Multicaixa Express</h4>
               </div>
             </div>
             <div className="mt-5 grid gap-4 sm:grid-cols-2">
@@ -239,9 +249,9 @@ export default function PublicAdmissionPaymentPanel({ application, documentNumbe
               <CopyRow label="Conta AKZ" value={instructions.accountNumber} onCopy={copy} />
               <CopyRow label="IBAN" value={instructions.iban} onCopy={copy} />
               <CopyRow label="Referência" value={invoice.paymentReference || invoice.invoiceCode} onCopy={copy} />
-              <div>
-                <p className="text-[10px] font-extrabold uppercase tracking-[.12em] text-white/45">Orientação</p>
-                <p className="mt-1 text-sm font-bold leading-6 text-white/85">{instructions.multicaixaReference}</p>
+              <div className="public-payment-guidance rounded-2xl border border-white/10 bg-white/5 p-4">
+                <p className="text-[10px] font-extrabold uppercase tracking-[.12em] text-white/50">Orientação</p>
+                <p className="mt-2 text-sm font-bold leading-6 text-white/90">{instructions.multicaixaReference}</p>
               </div>
             </div>
           </div>
@@ -259,9 +269,11 @@ export default function PublicAdmissionPaymentPanel({ application, documentNumbe
       ) : null}
 
       {invoice && !proof && instructions.enabled ? (
-        <div className="rounded-3xl border border-slate-200 bg-white p-5">
+        <div className="public-payment-proof-card rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
           <div className="flex items-start gap-3">
-            <FileUp className="mt-0.5 shrink-0 text-[#1194DD]" size={22} />
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-sky-50 text-[#1194DD]">
+              <FileUp size={22} />
+            </span>
             <div>
               <p className="text-sm font-black text-[#071A35]">Enviar comprovativo</p>
               <p className="mt-1 text-sm font-semibold leading-6 text-slate-500">
@@ -270,14 +282,14 @@ export default function PublicAdmissionPaymentPanel({ application, documentNumbe
             </div>
           </div>
           {import.meta.env.DEV ? (
-            <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-5 flex flex-col gap-3 sm:flex-row">
               <input
                 value={proofUrl}
                 onChange={(event) => setProofUrl(event.target.value)}
-                className="min-h-12 flex-1 rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-[#071A35] outline-none focus:border-[#1194DD]"
+                className="min-h-12 flex-1 rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm font-semibold text-[#071A35] outline-none focus:border-[#1194DD] focus:ring-4 focus:ring-[#1194DD]/10"
                 placeholder="https://.../comprovativo.pdf"
               />
-              <button type="button" onClick={submitProof} disabled={working} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-[#1194DD] px-5 py-3 text-sm font-black text-white disabled:opacity-50">
+              <button type="button" onClick={submitProof} disabled={working} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-[#1194DD] px-5 py-3 text-sm font-black text-white shadow-lg disabled:opacity-50">
                 {working ? <Loader2 className="animate-spin" size={18} /> : <FileUp size={18} />}
                 Enviar para DCR
               </button>
@@ -293,25 +305,25 @@ export default function PublicAdmissionPaymentPanel({ application, documentNumbe
   );
 }
 
-function InfoCard({ label, value }) {
+function InfoCard({ label, value, featured = false }) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-4">
-      <p className="text-[10px] font-extrabold uppercase tracking-[.12em] text-slate-400">{label}</p>
-      <p className="mt-2 break-words text-sm font-black text-[#071A35]">{value || '-'}</p>
+    <div className={`public-payment-summary-card rounded-2xl border p-4 ${featured ? 'border-sky-200 bg-sky-50' : 'border-slate-200 bg-white'}`}>
+      <p className="text-[10px] font-extrabold uppercase tracking-[.12em] text-slate-500">{label}</p>
+      <p className={`mt-2 break-words font-black text-[#071A35] ${featured ? 'text-base' : 'text-sm'}`}>{value || '-'}</p>
     </div>
   );
 }
 
 function CopyRow({ label, value, onCopy }) {
   return (
-    <div className="flex items-start justify-between gap-3 rounded-2xl bg-white/5 p-3">
-      <div>
-        <p className="text-[10px] font-extrabold uppercase tracking-[.12em] text-white/45">{label}</p>
-        <p className="mt-1 break-all text-sm font-black text-white">{value || '-'}</p>
+    <div className="public-payment-copy-row flex items-start justify-between gap-3 rounded-2xl border border-white/10 bg-white/5 p-4">
+      <div className="min-w-0">
+        <p className="text-[10px] font-extrabold uppercase tracking-[.12em] text-white/50">{label}</p>
+        <p className="mt-2 break-all text-sm font-black leading-6 text-white">{value || '-'}</p>
       </div>
       {value ? (
-        <button type="button" onClick={() => onCopy(value, label)} className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white/75" aria-label={`Copiar ${label}`}>
-          <Copy size={15} />
+        <button type="button" onClick={() => onCopy(value, label)} className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white/80 transition hover:bg-white/10" aria-label={`Copiar ${label}`}>
+          <Copy size={16} />
         </button>
       ) : null}
     </div>
