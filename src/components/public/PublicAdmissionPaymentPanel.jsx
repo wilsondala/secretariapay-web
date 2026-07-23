@@ -123,7 +123,7 @@ export default function PublicAdmissionPaymentPanel({ application, documentNumbe
       const response = await issuePublicAdmissionPayment(applicationCode, documentNumber);
       setPayment(response);
       setGuideIssued(false);
-      setMessage('Cobrança preparada. Emita a guia para consultar a validade e continuar o pagamento.');
+      setMessage('Cobrança preparada. Emita a guia para continuar.');
     } catch (requestError) {
       setError(readError(requestError));
     } finally {
@@ -220,7 +220,7 @@ export default function PublicAdmissionPaymentPanel({ application, documentNumbe
   if (loading) {
     return (
       <div className="mt-6 flex min-h-32 items-center justify-center gap-3 rounded-3xl border border-slate-200 bg-slate-50 text-sm font-extrabold text-slate-500">
-        <Loader2 className="animate-spin" size={20} /> A consultar a etapa financeira...
+        <Loader2 className="animate-spin" size={20} /> A consultar pagamento...
       </div>
     );
   }
@@ -228,7 +228,7 @@ export default function PublicAdmissionPaymentPanel({ application, documentNumbe
   if (!payment) {
     return (
       <div className="mt-6 rounded-3xl border border-red-200 bg-red-50 p-5 text-sm font-semibold text-red-700">
-        {error || 'A etapa financeira não está disponível.'}
+        {error || 'O pagamento não está disponível.'}
       </div>
     );
   }
@@ -252,7 +252,7 @@ export default function PublicAdmissionPaymentPanel({ application, documentNumbe
             <Banknote size={24} />
           </span>
           <div>
-            <p className="text-xs font-extrabold uppercase tracking-[.12em] text-[#1194DD]">Etapa financeira da inscrição</p>
+            <p className="text-xs font-extrabold uppercase tracking-[.12em] text-[#1194DD]">Pagamento da inscrição</p>
             <h3 className="mt-1 text-xl font-black text-[#071A35]">Cobrança, guia e comprovativo</h3>
             <p className="mt-2 text-sm font-semibold leading-6 text-slate-600">
               Candidatura {payment.applicationCode} · {statusLabel(payment.applicationStatus)}
@@ -273,18 +273,11 @@ export default function PublicAdmissionPaymentPanel({ application, documentNumbe
         <div className="flex items-start gap-3 rounded-2xl border border-amber-300 bg-amber-50 p-4 text-amber-900">
           <ShieldCheck className="mt-0.5 shrink-0" size={20} />
           <div>
-            <p className="text-sm font-black">Pagamento público ainda desativado</p>
+            <p className="text-sm font-black">Pagamento indisponível</p>
             <p className="mt-1 text-sm font-semibold leading-6">
-              A candidatura foi recebida. As instruções financeiras serão disponibilizadas somente após ativação institucional deste ambiente.
+              Aguarde a disponibilização das instruções financeiras pela instituição.
             </p>
           </div>
-        </div>
-      ) : null}
-
-      {instructions.enabled ? (
-        <div className="public-payment-environment rounded-2xl border border-amber-300 bg-amber-50 p-4 text-amber-900">
-          <p className="text-xs font-black uppercase tracking-[.12em]">{instructions.environmentLabel}</p>
-          <p className="mt-2 text-sm font-semibold leading-6">{instructions.notice}</p>
         </div>
       ) : null}
 
@@ -294,7 +287,7 @@ export default function PublicAdmissionPaymentPanel({ application, documentNumbe
           <div>
             <p className="text-sm font-black">Candidatura marcada como desistência</p>
             <p className="mt-1 text-sm font-semibold leading-6">
-              O prazo terminou sem pagamento ou comprovativo válido. A emissão da guia e o envio do comprovativo foram bloqueados.
+              O prazo terminou sem pagamento ou comprovativo válido.
             </p>
           </div>
         </div>
@@ -318,9 +311,7 @@ export default function PublicAdmissionPaymentPanel({ application, documentNumbe
         <div className="public-payment-prepare flex flex-col gap-4 rounded-3xl border border-slate-200 bg-white p-5 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-sm font-black text-[#071A35]">Taxa oficial de inscrição</p>
-            <p className="mt-1 text-sm font-semibold leading-6 text-slate-500">
-              Prepare a cobrança para gerar uma guia com prazo de pagamento configurado pela instituição.
-            </p>
+            <p className="mt-1 text-sm font-semibold leading-6 text-slate-500">Prepare a cobrança para emitir a guia.</p>
           </div>
           <button type="button" onClick={issuePayment} disabled={working} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-[#F4B400] px-6 py-3 text-sm font-black text-[#071A35] shadow-lg disabled:cursor-not-allowed disabled:opacity-50">
             {working ? <Loader2 className="animate-spin" size={18} /> : <Banknote size={18} />}
@@ -355,9 +346,9 @@ export default function PublicAdmissionPaymentPanel({ application, documentNumbe
             <div className="flex items-start gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-emerald-900">
               <Clock3 className="mt-0.5 shrink-0 text-emerald-700" size={21} />
               <div>
-                <p className="text-sm font-black">Guia de pagamento emitida com sucesso</p>
+                <p className="text-sm font-black">Guia de pagamento emitida</p>
                 <p className="mt-1 text-sm font-semibold leading-6 text-emerald-800">
-                  A guia tem validade de 72 horas (3 dias) e deve ser paga até {formatDate(invoice.dueDate)}. Depois do pagamento, envie o comprovativo para validação da DCR.
+                  Pague até {formatDate(invoice.dueDate)} e envie o comprovativo.
                 </p>
               </div>
             </div>
@@ -393,7 +384,7 @@ export default function PublicAdmissionPaymentPanel({ application, documentNumbe
           <Clock3 className="mt-0.5 shrink-0" size={20} />
           <div>
             <p className="text-sm font-black">Comprovativo: {statusLabel(proof.status)}</p>
-            <p className="mt-1 text-sm font-semibold leading-6">A DCR fará a validação antes da confirmação definitiva da inscrição.</p>
+            <p className="mt-1 text-sm font-semibold leading-6">A DCR fará a validação do pagamento.</p>
           </div>
         </div>
       ) : null}
@@ -405,10 +396,8 @@ export default function PublicAdmissionPaymentPanel({ application, documentNumbe
               <FileUp size={22} />
             </span>
             <div>
-              <p className="text-sm font-black text-[#071A35]">Enviar comprovativo depois do pagamento</p>
-              <p className="mt-1 text-sm font-semibold leading-6 text-slate-500">
-                Selecione um ficheiro PDF, JPG ou PNG de até 5 MB e envie-o até {formatDate(invoice.dueDate)}.
-              </p>
+              <p className="text-sm font-black text-[#071A35]">Enviar comprovativo</p>
+              <p className="mt-1 text-sm font-semibold leading-6 text-slate-500">PDF, JPG ou PNG de até 5 MB.</p>
             </div>
           </div>
 
