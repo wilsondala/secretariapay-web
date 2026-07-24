@@ -1,4 +1,4 @@
-name: Auditoria legado VaiRapido
+name: Auditoria completa de domínio legado
 
 on:
   push:
@@ -13,7 +13,7 @@ permissions:
   contents: read
 
 jobs:
-  audit:
+  snapshot:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -21,56 +21,17 @@ jobs:
         with:
           show-progress: false
 
-      - name: Gerar relatório da auditoria
+      - name: Criar snapshot completo
         shell: bash
         run: |
-          set -u
-          REPORT=legacy-vairapido-frontend.txt
-          {
-            echo '===== CANDIDATOS POR NOME DE FICHEIRO ====='
-            find . -type f \
-              ! -path './.git/*' \
-              ! -path './node_modules/*' \
-              ! -path './dist/*' \
-              | sort \
-              | grep -Ei '/(transport|route|trip|passenger|booking|ticket|boarding|multicountry|company)' \
-              || true
+          tar --exclude='./.git' \
+              --exclude='./secretariapay-web-complete-source.tar.gz' \
+              -czf secretariapay-web-complete-source.tar.gz .
 
-            echo
-            echo '===== FICHEIROS COM REFERENCIA EXPLICITA AO VAIRAPIDO ====='
-            grep -RIlE --exclude-dir=.git --exclude-dir=node_modules --exclude-dir=dist \
-              'VaiR[aá]pido|vairapido|VAI_RAPIDO|VAIRAPIDO' . \
-              | sort || true
-
-            echo
-            echo '===== FICHEIROS COM IDENTIFICADORES DO DOMINIO DE TRANSPORTE ====='
-            grep -RIlE --exclude-dir=.git --exclude-dir=node_modules --exclude-dir=dist \
-              'transportCompany|transport-companies|/trips|/passengers|/bookings|/tickets|/routes|boarding|multi-country|COMPANY_ADMIN|ROLE_COMPANY_ADMIN|ROLE_OPERATOR|busPlate|vehicleDescription|originCity|destinationCity|seatNumber' \
-              src public index.html package.json README.md .env.example 2>/dev/null \
-              | sort || true
-
-            echo
-            echo '===== CONTAGEM ====='
-            printf 'Ficheiros do repositorio: '
-            find . -type f ! -path './.git/*' ! -path './node_modules/*' ! -path './dist/*' | wc -l
-            printf 'Candidatos legados por nome: '
-            find . -type f ! -path './.git/*' ! -path './node_modules/*' ! -path './dist/*' \
-              | grep -Eic '/(transport|route|trip|passenger|booking|ticket|boarding|multicountry|company)' \
-              || true
-          } > "$REPORT"
-
-          tar -czf secretariapay-web-audit-source.tar.gz \
-            src public .github package.json package-lock.json index.html README.md \
-            .env.example .gitignore vite.config.js tailwind.config.js postcss.config.js 2>/dev/null
-
-          cat "$REPORT"
-
-      - name: Publicar relatório e fonte da auditoria
+      - name: Publicar snapshot
         uses: actions/upload-artifact@v4
         with:
-          name: legacy-vairapido-frontend-source
-          path: |
-            legacy-vairapido-frontend.txt
-            secretariapay-web-audit-source.tar.gz
+          name: secretariapay-web-complete-source
+          path: secretariapay-web-complete-source.tar.gz
           if-no-files-found: error
-          retention-days: 7
+          retention-days: 1
