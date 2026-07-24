@@ -16,6 +16,8 @@ import AcademicCatalogPage from './pages/AcademicCatalogPage.jsx';
 import AcademicServicesPage from './pages/AcademicServicesPage.jsx';
 import AcademicServiceOrdersPage from './pages/AcademicServiceOrdersPage.jsx';
 import AcademicDocumentsPage from './pages/AcademicDocumentsPage.jsx';
+import AdmissionsPage from './pages/AdmissionsPage.jsx';
+import OfficialAdmissionsPage from './pages/OfficialAdmissionsPage.jsx';
 import AdminUsersPage from './pages/AdminUsersPage.jsx';
 import SettingsPage from './pages/SettingsPage.jsx';
 import OperationsPage from './pages/OperationsOfficialPage.jsx';
@@ -42,6 +44,8 @@ export default function App() {
           <Route path="/charges" element={secured('/charges', <ChargesPage />)} />
           <Route path="/proofs" element={secured('/proofs', <ProofsPage />)} />
           <Route path="/receipts" element={secured('/receipts', <ReceiptsPage />)} />
+          <Route path="/admissions" element={secured('/admissions', <OfficialAdmissionsPage />)} />
+          <Route path="/admissions-pilot" element={secured('/admissions', <AdmissionsPage />)} />
           <Route path="/academic-services" element={secured('/academic-services', <AcademicServicesPage />)} />
           <Route path="/academic-service-orders" element={secured('/academic-service-orders', <AcademicServiceOrdersPage />)} />
           <Route path="/academic-documents" element={secured('/academic-documents', <AcademicDocumentsPage />)} />

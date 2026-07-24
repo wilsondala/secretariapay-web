@@ -6,6 +6,8 @@ export const ROLES = {
   FINANCEIRO: 'FINANCEIRO',
   TESOURARIA: 'TESOURARIA',
   SECRETARIA: 'SECRETARIA',
+  ADMISSOES: 'ADMISSOES',
+  MARKETING: 'MARKETING',
   OPERADOR_ATENDIMENTO: 'OPERADOR_ATENDIMENTO',
   DCR_COORDENACAO: 'DCR_COORDENACAO',
   DCR_OPERADOR: 'DCR_OPERADOR',
@@ -30,6 +32,10 @@ const DIRECAO_SERVICE_ORDERS = [...ADMINS, ROLES.DIRECAO];
 const WHATSAPP_OPERATIONS = [...MANAGEMENT, ROLES.FINANCEIRO, ROLES.TESOURARIA, ROLES.OPERADOR_ATENDIMENTO];
 const INSTITUTIONAL_OPERATIONS = [...MANAGEMENT, ROLES.FINANCEIRO];
 const EXECUTIVE_REPORTING = [...MANAGEMENT, ROLES.FINANCEIRO, ROLES.TESOURARIA, ...READ_ONLY];
+const ADMISSIONS_READ = [...ADMINS, ROLES.DIRECAO, ROLES.TIC, ROLES.AUDITORIA, ROLES.ADMISSOES, ROLES.MARKETING, ROLES.SECRETARIA, ...DCR, ROLES.FINANCEIRO, ROLES.TESOURARIA];
+const ADMISSION_LEADS = [...ADMINS, ROLES.ADMISSOES, ROLES.MARKETING, ROLES.OPERADOR_ATENDIMENTO];
+const ADMISSION_APPLICATIONS = [...ADMINS, ROLES.ADMISSOES, ROLES.SECRETARIA];
+const ADMISSION_PAYMENTS = [...ADMINS, ...DCR, ROLES.FINANCEIRO, ROLES.TESOURARIA];
 
 export const ROUTE_ROLES = {
   '/dashboard': ALL,
@@ -37,6 +43,7 @@ export const ROUTE_ROLES = {
   '/charges': [...FINANCE_READ, ROLES.OPERADOR_ATENDIMENTO, ...READ_ONLY],
   '/proofs': [...FINANCE_READ, ...READ_ONLY],
   '/receipts': [...FINANCE_READ, ROLES.OPERADOR_ATENDIMENTO, ...READ_ONLY],
+  '/admissions': ADMISSIONS_READ,
   '/academic-services': [...FINANCE_READ, ROLES.SECRETARIA, ROLES.OPERADOR_ATENDIMENTO, ...READ_ONLY],
   '/academic-service-orders': [...DCR_SERVICE_ORDERS, ...SECRETARIA_SERVICE_ORDERS, ...DIRECAO_SERVICE_ORDERS, ...READ_ONLY],
   '/academic-documents': [...ACADEMIC, ...READ_ONLY],
@@ -54,6 +61,9 @@ export const ACTION_ROLES = {
   manageSettings: MANAGEMENT,
   manageAcademicCatalog: ACADEMIC,
   manageAcademicServices: [...ADMINS, ROLES.DIRECAO, ROLES.FINANCEIRO, ROLES.TESOURARIA, ROLES.DCR_COORDENACAO, ROLES.TIC],
+  manageAdmissionLeads: ADMISSION_LEADS,
+  manageAdmissionApplications: ADMISSION_APPLICATIONS,
+  manageAdmissionPayments: ADMISSION_PAYMENTS,
   createAcademicServiceOrders: DCR_SERVICE_ORDERS,
   processAcademicServiceOrders: SECRETARIA_SERVICE_ORDERS,
   signAcademicServiceOrders: DIRECAO_SERVICE_ORDERS,
@@ -95,6 +105,6 @@ export function can(user, action) {
 }
 
 export function getDefaultRoute(user) {
-  const preferred = ['/dashboard', '/students', '/charges', '/academic-services', '/proofs', '/receipts', '/academic-service-orders', '/academic-documents', '/academic-catalog', '/whatsapp', '/reports'];
+  const preferred = ['/dashboard', '/admissions', '/students', '/charges', '/academic-services', '/proofs', '/receipts', '/academic-service-orders', '/academic-documents', '/academic-catalog', '/whatsapp', '/reports'];
   return preferred.find((path) => canAccessRoute(user, path)) || '/login';
 }
