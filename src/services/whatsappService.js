@@ -68,8 +68,6 @@ export async function fetchWhatsappMessages(filters = {}) {
       '/api/v1/admin/whatsapp/messages',
       '/api/v1/secretariapay/whatsapp/messages',
       '/api/v1/secretariapay/messages',
-      '/api/v1/whatsapp/messages',
-      '/api/v1/messages/whatsapp',
     ],
     { params: buildParams(filters) },
   );
@@ -86,7 +84,6 @@ export async function fetchWhatsappSessions(filters = {}) {
     [
       '/api/v1/admin/whatsapp/sessions',
       '/api/v1/secretariapay/whatsapp/sessions',
-      '/api/v1/whatsapp/sessions',
     ],
     { params: buildParams(filters) },
   );

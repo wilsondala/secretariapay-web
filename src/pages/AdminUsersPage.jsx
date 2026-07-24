@@ -9,7 +9,7 @@ const roleLabels = {
   DIRECAO: 'Direção', FINANCEIRO: 'Financeiro', TESOURARIA: 'Tesouraria', SECRETARIA: 'Secretaria',
   ADMISSOES: 'Admissões e inscrições', MARKETING: 'Captação e marketing',
   OPERADOR_ATENDIMENTO: 'Operador de atendimento', DCR_COORDENACAO: 'Coordenação DCR', DCR_OPERADOR: 'Operador DCR',
-  TIC: 'TIC', AUDITORIA: 'Auditoria', ADMIN: 'Administrador legado', COMPANY_ADMIN: 'Administrador legado', OPERATOR: 'Operador legado',
+  TIC: 'TIC', AUDITORIA: 'Auditoria',
 };
 
 export default function AdminUsersPage() {
