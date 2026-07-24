@@ -8,6 +8,57 @@ export async function getOfficialAdmissionsCatalog(institutionId) {
   return data;
 }
 
+export async function createPublicAdmissionApplication(payload) {
+  const { data } = await api.post(`${PUBLIC_BASE_URL}/applications`, payload);
+  return data;
+}
+
+export async function getPublicAdmissionPaymentStatus(applicationCode, documentNumber) {
+  const { data } = await api.post(
+    `${PUBLIC_BASE_URL}/applications/${encodeURIComponent(applicationCode)}/payment/status`,
+    { documentNumber },
+  );
+  return data;
+}
+
+export async function issuePublicAdmissionPayment(applicationCode, documentNumber) {
+  const { data } = await api.post(
+    `${PUBLIC_BASE_URL}/applications/${encodeURIComponent(applicationCode)}/payment`,
+    { documentNumber },
+  );
+  return data;
+}
+
+export async function downloadPublicAdmissionPaymentGuide(applicationCode, documentNumber) {
+  const response = await api.post(
+    `${PUBLIC_BASE_URL}/applications/${encodeURIComponent(applicationCode)}/payment-guide`,
+    { documentNumber },
+    { responseType: 'blob' },
+  );
+  return response.data;
+}
+
+export async function submitPublicAdmissionPaymentProof(applicationCode, payload) {
+  const { data } = await api.post(
+    `${PUBLIC_BASE_URL}/applications/${encodeURIComponent(applicationCode)}/payment-proof`,
+    payload,
+  );
+  return data;
+}
+
+export async function uploadPublicAdmissionPaymentProof(applicationCode, documentNumber, file) {
+  const formData = new FormData();
+  formData.append('documentNumber', documentNumber);
+  formData.append('file', file);
+
+  const { data } = await api.post(
+    `${PUBLIC_BASE_URL}/applications/${encodeURIComponent(applicationCode)}/payment-proof/upload`,
+    formData,
+    { headers: { 'Content-Type': 'multipart/form-data' } },
+  );
+  return data;
+}
+
 export async function listAdmissionLeads({ institutionId, status = '' }) {
   const params = { institutionId };
   if (status) params.status = status;
@@ -44,6 +95,49 @@ export async function createAdmissionApplication(payload) {
 export async function getAdmissionApplication(applicationId) {
   const { data } = await api.get(`${BASE_URL}/applications/${applicationId}`);
   return data;
+}
+
+export async function getAdmissionEnrollmentDocuments(applicationId) {
+  const { data } = await api.get(`${BASE_URL}/applications/${applicationId}/enrollment-documents`);
+  return data;
+}
+
+export async function reviewAdmissionEnrollmentDocuments(applicationId, payload) {
+  const { data } = await api.put(
+    `${BASE_URL}/applications/${applicationId}/enrollment-documents`,
+    payload,
+  );
+  return data;
+}
+
+export async function listAdmissionEnrollmentDocumentFiles(applicationId) {
+  const { data } = await api.get(
+    `${BASE_URL}/applications/${applicationId}/enrollment-document-files`,
+  );
+  return Array.isArray(data) ? data : [];
+}
+
+export async function uploadAdmissionEnrollmentDocumentFile(applicationId, documentType, file) {
+  const formData = new FormData();
+  formData.append('file', file);
+  const { data } = await api.post(
+    `${BASE_URL}/applications/${applicationId}/enrollment-document-files/${documentType}`,
+    formData,
+    { headers: { 'Content-Type': 'multipart/form-data' } },
+  );
+  return data;
+}
+
+export async function deleteAdmissionEnrollmentDocumentFile(fileId) {
+  await api.delete(`${BASE_URL}/enrollment-document-files/${fileId}`);
+}
+
+export async function downloadAdmissionEnrollmentDocumentFile(fileId) {
+  const response = await api.get(
+    `${BASE_URL}/enrollment-document-files/${fileId}/content`,
+    { responseType: 'blob' },
+  );
+  return response.data;
 }
 
 export async function submitAdmissionApplication(applicationId) {

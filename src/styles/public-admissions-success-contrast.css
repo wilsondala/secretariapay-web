@@ -1,0 +1,81 @@
+.public-admissions-scope .admission-success-shell .admission-success-check {
+  background-color: #059669 !important;
+}
+
+.public-admissions-scope .admission-success-shell p.text-emerald-700 {
+  color: #059669 !important;
+}
+
+/* Mantém as mensagens financeiras verdes legíveis após os temas globais. */
+.public-admissions-scope #pagamento-inscricao-publico .public-payment-success,
+.public-admissions-scope #pagamento-inscricao-publico .flex.items-start.gap-3.rounded-2xl.border.border-emerald-200.bg-emerald-50 {
+  color: #065f46 !important;
+  background-color: #ecfdf5 !important;
+  border-color: #6ee7b7 !important;
+}
+
+.public-admissions-scope #pagamento-inscricao-publico .public-payment-success p,
+.public-admissions-scope #pagamento-inscricao-publico .flex.items-start.gap-3.rounded-2xl.border.border-emerald-200.bg-emerald-50 p {
+  color: #065f46 !important;
+  background: transparent !important;
+  opacity: 1 !important;
+}
+
+.public-admissions-scope #pagamento-inscricao-publico .flex.items-start.gap-3.rounded-2xl.border.border-emerald-200.bg-emerald-50 p:first-child {
+  color: #064e3b !important;
+}
+
+.public-admissions-scope #pagamento-inscricao-publico .public-payment-success svg,
+.public-admissions-scope #pagamento-inscricao-publico .flex.items-start.gap-3.rounded-2xl.border.border-emerald-200.bg-emerald-50 svg {
+  color: #047857 !important;
+  opacity: 1 !important;
+}
+
+/* Mantém o estado do comprovativo legível mesmo com o dark mode administrativo ativo. */
+.public-admissions-scope #pagamento-inscricao-publico .border-blue-200.bg-blue-50.text-blue-900 {
+  color: #1e3a8a !important;
+  background-color: #eff6ff !important;
+  border-color: #93c5fd !important;
+  box-shadow: 0 8px 24px rgba(30, 64, 175, 0.08) !important;
+  opacity: 1 !important;
+}
+
+.public-admissions-scope #pagamento-inscricao-publico .border-blue-200.bg-blue-50.text-blue-900 p {
+  color: #1e3a8a !important;
+  background: transparent !important;
+  opacity: 1 !important;
+}
+
+.public-admissions-scope #pagamento-inscricao-publico .border-blue-200.bg-blue-50.text-blue-900 p:first-child {
+  color: #172554 !important;
+}
+
+.public-admissions-scope #pagamento-inscricao-publico .border-blue-200.bg-blue-50.text-blue-900 svg {
+  color: #2563eb !important;
+  opacity: 1 !important;
+}
+
+/* Atualiza a leitura operacional quando a Secretaria já confrontou os originais. */
+.premium-card:has(> label.mt-4.block + .mt-4.grid > div:nth-child(3) p.text-emerald-700)
+  > label.mt-4.block + .mt-4.grid > div:nth-child(4) p:last-child {
+  font-size: 0 !important;
+}
+
+.premium-card:has(> label.mt-4.block + .mt-4.grid > div:nth-child(3) p.text-emerald-700)
+  > label.mt-4.block + .mt-4.grid > div:nth-child(4) p:last-child::after {
+  content: 'Documentação regularizada';
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.premium-card:has(> label.mt-4.block + .mt-4.grid > div:nth-child(3) p.text-emerald-700)
+  > .mt-5.rounded-2xl.border.border-emerald-200.bg-emerald-50 > p.mt-3.text-xs.font-bold {
+  font-size: 0 !important;
+}
+
+.premium-card:has(> label.mt-4.block + .mt-4.grid > div:nth-child(3) p.text-emerald-700)
+  > .mt-5.rounded-2xl.border.border-emerald-200.bg-emerald-50 > p.mt-3.text-xs.font-bold::after {
+  content: 'Matrícula concluída, número de estudante criado e documentação presencial regularizada.';
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
