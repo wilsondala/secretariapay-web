@@ -18,31 +18,53 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          show-progress: false
 
-      - name: Inventariar ficheiros e referencias legadas
+      - name: Gerar relatório da auditoria
         shell: bash
         run: |
           set -u
-          echo '===== CANDIDATOS POR NOME DE FICHEIRO ====='
-          find . -type f \
-            ! -path './.git/*' \
-            ! -path './node_modules/*' \
-            ! -path './dist/*' \
-            | sort \
-            | grep -Ei '/(transport|route|trip|passenger|booking|ticket|boarding|multicountry|company)' \
-            || true
+          REPORT=legacy-vairapido-frontend.txt
+          {
+            echo '===== CANDIDATOS POR NOME DE FICHEIRO ====='
+            find . -type f \
+              ! -path './.git/*' \
+              ! -path './node_modules/*' \
+              ! -path './dist/*' \
+              | sort \
+              | grep -Ei '/(transport|route|trip|passenger|booking|ticket|boarding|multicountry|company)' \
+              || true
 
-          echo
-          echo '===== REFERENCIAS EXPLICITAS AO VAIRAPIDO ====='
-          grep -RInE --exclude-dir=.git --exclude-dir=node_modules --exclude-dir=dist \
-            'VaiR[aá]pido|vairapido|VAI_RAPIDO|VAIRAPIDO' . || true
+            echo
+            echo '===== FICHEIROS COM REFERENCIA EXPLICITA AO VAIRAPIDO ====='
+            grep -RIlE --exclude-dir=.git --exclude-dir=node_modules --exclude-dir=dist \
+              'VaiR[aá]pido|vairapido|VAI_RAPIDO|VAIRAPIDO' . \
+              | sort || true
 
-          echo
-          echo '===== IDENTIFICADORES E ROTAS DE TRANSPORTE ====='
-          grep -RInE --exclude-dir=.git --exclude-dir=node_modules --exclude-dir=dist \
-            'transportCompany|transport-companies|/trips|/passengers|/bookings|/tickets|/routes|boarding|multi-country|COMPANY_ADMIN|ROLE_COMPANY_ADMIN|ROLE_OPERATOR|busPlate|vehicleDescription|originCity|destinationCity|seatNumber' \
-            src public index.html package.json README.md .env.example 2>/dev/null || true
+            echo
+            echo '===== FICHEIROS COM IDENTIFICADORES DO DOMINIO DE TRANSPORTE ====='
+            grep -RIlE --exclude-dir=.git --exclude-dir=node_modules --exclude-dir=dist \
+              'transportCompany|transport-companies|/trips|/passengers|/bookings|/tickets|/routes|boarding|multi-country|COMPANY_ADMIN|ROLE_COMPANY_ADMIN|ROLE_OPERATOR|busPlate|vehicleDescription|originCity|destinationCity|seatNumber' \
+              src public index.html package.json README.md .env.example 2>/dev/null \
+              | sort || true
 
-          echo
-          echo '===== TOTAL DE FICHEIROS DO REPOSITORIO ====='
-          find . -type f ! -path './.git/*' ! -path './node_modules/*' ! -path './dist/*' | wc -l
+            echo
+            echo '===== CONTAGEM ====='
+            printf 'Ficheiros do repositorio: '
+            find . -type f ! -path './.git/*' ! -path './node_modules/*' ! -path './dist/*' | wc -l
+            printf 'Candidatos legados por nome: '
+            find . -type f ! -path './.git/*' ! -path './node_modules/*' ! -path './dist/*' \
+              | grep -Eic '/(transport|route|trip|passenger|booking|ticket|boarding|multicountry|company)' \
+              || true
+          } > "$REPORT"
+
+          cat "$REPORT"
+
+      - name: Publicar relatório
+        uses: actions/upload-artifact@v4
+        with:
+          name: legacy-vairapido-frontend
+          path: legacy-vairapido-frontend.txt
+          if-no-files-found: error
+          retention-days: 7
