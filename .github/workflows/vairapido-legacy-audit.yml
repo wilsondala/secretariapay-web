@@ -59,12 +59,18 @@ jobs:
               || true
           } > "$REPORT"
 
+          tar -czf secretariapay-web-audit-source.tar.gz \
+            src public .github package.json package-lock.json index.html README.md \
+            .env.example .gitignore vite.config.js tailwind.config.js postcss.config.js 2>/dev/null
+
           cat "$REPORT"
 
-      - name: Publicar relatório
+      - name: Publicar relatório e fonte da auditoria
         uses: actions/upload-artifact@v4
         with:
-          name: legacy-vairapido-frontend
-          path: legacy-vairapido-frontend.txt
+          name: legacy-vairapido-frontend-source
+          path: |
+            legacy-vairapido-frontend.txt
+            secretariapay-web-audit-source.tar.gz
           if-no-files-found: error
           retention-days: 7
