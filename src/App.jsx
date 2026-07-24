@@ -7,6 +7,7 @@ import PublicGuidePage from './pages/PublicGuidePage.jsx';
 import PublicAdmissionsPage from './pages/PublicAdmissionsPage.jsx';
 import PublicAdmissionLookupPage from './pages/PublicAdmissionLookupPage.jsx';
 import LoginPage from './pages/LoginPage.jsx';
+import FirstAccessPasswordPage from './pages/FirstAccessPasswordPage.jsx';
 import DashboardPage from './pages/DashboardPage.jsx';
 import StudentsPage from './pages/StudentsSeparatedFinancePage.jsx';
 import ChargesPage from './pages/ChargesPageV2.jsx';
@@ -43,6 +44,7 @@ export default function App() {
       <Route path="/apresentacao" element={<PublicDemoCarouselPage />} />
       <Route path="/demo-publica" element={<PublicDemoCarouselPage />} />
       <Route element={<ProtectedRoute />}>
+        <Route path="/alterar-senha" element={<FirstAccessPasswordPage />} />
         <Route element={<AppLayout />}>
           <Route path="/dashboard" element={secured('/dashboard', <DashboardPage />)} />
           <Route path="/students" element={secured('/students', <StudentsPage />)} />
