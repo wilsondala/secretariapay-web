@@ -32,7 +32,7 @@ export default function AboutPage() {
               <p className="text-[11px] font-black uppercase tracking-wide text-slate-400">Posicionamento</p>
               <h2 className="section-title">Plataforma institucional de gestão académico-financeira</h2>
               <p className="mt-2 text-xs leading-6 text-slate-600">
-                O SecretáriaPay Académico não é apenas um robô de WhatsApp. É uma plataforma da TRIA Company para apoiar a DCR do IMETRO na automação de propinas, guias de pagamento, comprovativos, recibos, cobrança, importação WebSchool e atendimento institucional.
+                O SecretáriaPay Académico não é apenas um robô de WhatsApp. É uma plataforma institucional para apoiar a DCR do IMETRO na automação de propinas, guias de pagamento, comprovativos, recibos, cobrança, importação WebSchool e atendimento institucional.
               </p>
             </div>
           </div>

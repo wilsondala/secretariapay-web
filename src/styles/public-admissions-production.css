@@ -1,0 +1,10 @@
+/* Acabamento final das páginas públicas de admissões. */
+.public-admissions-scope #pagamento-inscricao-publico .public-payment-environment {
+  display: none !important;
+}
+
+.public-admissions-scope #pagamento-inscricao-publico,
+.public-admissions-scope #consulta-candidatura,
+.public-admissions-scope #ficha-inscricao {
+  scroll-margin-top: 1.5rem;
+}

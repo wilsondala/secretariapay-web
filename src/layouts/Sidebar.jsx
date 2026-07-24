@@ -8,6 +8,7 @@ import {
   FileCheck2,
   FileSignature,
   FileText,
+  GraduationCap,
   Home,
   Import,
   MessageCircle,
@@ -17,6 +18,7 @@ import {
   Sparkles,
   Tags,
   UserCog,
+  UserPlus,
   Users,
   Workflow,
   X,
@@ -43,6 +45,8 @@ const groups = [
   {
     label: 'Gestão académica',
     items: [
+      ['Admissões e inscrições', '/admissions', UserPlus, 'Leads, fichas e pagamentos'],
+      ['Matrículas e rematrículas', '/enrollments', GraduationCap, 'Pedidos, progressão e receitas'],
       ['Pedidos de serviços', '/academic-service-orders', ClipboardList, 'Pagamento, emissão e entrega'],
       ['Documentos académicos', '/academic-documents', FileSignature, 'Declarações e assinatura'],
       ['Cursos e turmas', '/academic-catalog', BookOpen, 'Estrutura académica'],

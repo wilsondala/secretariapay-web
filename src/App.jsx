@@ -4,6 +4,8 @@ import RoleRoute from './shared/routes/RoleRoute.jsx';
 import AppLayout from './layouts/AppLayout.jsx';
 import PublicHomePage from './pages/PublicHomePage.jsx';
 import PublicGuidePage from './pages/PublicGuidePage.jsx';
+import PublicAdmissionsPage from './pages/PublicAdmissionsPage.jsx';
+import PublicAdmissionLookupPage from './pages/PublicAdmissionLookupPage.jsx';
 import LoginPage from './pages/LoginPage.jsx';
 import DashboardPage from './pages/DashboardPage.jsx';
 import StudentsPage from './pages/StudentsSeparatedFinancePage.jsx';
@@ -16,6 +18,9 @@ import AcademicCatalogPage from './pages/AcademicCatalogPage.jsx';
 import AcademicServicesPage from './pages/AcademicServicesPage.jsx';
 import AcademicServiceOrdersPage from './pages/AcademicServiceOrdersPage.jsx';
 import AcademicDocumentsPage from './pages/AcademicDocumentsPage.jsx';
+import AdmissionLeadsPage from './pages/AdmissionLeadsPage.jsx';
+import OfficialAdmissionsPage from './pages/OfficialAdmissionsPage.jsx';
+import EnrollmentsPage from './pages/EnrollmentsPage.jsx';
 import AdminUsersPage from './pages/AdminUsersPage.jsx';
 import SettingsPage from './pages/SettingsPage.jsx';
 import OperationsPage from './pages/OperationsOfficialPage.jsx';
@@ -31,6 +36,8 @@ export default function App() {
   return (
     <Routes>
       <Route path="/" element={<div className="public-home-scope"><PublicHomePage /></div>} />
+      <Route path="/inscricoes" element={<div className="public-admissions-scope"><PublicAdmissionsPage /></div>} />
+      <Route path="/inscricoes/consultar" element={<div className="public-admissions-scope"><PublicAdmissionLookupPage /></div>} />
       <Route path="/guias/:guideCode" element={<PublicGuidePage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/apresentacao" element={<PublicDemoCarouselPage />} />
@@ -42,6 +49,9 @@ export default function App() {
           <Route path="/charges" element={secured('/charges', <ChargesPage />)} />
           <Route path="/proofs" element={secured('/proofs', <ProofsPage />)} />
           <Route path="/receipts" element={secured('/receipts', <ReceiptsPage />)} />
+          <Route path="/admissions" element={secured('/admissions', <OfficialAdmissionsPage />)} />
+          <Route path="/admissions-pilot" element={secured('/admissions', <AdmissionLeadsPage />)} />
+          <Route path="/enrollments" element={secured('/enrollments', <EnrollmentsPage />)} />
           <Route path="/academic-services" element={secured('/academic-services', <AcademicServicesPage />)} />
           <Route path="/academic-service-orders" element={secured('/academic-service-orders', <AcademicServiceOrdersPage />)} />
           <Route path="/academic-documents" element={secured('/academic-documents', <AcademicDocumentsPage />)} />

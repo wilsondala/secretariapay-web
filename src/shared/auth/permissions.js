@@ -6,18 +6,23 @@ export const ROLES = {
   FINANCEIRO: 'FINANCEIRO',
   TESOURARIA: 'TESOURARIA',
   SECRETARIA: 'SECRETARIA',
+  ADMISSOES: 'ADMISSOES',
+  MARKETING: 'MARKETING',
   OPERADOR_ATENDIMENTO: 'OPERADOR_ATENDIMENTO',
   DCR_COORDENACAO: 'DCR_COORDENACAO',
   DCR_OPERADOR: 'DCR_OPERADOR',
   TIC: 'TIC',
   AUDITORIA: 'AUDITORIA',
-  ADMIN: 'ADMIN',
-  COMPANY_ADMIN: 'COMPANY_ADMIN',
-  OPERATOR: 'OPERATOR',
+};
+
+const LEGACY_ROLE_ALIASES = {
+  ADMIN: ROLES.ADMIN_GLOBAL,
+  COMPANY_ADMIN: ROLES.OPERADOR_ATENDIMENTO,
+  OPERATOR: ROLES.OPERADOR_ATENDIMENTO,
 };
 
 const ALL = Object.values(ROLES);
-const ADMINS = [ROLES.ADMIN_GLOBAL, ROLES.ADMIN_INSTITUTION, ROLES.ADMIN_IMETRO, ROLES.ADMIN, ROLES.COMPANY_ADMIN];
+const ADMINS = [ROLES.ADMIN_GLOBAL, ROLES.ADMIN_INSTITUTION, ROLES.ADMIN_IMETRO];
 const MANAGEMENT = [...ADMINS, ROLES.DIRECAO, ROLES.TIC];
 const DCR = [ROLES.DCR_COORDENACAO, ROLES.DCR_OPERADOR];
 const FINANCE_CORE = [...MANAGEMENT, ROLES.FINANCEIRO, ROLES.TESOURARIA];
@@ -30,6 +35,13 @@ const DIRECAO_SERVICE_ORDERS = [...ADMINS, ROLES.DIRECAO];
 const WHATSAPP_OPERATIONS = [...MANAGEMENT, ROLES.FINANCEIRO, ROLES.TESOURARIA, ROLES.OPERADOR_ATENDIMENTO];
 const INSTITUTIONAL_OPERATIONS = [...MANAGEMENT, ROLES.FINANCEIRO];
 const EXECUTIVE_REPORTING = [...MANAGEMENT, ROLES.FINANCEIRO, ROLES.TESOURARIA, ...READ_ONLY];
+const ADMISSIONS_READ = [...ADMINS, ROLES.DIRECAO, ROLES.TIC, ROLES.AUDITORIA, ROLES.ADMISSOES, ROLES.MARKETING, ROLES.SECRETARIA, ...DCR, ROLES.FINANCEIRO, ROLES.TESOURARIA];
+const ADMISSION_LEADS = [...ADMINS, ROLES.ADMISSOES, ROLES.MARKETING, ROLES.OPERADOR_ATENDIMENTO];
+const ADMISSION_APPLICATIONS = [...ADMINS, ROLES.ADMISSOES, ROLES.SECRETARIA];
+const ADMISSION_PAYMENTS = [...ADMINS, ...DCR, ROLES.FINANCEIRO, ROLES.TESOURARIA];
+const ENROLLMENTS_READ = [...ADMINS, ROLES.DIRECAO, ROLES.TIC, ROLES.AUDITORIA, ROLES.ADMISSOES, ROLES.SECRETARIA, ...DCR];
+const ENROLLMENT_APPLICATIONS = [...ADMINS, ROLES.ADMISSOES, ROLES.SECRETARIA];
+const ENROLLMENT_PAYMENTS = [...ADMINS, ...DCR, ROLES.FINANCEIRO, ROLES.TESOURARIA];
 
 export const ROUTE_ROLES = {
   '/dashboard': ALL,
@@ -37,6 +49,8 @@ export const ROUTE_ROLES = {
   '/charges': [...FINANCE_READ, ROLES.OPERADOR_ATENDIMENTO, ...READ_ONLY],
   '/proofs': [...FINANCE_READ, ...READ_ONLY],
   '/receipts': [...FINANCE_READ, ROLES.OPERADOR_ATENDIMENTO, ...READ_ONLY],
+  '/admissions': ADMISSIONS_READ,
+  '/enrollments': ENROLLMENTS_READ,
   '/academic-services': [...FINANCE_READ, ROLES.SECRETARIA, ROLES.OPERADOR_ATENDIMENTO, ...READ_ONLY],
   '/academic-service-orders': [...DCR_SERVICE_ORDERS, ...SECRETARIA_SERVICE_ORDERS, ...DIRECAO_SERVICE_ORDERS, ...READ_ONLY],
   '/academic-documents': [...ACADEMIC, ...READ_ONLY],
@@ -54,6 +68,11 @@ export const ACTION_ROLES = {
   manageSettings: MANAGEMENT,
   manageAcademicCatalog: ACADEMIC,
   manageAcademicServices: [...ADMINS, ROLES.DIRECAO, ROLES.FINANCEIRO, ROLES.TESOURARIA, ROLES.DCR_COORDENACAO, ROLES.TIC],
+  manageAdmissionLeads: ADMISSION_LEADS,
+  manageAdmissionApplications: ADMISSION_APPLICATIONS,
+  manageAdmissionPayments: ADMISSION_PAYMENTS,
+  manageEnrollmentApplications: ENROLLMENT_APPLICATIONS,
+  manageEnrollmentPayments: ENROLLMENT_PAYMENTS,
   createAcademicServiceOrders: DCR_SERVICE_ORDERS,
   processAcademicServiceOrders: SECRETARIA_SERVICE_ORDERS,
   signAcademicServiceOrders: DIRECAO_SERVICE_ORDERS,
@@ -76,7 +95,8 @@ export const ACTION_ROLES = {
 };
 
 export function normalizeRole(role) {
-  return String(role || '').replace(/^ROLE_/, '').trim().toUpperCase();
+  const normalized = String(role || '').replace(/^ROLE_/, '').trim().toUpperCase();
+  return LEGACY_ROLE_ALIASES[normalized] || normalized;
 }
 
 export function hasAnyRole(user, allowedRoles = []) {
@@ -95,6 +115,6 @@ export function can(user, action) {
 }
 
 export function getDefaultRoute(user) {
-  const preferred = ['/dashboard', '/students', '/charges', '/academic-services', '/proofs', '/receipts', '/academic-service-orders', '/academic-documents', '/academic-catalog', '/whatsapp', '/reports'];
+  const preferred = ['/dashboard', '/admissions', '/enrollments', '/students', '/charges', '/academic-services', '/proofs', '/receipts', '/academic-service-orders', '/academic-documents', '/academic-catalog', '/whatsapp', '/reports'];
   return preferred.find((path) => canAccessRoute(user, path)) || '/login';
 }

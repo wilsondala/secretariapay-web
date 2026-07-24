@@ -2,11 +2,9 @@ import { env } from '../../config/env.js';
 import { normalizeRole } from './permissions.js';
 
 const ADMIN_ROLES = new Set([
-  'ADMIN',
   'ADMIN_GLOBAL',
   'ADMIN_INSTITUTION',
   'ADMIN_IMETRO',
-  'COMPANY_ADMIN',
 ]);
 
 const PRESENTATIONS = {
@@ -27,6 +25,18 @@ const PRESENTATIONS = {
     unit: 'IMETRO · Secretaria',
     support: 'Suporte da Secretaria',
     initials: 'SA',
+  },
+  ADMISSOES: {
+    title: 'Admissões e Inscrições',
+    unit: 'IMETRO · Admissões',
+    support: 'Suporte de Admissões',
+    initials: 'AD',
+  },
+  MARKETING: {
+    title: 'Captação e Marketing',
+    unit: 'IMETRO · Captação',
+    support: 'Suporte de Captação',
+    initials: 'MK',
   },
   DIRECAO: {
     title: 'Direção Institucional',
