@@ -22,6 +22,7 @@ const whatsappNumber = import.meta.env.VITE_SECRETARIA_WHATSAPP || '244991640259
 const whatsappDisplay = '+244 991 640 259';
 const whatsappText = encodeURIComponent('Olá, IMETRO. Preciso de informações sobre as inscrições 2026/2027.');
 const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${whatsappText}`;
+const ANGOLA_TIMEZONE_OFFSET = '+01:00';
 
 function formatDate(value) {
   if (!value) return '-';
@@ -47,6 +48,27 @@ function readError(error) {
     || 'Não foi possível carregar as informações oficiais de inscrição.';
 }
 
+function campaignStartTimestamp(value) {
+  if (!value) return null;
+  const timestamp = Date.parse(`${value}T00:00:00${ANGOLA_TIMEZONE_OFFSET}`);
+  return Number.isNaN(timestamp) ? null : timestamp;
+}
+
+function calculateCountdown(registrationStart, now) {
+  const target = campaignStartTimestamp(registrationStart);
+  if (!target) return null;
+
+  const remainingSeconds = Math.max(0, Math.floor((target - now) / 1000));
+  if (remainingSeconds <= 0) return null;
+
+  return {
+    days: Math.floor(remainingSeconds / 86400),
+    hours: Math.floor((remainingSeconds % 86400) / 3600),
+    minutes: Math.floor((remainingSeconds % 3600) / 60),
+    seconds: remainingSeconds % 60,
+  };
+}
+
 function campaignState(catalog) {
   if (!catalog) return { tone: 'slate', label: 'A carregar', description: 'A consultar a campanha oficial.' };
   if (!catalog.publicFormEnabled) {
@@ -63,9 +85,8 @@ function campaignState(catalog) {
       description: 'Submeta a sua candidatura online dentro do período indicado.',
     };
   }
-  const today = new Date();
-  const start = new Date(`${catalog.registrationStart}T00:00:00`);
-  if (today < start) {
+  const start = campaignStartTimestamp(catalog.registrationStart);
+  if (start && Date.now() < start) {
     return {
       tone: 'blue',
       label: 'Abertura programada',
@@ -85,6 +106,49 @@ const STATE_STYLES = {
   amber: 'border-amber-300/30 bg-amber-500/10 text-amber-100',
   slate: 'border-white/15 bg-white/5 text-white/80',
 };
+
+function AdmissionOpeningCountdown({ registrationStart }) {
+  const [now, setNow] = useState(() => Date.now());
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setNow(Date.now()), 1000);
+    return () => window.clearInterval(timer);
+  }, []);
+
+  const countdown = useMemo(
+    () => calculateCountdown(registrationStart, now),
+    [registrationStart, now],
+  );
+
+  if (!countdown) return null;
+
+  const units = [
+    { label: 'Dias', value: countdown.days },
+    { label: 'Horas', value: countdown.hours },
+    { label: 'Minutos', value: countdown.minutes },
+    { label: 'Segundos', value: countdown.seconds },
+  ];
+
+  return (
+    <div className="mt-4 border-t border-white/15 pt-4">
+      <p className="text-[10px] font-extrabold uppercase tracking-[.13em] text-current/65">Contagem regressiva para abertura</p>
+      <div
+        className="mt-2 grid grid-cols-4 gap-2"
+        role="timer"
+        aria-label={`Faltam ${countdown.days} dias, ${countdown.hours} horas, ${countdown.minutes} minutos e ${countdown.seconds} segundos para a abertura das inscrições`}
+      >
+        {units.map((unit) => (
+          <div key={unit.label} className="rounded-xl border border-white/15 bg-[#061936]/35 px-2 py-2.5 text-center shadow-inner">
+            <strong className="block text-lg font-black tabular-nums text-white sm:text-xl">
+              {String(unit.value).padStart(2, '0')}
+            </strong>
+            <span className="mt-0.5 block text-[9px] font-extrabold uppercase tracking-wide text-current/65">{unit.label}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export default function PublicAdmissionsPage() {
   const [catalog, setCatalog] = useState(null);
@@ -183,10 +247,11 @@ export default function PublicAdmissionsPage() {
                 <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/10">
                   {loading ? <Loader2 className="animate-spin" size={24} /> : canStart ? <CheckCircle2 size={24} /> : <Clock3 size={24} />}
                 </span>
-                <div>
+                <div className="min-w-0 flex-1">
                   <p className="text-xs font-extrabold uppercase tracking-[.13em] text-current/70">Estado da campanha</p>
                   <h2 className="mt-1 text-xl font-black">{state.label}</h2>
                   <p className="mt-2 text-sm font-semibold leading-6 text-current/75">{state.description}</p>
+                  {state.tone === 'blue' ? <AdmissionOpeningCountdown registrationStart={catalog?.registrationStart} /> : null}
                 </div>
               </div>
             </div>
