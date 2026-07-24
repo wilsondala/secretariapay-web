@@ -7,6 +7,7 @@
     "dev": "vite --host 0.0.0.0",
     "validate:academic-service-orders": "node scripts/validate-academic-service-orders-contract.mjs",
     "validate:proof-review-actions": "node scripts/validate-proof-review-actions-contract.mjs",
+    "validate:legacy-role-migration": "node scripts/validate-legacy-role-migration.mjs",
     "build": "vite build",
     "preview": "vite preview --host 0.0.0.0"
   },
