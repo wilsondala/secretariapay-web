@@ -36,6 +36,9 @@ const ADMISSIONS_READ = [...ADMINS, ROLES.DIRECAO, ROLES.TIC, ROLES.AUDITORIA, R
 const ADMISSION_LEADS = [...ADMINS, ROLES.ADMISSOES, ROLES.MARKETING, ROLES.OPERADOR_ATENDIMENTO];
 const ADMISSION_APPLICATIONS = [...ADMINS, ROLES.ADMISSOES, ROLES.SECRETARIA];
 const ADMISSION_PAYMENTS = [...ADMINS, ...DCR, ROLES.FINANCEIRO, ROLES.TESOURARIA];
+const ENROLLMENTS_READ = [...ADMINS, ROLES.DIRECAO, ROLES.TIC, ROLES.AUDITORIA, ROLES.ADMISSOES, ROLES.SECRETARIA, ...DCR];
+const ENROLLMENT_APPLICATIONS = [...ADMINS, ROLES.ADMISSOES, ROLES.SECRETARIA];
+const ENROLLMENT_PAYMENTS = [...ADMINS, ...DCR, ROLES.FINANCEIRO, ROLES.TESOURARIA];
 
 export const ROUTE_ROLES = {
   '/dashboard': ALL,
@@ -44,6 +47,7 @@ export const ROUTE_ROLES = {
   '/proofs': [...FINANCE_READ, ...READ_ONLY],
   '/receipts': [...FINANCE_READ, ROLES.OPERADOR_ATENDIMENTO, ...READ_ONLY],
   '/admissions': ADMISSIONS_READ,
+  '/enrollments': ENROLLMENTS_READ,
   '/academic-services': [...FINANCE_READ, ROLES.SECRETARIA, ROLES.OPERADOR_ATENDIMENTO, ...READ_ONLY],
   '/academic-service-orders': [...DCR_SERVICE_ORDERS, ...SECRETARIA_SERVICE_ORDERS, ...DIRECAO_SERVICE_ORDERS, ...READ_ONLY],
   '/academic-documents': [...ACADEMIC, ...READ_ONLY],
@@ -64,6 +68,8 @@ export const ACTION_ROLES = {
   manageAdmissionLeads: ADMISSION_LEADS,
   manageAdmissionApplications: ADMISSION_APPLICATIONS,
   manageAdmissionPayments: ADMISSION_PAYMENTS,
+  manageEnrollmentApplications: ENROLLMENT_APPLICATIONS,
+  manageEnrollmentPayments: ENROLLMENT_PAYMENTS,
   createAcademicServiceOrders: DCR_SERVICE_ORDERS,
   processAcademicServiceOrders: SECRETARIA_SERVICE_ORDERS,
   signAcademicServiceOrders: DIRECAO_SERVICE_ORDERS,
@@ -105,6 +111,6 @@ export function can(user, action) {
 }
 
 export function getDefaultRoute(user) {
-  const preferred = ['/dashboard', '/admissions', '/students', '/charges', '/academic-services', '/proofs', '/receipts', '/academic-service-orders', '/academic-documents', '/academic-catalog', '/whatsapp', '/reports'];
+  const preferred = ['/dashboard', '/admissions', '/enrollments', '/students', '/charges', '/academic-services', '/proofs', '/receipts', '/academic-service-orders', '/academic-documents', '/academic-catalog', '/whatsapp', '/reports'];
   return preferred.find((path) => canAccessRoute(user, path)) || '/login';
 }
