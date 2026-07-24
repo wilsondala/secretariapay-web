@@ -2,11 +2,9 @@ import { env } from '../../config/env.js';
 import { normalizeRole } from './permissions.js';
 
 const ADMIN_ROLES = new Set([
-  'ADMIN',
   'ADMIN_GLOBAL',
   'ADMIN_INSTITUTION',
   'ADMIN_IMETRO',
-  'COMPANY_ADMIN',
 ]);
 
 const PRESENTATIONS = {

@@ -13,13 +13,16 @@ export const ROLES = {
   DCR_OPERADOR: 'DCR_OPERADOR',
   TIC: 'TIC',
   AUDITORIA: 'AUDITORIA',
-  ADMIN: 'ADMIN',
-  COMPANY_ADMIN: 'COMPANY_ADMIN',
-  OPERATOR: 'OPERATOR',
+};
+
+const LEGACY_ROLE_ALIASES = {
+  ADMIN: ROLES.ADMIN_GLOBAL,
+  COMPANY_ADMIN: ROLES.OPERADOR_ATENDIMENTO,
+  OPERATOR: ROLES.OPERADOR_ATENDIMENTO,
 };
 
 const ALL = Object.values(ROLES);
-const ADMINS = [ROLES.ADMIN_GLOBAL, ROLES.ADMIN_INSTITUTION, ROLES.ADMIN_IMETRO, ROLES.ADMIN, ROLES.COMPANY_ADMIN];
+const ADMINS = [ROLES.ADMIN_GLOBAL, ROLES.ADMIN_INSTITUTION, ROLES.ADMIN_IMETRO];
 const MANAGEMENT = [...ADMINS, ROLES.DIRECAO, ROLES.TIC];
 const DCR = [ROLES.DCR_COORDENACAO, ROLES.DCR_OPERADOR];
 const FINANCE_CORE = [...MANAGEMENT, ROLES.FINANCEIRO, ROLES.TESOURARIA];
@@ -92,7 +95,8 @@ export const ACTION_ROLES = {
 };
 
 export function normalizeRole(role) {
-  return String(role || '').replace(/^ROLE_/, '').trim().toUpperCase();
+  const normalized = String(role || '').replace(/^ROLE_/, '').trim().toUpperCase();
+  return LEGACY_ROLE_ALIASES[normalized] || normalized;
 }
 
 export function hasAnyRole(user, allowedRoles = []) {
