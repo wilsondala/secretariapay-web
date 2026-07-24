@@ -8,7 +8,7 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import imetroMonogram from '../assets/imetroMonogram.js';
+import imetroFirstAccessBackground from '../assets/imetroFirstAccessBackground/index.js';
 import useAuth from '../shared/auth/useAuth.js';
 
 const INITIAL_FORM = {
@@ -75,42 +75,23 @@ export default function FirstAccessPasswordPage() {
 
   return (
     <main
-      className="relative min-h-screen overflow-hidden px-4 py-7 sm:px-6 lg:py-10"
+      className="relative min-h-screen overflow-hidden bg-cover bg-center bg-no-repeat px-4 py-7 sm:px-6 lg:py-10"
       style={{
-        background:
-          'radial-gradient(circle at 18% 22%, rgba(244,180,0,.18), transparent 27rem), radial-gradient(circle at 86% 78%, rgba(17,148,221,.19), transparent 31rem), linear-gradient(135deg, #03142D 0%, #071F44 52%, #03142D 100%)',
+        backgroundImage: `url("${imetroFirstAccessBackground}")`,
         color: '#071A35',
       }}
     >
+      <div className="pointer-events-none absolute inset-0 bg-[#03142D]/55" />
+
       <div
-        className="pointer-events-none absolute inset-0 opacity-40"
+        className="pointer-events-none absolute inset-0"
         style={{
-          backgroundImage:
-            'radial-gradient(circle at 1px 1px, rgba(255,255,255,.11) 1px, transparent 0)',
-          backgroundSize: '26px 26px',
+          background:
+            'linear-gradient(90deg, rgba(3,20,45,.94) 0%, rgba(3,20,45,.82) 42%, rgba(3,20,45,.58) 70%, rgba(3,20,45,.64) 100%)',
         }}
       />
 
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -left-24 top-1/2 hidden w-[58vw] max-w-[850px] -translate-y-1/2 lg:block">
-          <div className="absolute inset-[8%] rounded-full bg-[#F4B400]/15 blur-[90px]" />
-          <img
-            src={imetroMonogram}
-            alt=""
-            aria-hidden="true"
-            className="relative w-full opacity-[.24] drop-shadow-[0_30px_85px_rgba(244,180,0,.18)]"
-          />
-        </div>
-
-        <img
-          src={imetroMonogram}
-          alt=""
-          aria-hidden="true"
-          className="absolute left-1/2 top-5 w-[410px] -translate-x-1/2 opacity-[.11] sm:w-[520px] lg:hidden"
-        />
-
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#03142D]/10 to-[#03142D]/55" />
-      </div>
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-[#03142D]/60" />
 
       <div className="relative mx-auto grid min-h-[calc(100vh-3.5rem)] max-w-6xl items-center gap-10 lg:grid-cols-[.95fr_1.05fr]">
         <section className="relative hidden min-h-[560px] flex-col justify-end pb-14 text-white lg:flex">
