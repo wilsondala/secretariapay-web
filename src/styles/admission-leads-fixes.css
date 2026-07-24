@@ -1,0 +1,17 @@
+/* Ajustes específicos do módulo de captação e leads.
+   Mantém o histórico legível e evita repetir a ação de contacto. */
+
+/* Preserva as quebras de linha enviadas pelo backend no histórico do lead. */
+.fixed.inset-0.z-\[90\] aside > .pt-5 > .premium-card.mt-4 > p.mt-2 {
+  white-space: pre-line;
+}
+
+/* Quando o primeiro badge do drawer representa o estado CONTACTED,
+   oculta a ação redundante "Marcar contactado". O segundo badge azul é
+   a origem do lead e não interfere porque o seletor exige o primeiro filho. */
+.fixed.inset-0.z-\[90\] aside
+  > .pt-5:has(> .flex:first-child > span:first-child.bg-blue-500\/10)
+  > .premium-card.mt-5
+  button:first-child {
+  display: none;
+}
