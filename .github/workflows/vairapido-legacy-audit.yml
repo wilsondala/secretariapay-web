@@ -1,0 +1,45 @@
+name: Auditoria legado VaiRapido
+
+on:
+  push:
+    branches:
+      - chore/remove-vairapido-legacy-before-production
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Inventariar ficheiros e referencias legadas
+        shell: bash
+        run: |
+          set -u
+          echo '===== CANDIDATOS POR NOME DE FICHEIRO ====='
+          find . -type f \
+            ! -path './.git/*' \
+            ! -path './node_modules/*' \
+            ! -path './dist/*' \
+            | sort \
+            | grep -Ei '/(transport|route|trip|passenger|booking|ticket|boarding|multicountry|company)' \
+            || true
+
+          echo
+          echo '===== REFERENCIAS EXPLICITAS AO VAIRAPIDO ====='
+          grep -RInE --exclude-dir=.git --exclude-dir=node_modules --exclude-dir=dist \
+            'VaiR[aá]pido|vairapido|VAI_RAPIDO|VAIRAPIDO' . || true
+
+          echo
+          echo '===== IDENTIFICADORES E ROTAS DE TRANSPORTE ====='
+          grep -RInE --exclude-dir=.git --exclude-dir=node_modules --exclude-dir=dist \
+            'transportCompany|transport-companies|/trips|/passengers|/bookings|/tickets|/routes|boarding|multi-country|COMPANY_ADMIN|ROLE_COMPANY_ADMIN|ROLE_OPERATOR|busPlate|vehicleDescription|originCity|destinationCity|seatNumber' \
+            src public index.html package.json README.md .env.example 2>/dev/null || true
+
+          echo
+          echo '===== TOTAL DE FICHEIROS DO REPOSITORIO ====='
+          find . -type f ! -path './.git/*' ! -path './node_modules/*' ! -path './dist/*' | wc -l
